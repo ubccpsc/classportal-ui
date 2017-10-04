@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ClassPortal</title>
+
+    <script src="lib/onsen/js/onsenui.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/adminControllers.js"></script>
+    <script src="js/studentControllers.js"></script>
+    <script src="js/network.js"></script>
+
+    <link rel="stylesheet" href="lib/onsen/css/onsenui.css">
+    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- First navigation component: Navigator. This will remain always on top of the app. -->
+<ons-navigator id="myNavigator" page="main.html">
+</ons-navigator>
+
+
+<!-- Second navigation component: Splitter. This will disappear if the first component changes its content. -->
+<template id="main.html">
+    <ons-page>
+        <ons-toolbar>
+            <div class="center">UBC CPSC ClassPortal</div>
+        </ons-toolbar>
+
+        <ons-list>
+            <ons-list-item>
+                <div style="display:flex; align-items:center; justify-content: center; width: 100%">
+                    <ons-button onclick="pushPage('login.html', {course: 'cpsc210'})">CPSC 210</ons-button>
+                </div>
+            </ons-list-item>
+            <ons-list-item>
+                <div style="display:flex; align-items:center; justify-content: center; width: 100%">
+                    <ons-button onclick="pushPage('login.html', {course: 'cpsc310'})">CPSC 310</ons-button>
+                </div>
+            </ons-list-item>
+            <ons-list-item>
+                <div style="display:flex; align-items:center; justify-content: center; width: 100%">
+                    <ons-button onclick="pushPage('login.html', {course: 'admin310'})">CPSC 310 Admin</ons-button>
+                </div>
+            </ons-list-item>
+        </ons-list>
+
+    </ons-page>
+</template>
+
+<template id="student.html">
+    <ons-page id="studentTabsPage">
+        <ons-toolbar>
+            <div class="center" id="studentTabsHeader">Student Tabs</div>
+        </ons-toolbar>
+
+        <ons-tabbar position="auto" var="studentTabbar">
+            <ons-tab page="html/student/overview.html" label="Overview" active>
+            </ons-tab>
+            <ons-tab page="html/student/deliverables.html" label="Deliverables">
+            </ons-tab>
+            <ons-tab page="html/student/teams.html" label="Teams">
+            </ons-tab>
+            <ons-tab page="html/student/grades.html" label="Grades">
+            </ons-tab>
+        </ons-tabbar>
+    </ons-page>
+</template>
+
+<template id="admin.html">
+    <ons-page id="adminTabsPage">
+        <ons-toolbar>
+            <div class="center" id="adminTabsHeader">Admin Tabs</div>
+        </ons-toolbar>
+
+        <ons-tabbar id="adminTabbar" position="auto">
+            <ons-tab page="html/admin/deliverables.html" label="Deliverables" active>
+            </ons-tab>
+            <ons-tab page="html/admin/teams.html" label="Teams">
+            </ons-tab>
+            <ons-tab page="html/admin/grades.html" label="Grades">
+            </ons-tab>
+            <ons-tab page="html/admin/dashboard.html" label="Dashboard">
+            </ons-tab>
+            <ons-tab page="html/admin/github.html" label="GitHub">
+            </ons-tab>
+        </ons-tabbar>
+    </ons-page>
+</template>
+
+
+<template id="login.html">
+    <ons-page id="loginPage">
+        <ons-toolbar>
+            <div class="center">Login Page</div>
+        </ons-toolbar>
+        <div style="height: 100%; display:flex; align-items:center; justify-content: center;">
+            <ons-button id="loginButton">Complete Fake Login</ons-button>
+        </div>
+    </ons-page>
+</template>
+
+</body>
+
+</html>
