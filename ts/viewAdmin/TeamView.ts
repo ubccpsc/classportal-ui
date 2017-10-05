@@ -13,8 +13,9 @@ export class TeamView {
                 teamsList.innerHTML = '';
 
                 for (let deliverable of data.deliverables) {
-
-                    teamsList.appendChild(UI.createListHeader(deliverable.id));
+                    let header = UI.createListHeader(deliverable.id);
+                    header.style.backgroundColor = 'lightsteelblue';
+                    teamsList.appendChild(header);
                     if (deliverable.unassigned.length > 0) {
                         teamsList.appendChild(UI.createListHeader('Unassigned Students'));
                         for (let unassigned of deliverable.unassigned) {
