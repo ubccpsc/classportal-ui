@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es5",
+      "es2015.promise",
+      "dom",
+      "es2015"
+    ],
+    "sourceMap": true,
+    "inlineSources": true,
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "module": "commonjs",
+    "target": "es5"
+  },
+  "include": [
+    "./ts/**/*"
+  ],
+  "exclude": [
+  ]
+}

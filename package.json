@@ -1,0 +1,29 @@
+{
+  "name": "classportal-ui-next",
+  "version": "0.0.1",
+  "description": "ClassPortal based on Onsen UI.",
+  "main": "index.html",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubccpsc/classportal-ui-next.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ubccpsc/classportal-ui-next/issues"
+  },
+  "homepage": "https://github.com/ubccpsc/classportal-ui-next#readme",
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.2.3",
+    "onsenui": "^2.6.1",
+    "source-map-loader": "^0.2.2",
+    "typescript": "^2.5.3",
+    "webpack": "^3.6.0"
+  }
+}

@@ -1,6 +1,3 @@
-/***********************************************************************
- * App Controllers. These controllers will be called on page initialization. *
- ***********************************************************************/
 
 myApp.adminControllers = {
 
