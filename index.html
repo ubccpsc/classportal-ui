@@ -6,11 +6,15 @@
 
     <script src="lib/onsen/js/onsenui.js"></script>
 
+    <!--
     <script src="js/app.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/adminControllers.js"></script>
     <script src="js/studentControllers.js"></script>
     <script src="js/network.js"></script>
+    -->
+
+    <script src="dist/classportal.js"></script>
 
     <link rel="stylesheet" href="lib/onsen/css/onsenui.css">
     <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css">
@@ -34,17 +38,17 @@
         <ons-list>
             <ons-list-item>
                 <div style="display:flex; align-items:center; justify-content: center; width: 100%">
-                    <ons-button onclick="pushPage('login.html', {course: 'cpsc210'})">CPSC 210</ons-button>
+                    <ons-button onclick="myApp.pushPage('login.html', {courseId: 'cpsc210'})">CPSC 210</ons-button>
                 </div>
             </ons-list-item>
             <ons-list-item>
                 <div style="display:flex; align-items:center; justify-content: center; width: 100%">
-                    <ons-button onclick="pushPage('login.html', {course: 'cpsc310'})">CPSC 310</ons-button>
+                    <ons-button onclick="myApp.pushPage('login.html', {courseId: 'cpsc310'})">CPSC 310</ons-button>
                 </div>
             </ons-list-item>
             <ons-list-item>
                 <div style="display:flex; align-items:center; justify-content: center; width: 100%">
-                    <ons-button onclick="pushPage('login.html', {course: 'admin310'})">CPSC 310 Admin</ons-button>
+                    <ons-button onclick="myApp.pushPage('login.html', {courseId: 'admin310'})">CPSC 310 Admin</ons-button>
                 </div>
             </ons-list-item>
         </ons-list>
@@ -58,15 +62,17 @@
             <div class="center" id="studentTabsHeader">Student Tabs</div>
         </ons-toolbar>
 
+        <!--
+        <ons-tab page="fav.html" active="true">
+            <ons-icon icon="ion-star"></ons-icon>
+            <span style="font-size: 14px">Favorites</span>
+            -->
+
         <ons-tabbar position="auto" var="studentTabbar">
-            <ons-tab page="html/student/overview.html" label="Overview" active>
-            </ons-tab>
-            <ons-tab page="html/student/deliverables.html" label="Deliverables">
-            </ons-tab>
-            <ons-tab page="html/student/teams.html" label="Teams">
-            </ons-tab>
-            <ons-tab page="html/student/grades.html" label="Grades">
-            </ons-tab>
+            <ons-tab page="html/student/summary.html" label="Summary" icon="ion-ios-home-outline" active></ons-tab>
+            <ons-tab page="html/student/deliverables.html" label="Deliverables" icon="ion-ios-paper-outline"></ons-tab>
+            <ons-tab page="html/student/teams.html" label="Teams" icon="ion-ios-people"></ons-tab>
+            <ons-tab page="html/student/grades.html" label="Grades" icon="ion-android-checkmark-circle"></ons-tab>
         </ons-tabbar>
     </ons-page>
 </template>
@@ -78,16 +84,11 @@
         </ons-toolbar>
 
         <ons-tabbar id="adminTabbar" position="auto">
-            <ons-tab page="html/admin/deliverables.html" label="Deliverables" active>
-            </ons-tab>
-            <ons-tab page="html/admin/teams.html" label="Teams">
-            </ons-tab>
-            <ons-tab page="html/admin/grades.html" label="Grades">
-            </ons-tab>
-            <ons-tab page="html/admin/dashboard.html" label="Dashboard">
-            </ons-tab>
-            <ons-tab page="html/admin/github.html" label="GitHub">
-            </ons-tab>
+            <ons-tab page="html/admin/deliverables.html" label="Deliverables" icon="ion-ios-paper-outline" active></ons-tab>
+            <ons-tab page="html/admin/teams.html" label="Teams" icon="ion-ios-people"></ons-tab>
+            <ons-tab page="html/admin/grades.html" label="Grades" icon="ion-android-checkmark-circle"></ons-tab>
+            <ons-tab page="html/admin/dashboard.html" label="Dashboard" icon="ion-ios-speedometer-outline"></ons-tab>
+            <ons-tab page="html/admin/github.html" label="GitHub" icon="ion-social-github-outline"></ons-tab>
         </ons-tabbar>
     </ons-page>
 </template>

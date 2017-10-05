@@ -1,8 +1,19 @@
-# ClassPortal
+# ClassPortal UI Next
 
 ClassPortal based on Onsen UI.
 
-To launch it locally, just run `python -m SimpleHTTPServer 8080`. No compilation required.
+## To launch
+
+Open two tabs:
+
+1. `webpack --watch` This will recompile the code on every change.
+2. `python -m SimpleHTTPServer 8080` Just do a hard page refresh to reload.
+
+## To develop
+
+* `yarn install`
+* Edit `.ts` and `.html` files.
+* Follow launch instructions above.
 
 ### Notes
 
