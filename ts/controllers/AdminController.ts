@@ -20,6 +20,10 @@ export class AdminController {
     private githubView = new GitHubView();
     private dashboardView = new DashboardView();
 
+    private DEV_URL = 'https://localhost:5000/';
+    private PROD_URL = 'https://portal.cs.ubc.ca:5000/';
+    private URL = this.DEV_URL;
+
     constructor(courseId: string) {
         console.log("AdminController::<init>");
         this.courseId = courseId;
@@ -33,34 +37,27 @@ export class AdminController {
     public adminDeliverablesPage() {
         console.log('AdminController::adminDeliverablesPage - start');
 
-        if (this.courseId === 'admin310') {
-            const url = 'https://FILLMEIN/admin/310/deliverables';
-            Network.handleRemote(url, this.deliverableView.render, UI.handleError);
-        } else {
-            console.log('adminDeliverablesPage - unknown course: ' + this.courseId);
-        }
+        // params.teamId = ... // not currently used
+
+        // /:courseId/deliverables
+        const url = this.URL + this.courseId + '/deliverables';
+        Network.handleRemote(url, this.deliverableView, UI.handleError);
     }
 
     public adminTeamsPage() {
         console.log('AdminController::adminTeamsPage - start');
 
-        if (this.courseId === 'admin310') {
-            const url = 'https://FILLMEIN/admin/310/teams';
-            Network.handleRemote(url, this.teamView.render, UI.handleError);
-        } else {
-            console.log('adminTeamsPage - unknown course: ' + this.courseId);
-        }
+        // /:courseId/admin/teams
+        const url = this.URL + this.courseId + '/admin/teams';
+        Network.handleRemote(url, this.teamView, UI.handleError);
     }
 
     public adminGradesPage() {
         console.log('AdminController::adminGradesPage - start');
 
-        if (this.courseId === 'admin310') {
-            const url = 'https://FILLMEIN/admin/310/grades';
-            Network.handleRemote(url, this.gradeView.render, UI.handleError);
-        } else {
-            console.log('adminGradesPage - unknown course: ' + this.courseId);
-        }
+        // /:courseId/admin/grades
+        const url = this.URL + this.courseId + '/admin/grades';
+        Network.handleRemote(url, this.gradeView, UI.handleError);
     }
 
     public adminDashboardPage() {
@@ -69,21 +66,14 @@ export class AdminController {
         let params: any = {};
         params.orgName = 'CPSC310-2017W-T1';
         params.delivId = 'd0';
+        // params.teamId = ... // not currently used
 
         // '/:courseId/admin/dashboard/:orgName/:delivId
         const DEV_URL = 'https://localhost:5000/';
         const PROD_URL = 'https://portal.cs.ubc.ca:5000/';
         const URL = DEV_URL + 'cs310/admin/dashboard/' + params.orgName + '/' + params.delivId;
 
-
-        // params.teamId = ... // not currently used
-
-        if (this.courseId === 'cpsc310') {
-            // const url = 'https://FILLMEIN/admin/310/dashboard';
-            Network.handleRemote(URL, this.dashboardView, UI.handleError);
-        } else {
-            console.log('adminDashboardPage - unknown course: ' + this.courseId);
-        }
+        Network.handleRemote(URL, this.dashboardView, UI.handleError);
     }
 
     public adminGitHubPage() {

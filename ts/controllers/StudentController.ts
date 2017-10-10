@@ -34,10 +34,10 @@ export class StudentController {
 
         if (this.courseId === 'cpsc210') {
             const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.summaryView.render, UI.handleError);
+            Network.handleRemote(url, this.summaryView, UI.handleError);
         } else if (this.courseId === 'cpsc310') {
             const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.summaryView.render, UI.handleError);
+            Network.handleRemote(url, this.summaryView, UI.handleError);
         } else {
             console.log('StudentController::studentSummaryPage - unknown course: ' + this.courseId);
         }
@@ -48,10 +48,10 @@ export class StudentController {
 
         if (this.courseId === 'cpsc210') {
             const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.deliverableView.render, UI.handleError);
+            Network.handleRemote(url, this.deliverableView, UI.handleError);
         } else if (this.courseId === 'cpsc310') {
             const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.deliverableView.render, UI.handleError);
+            Network.handleRemote(url, this.deliverableView, UI.handleError);
         } else {
             console.log('StudentController::studentDeliverablePage - unknown course: ' + this.courseId);
         }
@@ -62,10 +62,10 @@ export class StudentController {
 
         if (this.courseId === 'cpsc210') {
             const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.teamView.render, UI.handleError);
+            Network.handleRemote(url, this.teamView, UI.handleError);
         } else if (this.courseId === 'cpsc310') {
             const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.teamView.render, UI.handleError);
+            Network.handleRemote(url, this.teamView, UI.handleError);
         } else {
             console.log('StudentController::studentTeamPage - unknown course: ' + this.courseId);
         }
@@ -76,10 +76,10 @@ export class StudentController {
 
         if (this.courseId === 'cpsc210') {
             const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.gradeView.render, UI.handleError);
+            Network.handleRemote(url, this.gradeView, UI.handleError);
         } else if (this.courseId === 'cpsc310') {
             const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.gradeView.render, UI.handleError);
+            Network.handleRemote(url, this.gradeView, UI.handleError);
         } else {
             console.log('StudentController::studentGradePage - unknown course: ' + this.courseId);
         }

@@ -4,7 +4,9 @@ export class DashboardView {
 
     public render(data: any) {
         console.log('DashboardView::render - start');
-        document.querySelector('#adminTabsHeader').innerHTML = data.course;
+        data = data.response; // peel off the top layer
+
+        document.querySelector('#adminTabsHeader').innerHTML = "Dashboard";
 
         // deliverables
         var dashList = document.querySelector('#admin-dashboard-list');
@@ -17,10 +19,6 @@ export class DashboardView {
             let body = '';
             for (let row of data) {
                 body = body + this.buildRow(row);
-                /*
-                dashList.appendChild(UI.createListItem(row.project + ' ( ' + row.scoreOverall + ' )',
-                    '# passing: ' + row.passNames.length + '; # failing: ' + row.failNames.length + '; # skipped: ' + row.skipNames.length));
-                    */
             }
 
             dashList.innerHTML = header + body + '</table>';
