@@ -66,9 +66,21 @@ export class AdminController {
     public adminDashboardPage() {
         console.log('AdminController::adminDashboardPage - start');
 
-        if (this.courseId === 'admin310') {
-            const url = 'https://FILLMEIN/admin/310/dashboard';
-            Network.handleRemote(url, this.dashboardView.render, UI.handleError);
+        let params: any = {};
+        params.orgName = 'CPSC310-2017W-T1';
+        params.delivId = 'd0';
+
+        // '/:courseId/admin/dashboard/:orgName/:delivId
+        const DEV_URL = 'https://localhost:5000/';
+        const PROD_URL = 'https://portal.cs.ubc.ca:5000/';
+        const URL = DEV_URL + 'cs310/admin/dashboard/' + params.orgName + '/' + params.delivId;
+
+
+        // params.teamId = ... // not currently used
+
+        if (this.courseId === 'cpsc310') {
+            // const url = 'https://FILLMEIN/admin/310/dashboard';
+            Network.handleRemote(URL, this.dashboardView, UI.handleError);
         } else {
             console.log('adminDashboardPage - unknown course: ' + this.courseId);
         }

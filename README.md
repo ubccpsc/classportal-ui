@@ -7,7 +7,7 @@ ClassPortal based on Onsen UI.
 Open two tabs:
 
 1. `webpack --watch` This will recompile the code on every change.
-2. `python -m SimpleHTTPServer 8080` Just do a hard page refresh to reload.
+2. `python -m SimpleHTTPServer 3000` Just do a hard page refresh to reload.
 
 ## To develop
 

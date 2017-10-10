@@ -24,6 +24,8 @@ export class App {
         var that = this;
         document.addEventListener('init', function (event) {
             const page = event.target as OnsPageElement;
+
+
             const pageName = page.id;
 
             let courseId: string = null;
@@ -64,24 +66,24 @@ export class App {
                 const AUTHORIZED_STATUS: string = 'authorized';
 
                 console.log('App::main()::authCheck - starting main.html with auth check');
-                fetch('https://localhost:5000/currentUser', OPTIONS_HTTP_GET)
-                    .then((data: any) => {
-                        if (data.status !== 200) {
-                            console.log('App::main()::authCheck WARNING: Repsonse status: ' + data.status);
-                            throw 'App::main()::authCheck - API ERROR' + data.status;
-                        }
-                        return data.json();
-                    })
-                    .then((response: any) => {
-                        let user = response.user;
-                        localStorage.setItem('userrole', user.userrole);
-                        localStorage.setItem('username', user.username);
-                        localStorage.setItem('authStatus', AUTHORIZED_STATUS);
-                        localStorage.setItem('fname', user.fname);
-                    })
-                    .catch((err: any) => {
-                        console.log('App:main()::authCheck ERROR ' + err);
-                    });
+                const DEV_URL = 'https://localhost:5000/currentUser';
+                const PROD_URL = 'https://portal.cs.ubc.ca:5000/currentUser';
+                const URL = DEV_URL;
+                fetch(URL, OPTIONS_HTTP_GET).then((data: any) => {
+                    if (data.status !== 200) {
+                        console.log('App::main()::authCheck WARNING: Repsonse status: ' + data.status);
+                        throw 'App::main()::authCheck - API ERROR' + data.status;
+                    }
+                    return data.json();
+                }).then((response: any) => {
+                    let user = response.user;
+                    localStorage.setItem('userrole', user.userrole);
+                    localStorage.setItem('username', user.username);
+                    localStorage.setItem('authStatus', AUTHORIZED_STATUS);
+                    localStorage.setItem('fname', user.fname);
+                }).catch((err: any) => {
+                    console.log('App:main()::authCheck ERROR ' + err);
+                });
             }
 
             if (pageName === 'loginPage') {
