@@ -5,7 +5,7 @@
 import {AdminController} from "./controllers/AdminController";
 import {StudentController} from "./controllers/StudentController";
 import {UI} from "./util/UI";
-
+import 'whatwg-fetch';
 import {OnsButtonElement, OnsPageElement} from "onsenui";
 
 declare var classportal: any;
@@ -59,15 +59,51 @@ export class App {
                 }
             }
 
+            if (pageName === 'main') {
+                const OPTIONS_HTTP_GET: object = {credentials: 'include'};
+                const AUTHORIZED_STATUS: string = 'authorized';
+
+                console.log('App::main()::authCheck - starting main.html with auth check');
+                fetch('https://localhost:5000/currentUser', OPTIONS_HTTP_GET)
+                    .then((data: any) => {
+                        if (data.status !== 200) {
+                            console.log('App::main()::authCheck WARNING: Repsonse status: ' + data.status);
+                            throw 'App::main()::authCheck - API ERROR' + data.status;
+                        }
+                        return data.json();
+                    })
+                    .then((response: any) => {
+                        let user = response.user;
+                        localStorage.setItem('userrole', user.userrole);
+                        localStorage.setItem('username', user.username);
+                        localStorage.setItem('authStatus', AUTHORIZED_STATUS);
+                        localStorage.setItem('fname', user.fname);
+                    })
+                    .catch((err: any) => {
+                        console.log('App:main()::authCheck ERROR ' + err);
+                    });
+            }
+
             if (pageName === 'loginPage') {
-                console.log('App::init()::init - starting login.html');
+
+                let userrole = String(localStorage.userrole);
+                let username = String(localStorage.username);
+
+                if (userrole === 'student') {
+                    UI.pushPage('student.html', {courseId: courseId});
+                } else if (userrole === 'admin' || userrole === 'superadmin') {
+                    UI.pushPage('admin.html', {courseId: courseId});
+                }
+
                 (document.querySelector('#loginButton') as OnsButtonElement).onclick = function () {
                     console.log('login pressed for: ' + courseId);
 
                     if (courseId.indexOf('admin') >= 0) {
-                        UI.pushPage('admin.html', {courseId: courseId});
+                        window.location.replace('https://localhost:5000/auth/login');
+                        // UI.pushPage('admin.html', {courseId: courseId});
                     } else {
-                        UI.pushPage('student.html', {courseId: courseId});
+                        window.location.replace('https://localhost:5000/auth/login');
+                        // UI.pushPage('student.html', {courseId: courseId});
                     }
                 };
             }
@@ -106,6 +142,24 @@ export class App {
         UI.pushPage(page, opts);
     }
 
+    handleMainPageClick(courseId: object) {
+        const AUTH_STATUS = 'authorized';
+        const UNAUTH_STATUS = 'unauthorized';
+
+        let userrole = typeof localStorage.userrole === 'undefined' ? null : localStorage.userrole;
+        let authStatus = typeof localStorage.authStatus === 'undefined' ? 'unauthorized' : AUTH_STATUS;
+
+        // either go to Login page or redirect to student/admin management areas
+        if (localStorage.authStatus !== AUTH_STATUS) {
+            UI.pushPage('login.html', courseId);
+        } else if (localStorage.authStatus === AUTH_STATUS && userrole === 'superadmin') {
+            UI.pushPage('superadmin.html', courseId);
+        } else if (localStorage.authStatus === AUTH_STATUS && userrole === 'admin') {
+            UI.pushPage('admin.html', courseId);
+        } else {
+            UI.pushPage('student.html', courseId);
+        }
+    }
 }
 
 console.log('App.ts - preparing App for access');

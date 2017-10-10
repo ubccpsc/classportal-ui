@@ -30,7 +30,7 @@
 
 <!-- Second navigation component: Splitter. This will disappear if the first component changes its content. -->
 <template id="main.html">
-    <ons-page>
+    <ons-page id="main">
         <ons-toolbar>
             <div class="center">UBC CPSC ClassPortal</div>
         </ons-toolbar>
@@ -38,17 +38,17 @@
         <ons-list>
             <ons-list-item>
                 <div style="display:flex; align-items:center; justify-content: center; width: 100%">
-                    <ons-button onclick="myApp.pushPage('login.html', {courseId: 'cpsc210'})">CPSC 210</ons-button>
+                    <ons-button onclick="myApp.handleMainPageClick({courseId: 'cpsc210'})">CPSC 210</ons-button>
                 </div>
             </ons-list-item>
             <ons-list-item>
                 <div style="display:flex; align-items:center; justify-content: center; width: 100%">
-                    <ons-button onclick="myApp.pushPage('login.html', {courseId: 'cpsc310'})">CPSC 310</ons-button>
+                    <ons-button onclick="myApp.handleMainPageClick({courseId: 'cpsc310'})">CPSC 310</ons-button>
                 </div>
             </ons-list-item>
             <ons-list-item>
                 <div style="display:flex; align-items:center; justify-content: center; width: 100%">
-                    <ons-button onclick="myApp.pushPage('login.html', {courseId: 'admin310'})">CPSC 310 Admin</ons-button>
+                    <ons-button onclick="myApp.handleMainPageClick({courseId: 'admin310'})">CPSC 310 Admin</ons-button>
                 </div>
             </ons-list-item>
         </ons-list>

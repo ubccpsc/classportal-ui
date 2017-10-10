@@ -25,5 +25,9 @@
     "source-map-loader": "^0.2.2",
     "typescript": "^2.5.3",
     "webpack": "^3.6.0"
+  },
+  "dependencies": {
+    "python": "^0.0.4",
+    "whatwg-fetch": "^2.0.3"
   }
 }
