@@ -31,8 +31,7 @@ export class DashboardView {
         // document.querySelector('#adminTabsHeader').innerHTML = data.course;
         document.querySelector('#adminTabsHeader').innerHTML = "Dashboard";
     }
-
-
+    
     public render(data: DashboardResult) {
         console.log('DashboardView::render(..) - start');
 
@@ -154,7 +153,6 @@ export class DashboardView {
         return str;
     }
 
-
     private getDetails(row: any) {
         let passNames = row.passNames as string[];
         let failNames = row.failNames as string[];
@@ -229,8 +227,6 @@ export class DashboardView {
         }
 
         console.log('DashboardView::sort( ' + columnName + ' ) - mult: ' + mult + '; - start');
-
-
         this.data.response = this.data.response.sort(function (a, b) {
 
             let aVal = a[columnName];
@@ -258,52 +254,16 @@ export class DashboardView {
     public renderInfo(url: string) {
         console.log('DashboardView::renderInfo( ' + url + ' )');
 
-        var onSuccess: any = {};
+        const onSuccess: any = {};
         onSuccess.render = function (data: any) {
             console.log('DashboardView::renderInfo(..) - onSuccess::render');
-
             const newWindow = window.open('text/plain');
             data = data.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/g, "<br/>");
             newWindow.document.write(data);
         };
 
         // TODO: this network code should probably be in a controller?
-        Network.handleRemote(url, onSuccess, UI.handleError);
-        /*
-        .then(function (data) {
-            console.log('DashboardView::renderInfo(..) - data: ' + data);
-
-
-
-        }).catch(function (err) {
-            console.log('DashboardView::renderInfo(..) - ERROR: ' + err.message);
-
-            const newWindow = window.open('text/plain');
-            newWindow.document.write('Error retrieving stdio.txt: ' + err.message);
-        });
-        */
-
-        /*
-        // this is the old code that handled stdio
-        // probably not useful except for the hacky way the window is created with the text
-
-        var url = this.props.details;
-        console.log("getStdIO( " + url + " )");
-        var oReq = new XMLHttpRequest();
-        oReq.open("GET", url);
-        oReq.setRequestHeader("Authorization", "Basic " + btoa(localStorage.getItem('autodash')));
-
-        oReq.onload = function () {
-            var data = oReq.responseText;
-
-            var newWindow = window.open('text/plain');
-
-            data = data.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/g, "<br/>");
-
-            // and then do
-            newWindow.document.write(data);
-        }
-*/
+        Network.handleRemoteText(url, onSuccess, UI.handleError);
     }
 
 }

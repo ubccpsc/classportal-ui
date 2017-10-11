@@ -43,6 +43,30 @@ export class Network {
     }
 
 
+    public static handleRemoteText(url: string, view: any, onError: any) {
+        const USE_REAL = true;
+        console.log('Network::handleRemoteText( ' + url + ' ) - start');
+
+        const OPTIONS_HTTP_GET: object = {credentials: 'include'};
+        const AUTHORIZED_STATUS: string = 'authorized';
+
+        fetch(url, OPTIONS_HTTP_GET).then((data: any) => {
+            if (data.status !== 200) {
+                console.log('Network::handleRemote() WARNING: Repsonse status: ' + data.status);
+                throw new Error('Network::handleRemote() - API ERROR: ' + data.status);
+            } else {
+                console.log('Network::handleRemote() 200 return');
+                data.text().then(function (text: any) {
+                    view.render(text); // calls render instead of the function
+                });
+            }
+        }).catch((err: Error) => {
+            console.error('Network::handleRemote( ' + url + ' ) - ERROR ' + err, err);
+            onError('Error retrieving: ' + url + '; message: ' + err.message);
+        });
+    }
+
+
     public static getData(url: string): Promise<any> {
         console.log('Network::getData( ' + url + ' ) - start');
 
