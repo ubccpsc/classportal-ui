@@ -2,9 +2,14 @@ import {UI} from "../util/UI";
 
 export class TeamView {
 
+    public updateTitle() {
+        // document.querySelector('#adminTabsHeader').innerHTML = data.course;
+        document.querySelector('#adminTabsHeader').innerHTML = "Teams";
+    }
+
     public render(data: any) {
         console.log('TeamView::render  - start');
-        document.querySelector('#adminTabsHeader').innerHTML = data.course;
+        this.updateTitle();
 
         try {
             // teams

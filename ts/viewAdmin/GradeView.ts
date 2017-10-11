@@ -2,10 +2,15 @@ import {UI} from "../util/UI";
 
 export class GradeView {
 
+    public updateTitle() {
+        // document.querySelector('#adminTabsHeader').innerHTML = data.course;
+        document.querySelector('#adminTabsHeader').innerHTML = "Grades";
+    }
+
     public render(data: any) {
 
         console.log('GradeView::render - start');
-        document.querySelector('#adminTabsHeader').innerHTML = data.course;
+        this.updateTitle();
 
         // grades
         var gradeList = document.querySelector('#admin-grade-list');

@@ -2,6 +2,12 @@ import {UI} from "../util/UI";
 
 export class DeliverableView {
 
+    public updateTitle() {
+        // document.querySelector('#adminTabsHeader').innerHTML = data.course;
+        document.querySelector('#adminTabsHeader').innerHTML = "Deliverables";
+    }
+
+
     public render(data: any) {
         console.log('DeliverableView::render() - start');
 
@@ -9,7 +15,8 @@ export class DeliverableView {
             console.log('DeliverableView::render() - data is undefined');
             return;
         }
-        document.querySelector('#adminTabsHeader').innerHTML = "Deliverables";
+
+        this.updateTitle();
 
         // deliverables
         const deliverableList = document.querySelector('#admin-deliverable-list');

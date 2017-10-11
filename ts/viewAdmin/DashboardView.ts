@@ -25,12 +25,18 @@ export class DashboardView {
     private data: DashboardResult;
     private sortCol: string = 'timestamp';
 
+    public updateTitle() {
+        // document.querySelector('#adminTabsHeader').innerHTML = data.course;
+        document.querySelector('#adminTabsHeader').innerHTML = "Dashboard";
+    }
+
+
     public render(data: DashboardResult) {
         console.log('DashboardView::render(..) - start');
 
         this.data = data;
 
-        document.querySelector('#adminTabsHeader').innerHTML = "Dashboard";
+        this.updateTitle();
 
         try {
             var dashList = document.querySelector('#admin-dashboard-list');

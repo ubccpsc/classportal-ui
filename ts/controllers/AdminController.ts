@@ -36,9 +36,9 @@ export class AdminController {
 
     public adminDeliverablesPage() {
         console.log('AdminController::adminDeliverablesPage - start');
+        this.deliverableView.updateTitle();
 
         // params.teamId = ... // not currently used
-
         // /:courseId/deliverables
         const url = this.URL + this.courseId + '/deliverables';
         Network.handleRemote(url, this.deliverableView, UI.handleError);
@@ -46,6 +46,7 @@ export class AdminController {
 
     public adminTeamsPage() {
         console.log('AdminController::adminTeamsPage - start');
+        this.teamView.updateTitle();
 
         // /:courseId/admin/teams
         const url = this.URL + this.courseId + '/admin/teams';
@@ -54,6 +55,7 @@ export class AdminController {
 
     public adminGradesPage() {
         console.log('AdminController::adminGradesPage - start');
+        this.gradeView.updateTitle();
 
         // /:courseId/admin/grades
         const url = this.URL + this.courseId + '/admin/grades';
@@ -61,6 +63,8 @@ export class AdminController {
     }
 
     public adminDashboardPage(delivId?: string) {
+        this.dashboardView.updateTitle();
+
         if (typeof delivId === 'undefined') {
             console.log('AdminController::adminDashboardPage - delivId missing!');
             // just don't do anything!
@@ -91,6 +95,8 @@ export class AdminController {
 
     public adminGitHubPage() {
         console.log('AdminController::adminGitHubPage - start');
+        this.githubView.updateTitle();
+
         this.githubView.render({});
     }
 
