@@ -1,5 +1,6 @@
 import {UI} from "../util/UI";
 import {OnsSelectElement} from "onsenui";
+import {Network} from "../util/Network";
 
 declare var myApp: any;
 
@@ -18,6 +19,7 @@ interface DashboardRow {
     passNames: string[];
     failNames: string[];
     skipNames: string[];
+    stdioURL: string;
 }
 
 export class DashboardView {
@@ -127,9 +129,7 @@ export class DashboardView {
         return str;
     }
 
-    private buildRow(row: any, odd: boolean) {
-        const stdioURL = "http://STDIOURL"; // TODO
-
+    private buildRow(row: DashboardRow, odd: boolean) {
         let str = '';
         if (odd) {
             str += '<tr class="dashRow" style="color: black; background: lightgrey">';
@@ -137,8 +137,8 @@ export class DashboardView {
             str += '<tr class="dashRow" style="color: black; background: white">';
         }
 
-        str += '<td class="dashRowElem"><a target="_blank" href="' + row.stdioURL + '"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
-        // str += '<td class="dashRowElem"><a onclick="myApp.adminController.dashboardView.renderInfo(\'' + stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
+        // str += '<td class="dashRowElem"><a target="_blank" href="' + row.stdioURL + '"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
+        str += '<td class="dashRowElem"><a onclick="myApp.adminController.dashboardView.renderInfo(\'' + row.stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
         str += '<td class="dashRowElem"><span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span></td>';
         str += '<td class="dashRowElem"><a href="' + row.url + '">' + row.project + '</a></td>';
         str += '<td class="dashRowElem"><a href="https://github.ubc.ca/' + row.user + '">' + row.user + '</a></td>';
@@ -257,6 +257,32 @@ export class DashboardView {
 
     public renderInfo(url: string) {
         console.log('DashboardView::renderInfo( ' + url + ' )');
+
+        var onSuccess: any = {};
+        onSuccess.render = function (data: any) {
+            console.log('DashboardView::renderInfo(..) - onSuccess::render');
+
+            const newWindow = window.open('text/plain');
+            data = data.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/g, "<br/>");
+            newWindow.document.write(data);
+        };
+
+        // TODO: this network code should probably be in a controller?
+        Network.handleRemote(url, onSuccess, UI.handleError);
+        /*
+        .then(function (data) {
+            console.log('DashboardView::renderInfo(..) - data: ' + data);
+
+
+
+        }).catch(function (err) {
+            console.log('DashboardView::renderInfo(..) - ERROR: ' + err.message);
+
+            const newWindow = window.open('text/plain');
+            newWindow.document.write('Error retrieving stdio.txt: ' + err.message);
+        });
+        */
+
         /*
         // this is the old code that handled stdio
         // probably not useful except for the hacky way the window is created with the text

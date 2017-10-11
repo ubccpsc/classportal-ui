@@ -24,18 +24,19 @@ export class Network {
                         view.render(json); // calls render instead of the function
                     });
                 }
-            }).catch((err: any) => {
-                console.log('Network::handleRemote( ' + url + ' ) - ERROR ' + err);
+            }).catch((err: Error) => {
+                console.error('Network::handleRemote( ' + url + ' ) - ERROR ' + err, err);
+                // onError(err.message);
             });
 
         } else {
             // if you want to use fake data
             // probably won't work once we start hooking up real data since the formats will be different
             Network.getData(url).then(function (data: any) {
-                console.log('handleRemote; url: ' + url + '; data: ' + JSON.stringify(data));
+                console.log('Network::handleRemote( \' + url + \' ) - then; data: ' + JSON.stringify(data));
                 view.render(data);
             }).catch(function (err: Error) {
-                console.log('myApp.network::handleRemote ERROR; url: ' + url + '; msg: ' + err);
+                console.log('Network::handleRemote( \' + url + \' ) - catch; ERROR: ' + err);
                 onError(err);
             });
         }
@@ -43,7 +44,7 @@ export class Network {
 
 
     public static getData(url: string): Promise<any> {
-        console.log('myApp.network.getData( ' + url + ' ) - start');
+        console.log('Network::getData( ' + url + ' ) - start');
 
         return new Promise(function (fulfill: any, reject: any) {
             if (url.indexOf('/student/210/rtholmes') > 0) {
