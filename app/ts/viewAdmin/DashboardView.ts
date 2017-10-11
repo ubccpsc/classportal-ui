@@ -97,7 +97,7 @@ export class DashboardView {
             str += '<tr class="dashRow" style="color: black; background: white">';
         }
 
-        str += '<td class="dashRowElem"><a target="_blank" href="' + stdioURL + '"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
+        str += '<td class="dashRowElem"><a target="_blank" href="' + row.stdioURL + '"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
         str += '<td class="dashRowElem"><span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span></td>';
         str += '<td class="dashRowElem"><a href="' + row.url + '">' + row.project + '</a></td>';
         str += '<td class="dashRowElem"><a href="https://github.ubc.ca/' + row.user + '">' + row.user + '</a></td>';
