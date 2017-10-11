@@ -4,6 +4,7 @@ export class GitHubView {
 
     public render(data: any) {
 
+        UI.hideModal();
     }
 
 }

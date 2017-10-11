@@ -44,6 +44,7 @@ export class GradeView {
         } else {
             console.log('GradeView::render - element is null');
         }
+        UI.hideModal();
     }
 
 

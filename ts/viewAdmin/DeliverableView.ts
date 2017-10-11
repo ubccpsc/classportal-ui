@@ -28,6 +28,8 @@ export class DeliverableView {
         } else {
             console.log('DeliverableView::render() - element is null');
         }
+
+        UI.hideModal();
     }
 
 }

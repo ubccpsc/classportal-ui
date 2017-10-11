@@ -29,6 +29,7 @@ export class DashboardView {
         } catch (err) {
             console.log('DashboardView::render - ERROR: ' + err.message);
         }
+        UI.hideModal();
     }
 
     private buildHeader() {

@@ -35,6 +35,7 @@ export class TeamView {
         } catch (err) {
             console.log('TeamView::render - ERROR: ' + err);
         }
+        UI.hideModal();
     }
 
 }

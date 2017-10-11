@@ -73,6 +73,8 @@ export class AdminController {
         const PROD_URL = 'https://portal.cs.ubc.ca:5000/';
         const URL = DEV_URL + 'cs310/admin/dashboard/' + params.orgName + '/' + params.delivId;
 
+        // going to be slow; show a modal
+        UI.showModal('Dashboard being retrieved. This may be slow.');
         Network.handleRemote(URL, this.dashboardView, UI.handleError);
     }
 
