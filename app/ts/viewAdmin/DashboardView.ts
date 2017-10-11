@@ -77,13 +77,53 @@ export class DashboardView {
         str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'passNames\')"># Pass</th>';
         str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'failNames\')"># Fail</th>';
         str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'skipNames\')"># Skip</th>';
-        str += '<th class="dashHeaderElem" style="width: 500px;" onclick="window.myApp.adminController.dashboardView.sort(\'results\')">Results</th>';
+        str += '<th class="dashHeaderElem" style="width: 450px;" onclick="window.myApp.adminController.dashboardView.sort(\'results\')">Results</th>';
         str += '</tr>';
         return str;
     }
 
     private buildFooter() {
-        let str = '<div></div>'; // TODO: add footer (grade histogram, xy scatter (x=coverage, y=grade))
+        let str = '<div style="text-align:center; padding-top: 1em; padding-bottom: 1em;">'; // TODO: add footer (grade histogram, xy scatter (x=coverage, y=grade))
+        str += '<div><b>Deliverable Statistics</b></div>';
+        
+        let totalProjects = 0;
+        let totalScore = 0;
+        let scores: number[] = [];
+        let histo = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        for (var d of this.data.response) {
+            totalProjects++;
+            const score = Number(d.scoreOverall);
+            totalScore = totalScore + score;
+            scores.push(score);
+            let bucket = Math.floor(score / 10);
+            // avoid -1
+            bucket = Math.max(bucket, 0);
+            histo[bucket] = histo[bucket] + 1;
+        }
+
+        scores = scores.sort(function (a, b) {
+            return a - b;
+        });
+
+        str += '<div><b>Median:</b> ' + (scores[Math.ceil(scores.length / 2)]).toFixed(2) + '</div>';
+        str += '<div><b>Average:</b> ' + (totalScore / totalProjects).toFixed(2) + '</div>';
+
+        str += '<div style="padding-top: 1em"><b>Histogram:</b></div>';
+        str += '<table style="margin-left: auto; margin-right: auto;">'; // <tr><th>Bucket</th><th>Count</th></tr>
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 0%-9%</td><td class="dashHistoValue" style="text-align: right;">' + histo[0] + '</td></tr>';
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 10%-19%</td><td class="dashHistoValue" style="text-align: right;">' + histo[1] + '</td></tr>';
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 20%-29%</td><td class="dashHistoValue" style="text-align: right;">' + histo[2] + '</td></tr>';
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 30%-39%</td><td class="dashHistoValue" style="text-align: right;">' + histo[3] + '</td></tr>';
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 40%-49%</td><td class="dashHistoValue" style="text-align: right;">' + histo[4] + '</td></tr>';
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 50%-59%</td><td class="dashHistoValue" style="text-align: right;">' + histo[5] + '</td></tr>';
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 60%-69%</td><td class="dashHistoValue" style="text-align: right;">' + histo[6] + '</td></tr>';
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 70%-79%</td><td class="dashHistoValue" style="text-align: right;">' + histo[7] + '</td></tr>';
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 80%-89%</td><td class="dashHistoValue" style="text-align: right;">' + histo[8] + '</td></tr>';
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 90%-99%</td><td class="dashHistoValue" style="text-align: right;">' + histo[9] + '</td></tr>';
+        str += '<tr><td class="dashHistoBucket" style="text-align: left;"># 100%</td><td class="dashHistoValue" style="text-align: right;">' + histo[10] + '</td></tr>';
+        str += '</table>';
+
+        str += '</div>';
         return str;
     }
 

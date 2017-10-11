@@ -6,6 +6,14 @@ DASHBOARD
     text-align: center;
 }
 
+.dashHistoBucket {
+    font-weight: bold;
+    padding-right: 1em;
+}
+.dashHistoValue {
+    padding-left: 2em;
+}
+
 /*****************
  *** Custom CSS ***
  *****************/
