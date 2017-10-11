@@ -1,7 +1,8 @@
+.env
 .idea/
 node_modules/
 dist/
 js.bak/
 **/.DS_Store
 **/*.js.map
-/ts/**/*.js
+/app/ts/**/*.js
