@@ -7,6 +7,7 @@ interface DashboardResult {
 interface DashboardRow {
     timestamp: number;
     project: string;
+    user: string;
     url: string;
     scoreOverall: number;
     scoreTest: number;
@@ -18,8 +19,13 @@ interface DashboardRow {
 
 export class DashboardView {
 
+    private data: DashboardResult;
+    private sortCol: string = 'timestamp';
+
     public render(data: DashboardResult) {
         console.log('DashboardView::render(..) - start');
+
+        this.data = data;
 
         document.querySelector('#adminTabsHeader').innerHTML = "Dashboard";
 
@@ -50,18 +56,19 @@ export class DashboardView {
     }
 
     private buildHeader() {
-        let str = '<table class="dashHeaderRow" style="width: 100%; background-color: white;">';
+        let str = '<table class="dashHeaderRow" style="width: 100%; background-color: white; border-collapse: collapse">';
         str += '<tr style="background-color: rgb(0,33,69); padding-top: 5px; padding-bottom: 5px; color: white">';
-        str += '<th class="dashHeaderElem">Info</th>';
-        str += '<th class="dashHeaderElem">Date</th>';
-        str += '<th class="dashHeaderElem">Repo</th>';
-        str += '<th class="dashHeaderElem">% Overall</th>';
-        str += '<th class="dashHeaderElem">% Pass</th>';
-        str += '<th class="dashHeaderElem">% Cover</th>';
-        str += '<th class="dashHeaderElem"># Pass</th>';
-        str += '<th class="dashHeaderElem"># Fail</th>';
-        str += '<th class="dashHeaderElem"># Skip</th>';
-        str += '<th class="dashHeaderElem" style="width: 500px;">Results</th>';
+        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'info\')">Info</th>';
+        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'timestamp\')">Date</th>';
+        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'project\')">Repo</th>';
+        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'user\')">User</th>';
+        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'scoreOverall\')">% Overall</th>';
+        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'scoreTest\')">% Pass</th>';
+        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'scoreCover\')">% Cover</th>';
+        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'passNames\')"># Pass</th>';
+        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'failNames\')"># Fail</th>';
+        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'skipNames\')"># Skip</th>';
+        str += '<th class="dashHeaderElem" style="width: 300px;" onclick="window.myApp.adminController.dashboardView.sort(\'results\')">Results</th>';
         str += '</tr>';
         return str;
     }
@@ -84,6 +91,7 @@ export class DashboardView {
         str += '<td class="dashRowElem"><a target="_blank" href="' + stdioURL + '"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
         str += '<td class="dashRowElem"><span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span></td>';
         str += '<td class="dashRowElem"><a href="' + row.url + '">' + row.project + '</a></td>';
+        str += '<td class="dashRowElem"><a href="https://github.ubc.ca/' + row.user + '">' + row.user + '</a></td>';
         str += '<td class="dashRowElem">' + row.scoreOverall + '</td>';
         str += '<td class="dashRowElem">' + row.scoreTest + '</td>';
         str += '<td class="dashRowElem">' + row.scoreCover + '</td>';
@@ -140,6 +148,48 @@ export class DashboardView {
         str += '</tr>';
         str += '</table></span>';
         return str;
+    }
+
+    public sort(columnName: string) {
+        if (columnName === 'info' || columnName === 'results') {
+            console.log('DashboardView::sort( ' + columnName + ' ) - unsortable column; not doing anything');
+            // do nothing
+            return;
+        }
+
+        let mult = 1;
+        if (this.sortCol === columnName) {
+            mult = -1;
+            this.sortCol = '';
+        } else {
+            this.sortCol = columnName;
+        }
+
+        console.log('DashboardView::sort( ' + columnName + ' ) - mult: ' + mult + '; - start');
+
+
+        this.data.response = this.data.response.sort(function (a, b) {
+
+            let aVal = a[columnName];
+            let bVal = b[columnName];
+
+            if (Array.isArray(aVal)) {
+                // an array
+                return (aVal.length - bVal.length) * mult;
+            } else if (isNaN(aVal) === false) {
+                // as a number
+                // something that isn't an array or string
+                return (Number(aVal) - Number(bVal)) * mult;
+            } else if (typeof aVal === 'string') {
+                // as a string
+                return aVal.localeCompare(bVal) * mult;
+            } else {
+                // something that isn't an array or string or number
+                return (aVal - bVal) * mult;
+            }
+        });
+
+        this.render(this.data);
     }
 
 }
