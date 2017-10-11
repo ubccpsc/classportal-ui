@@ -1,14 +1,28 @@
 import {UI} from "../util/UI";
 
+interface DashboardResult {
+    response: DashboardRow[];
+}
+
+interface DashboardRow {
+    timestamp: number;
+    project: string;
+    url: string;
+    scoreOverall: number;
+    scoreTest: number;
+    scoreCover: number;
+    passNames: string[];
+    failNames: string[];
+    skipNames: string[];
+}
+
 export class DashboardView {
 
-    public render(data: any) {
+    public render(data: DashboardResult) {
         console.log('DashboardView::render(..) - start');
-        data = data.response; // peel off the top layer
 
         document.querySelector('#adminTabsHeader').innerHTML = "Dashboard";
 
-        // dash rows
         try {
             var dashList = document.querySelector('#admin-dashboard-list');
             if (dashList !== null) {
@@ -18,7 +32,7 @@ export class DashboardView {
 
                 let body = '';
                 let odd = false;
-                for (let row of data) {
+                for (let row of data.response) {
                     body = body + this.buildRow(row, odd);
                     odd = !odd;
                 }
@@ -53,7 +67,7 @@ export class DashboardView {
     }
 
     private buildFooter() {
-        let str = '<div>FOOTER HERE</div>';
+        let str = '<div></div>'; // TODO: add footer (grade histogram, xy scatter (x=coverage, y=grade))
         return str;
     }
 
@@ -83,15 +97,21 @@ export class DashboardView {
     }
 
     private getDetails(row: any) {
-        let passNames = row.passNames;
-        let failNames = row.failNames;
-        let skipNames = row.skipNames;
+        let passNames = row.passNames as string[];
+        let failNames = row.failNames as string[];
+        let skipNames = row.skipNames as string[];
 
-        let all: any[] = [];
+        let all: string[] = [];
         all = all.concat(passNames, failNames, skipNames);
         all = all.sort();
 
-        let annotated: any[] = [];
+        interface DetailRow {
+            name: string;
+            state: string;
+            colour: string;
+        }
+
+        let annotated: DetailRow[] = [];
         for (var name of all) {
             let state = 'unknown';
             let colour = 'black';
@@ -113,11 +133,10 @@ export class DashboardView {
         let str = '<span><table style="height: 20px;">';
         str += '<tr>';
 
-        for (var a of annotated) {
+        for (let a of annotated) {
             str += '<td class="dashResultCell" style="width: 5px; height: 20px; background: ' + a.colour + '" title="' + a.name + '"></td>';
         }
 
-        // str += '<td>RESULTS HERE</td>';
         str += '</tr>';
         str += '</table></span>';
         return str;
