@@ -14,7 +14,7 @@
     "target": "es5"
   },
   "include": [
-    "./ts/**/*"
+    "./app/**/*"
   ],
   "exclude": [
   ]
