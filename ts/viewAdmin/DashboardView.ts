@@ -1,4 +1,7 @@
 import {UI} from "../util/UI";
+import {OnsSelectElement} from "onsenui";
+
+declare var myApp: any;
 
 interface DashboardResult {
     response: DashboardRow[];
@@ -68,7 +71,7 @@ export class DashboardView {
         str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'passNames\')"># Pass</th>';
         str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'failNames\')"># Fail</th>';
         str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'skipNames\')"># Skip</th>';
-        str += '<th class="dashHeaderElem" style="width: 300px;" onclick="window.myApp.adminController.dashboardView.sort(\'results\')">Results</th>';
+        str += '<th class="dashHeaderElem" style="width: 500px;" onclick="window.myApp.adminController.dashboardView.sort(\'results\')">Results</th>';
         str += '</tr>';
         return str;
     }
@@ -148,6 +151,18 @@ export class DashboardView {
         str += '</tr>';
         str += '</table></span>';
         return str;
+    }
+
+    public retrieveDashboard() {
+        console.log('DashboardView::retrieveDashboard() - start');
+        const select = document.getElementById('admin-dashboard-select') as OnsSelectElement;
+        if (select != null) {
+            const delivId = select.value;
+            console.log('DashboardView::retrieveDashboard() - delivId: ' + delivId);
+            myApp.adminController.adminDashboardPage(delivId);
+        } else {
+            console.log('DashboardView::retrieveDashboard() - select is null');
+        }
     }
 
     public sort(columnName: string) {

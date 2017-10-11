@@ -60,22 +60,33 @@ export class AdminController {
         Network.handleRemote(url, this.gradeView, UI.handleError);
     }
 
-    public adminDashboardPage() {
-        console.log('AdminController::adminDashboardPage - start');
+    public adminDashboardPage(delivId?: string) {
+        if (typeof delivId === 'undefined') {
+            console.log('AdminController::adminDashboardPage - delivId missing!');
+            // just don't do anything!
+            return;
+        }
+
+        let orgName = '';
+        if (this.courseId === 'cs310') {
+            orgName = 'CPSC310-2017W-T1'; // HACK should come from server
+        } else if (this.courseId === 'cs210') {
+            orgName = 'CPSC210-2017W-T1'; // HACK should come from server
+        }
+
+        console.log('AdminController::adminDashboardPage - orgName: ' + orgName + '; delivId: ' + delivId + ' - start');
 
         let params: any = {};
-        params.orgName = 'CPSC310-2017W-T1';
-        params.delivId = 'd0';
+        params.orgName = orgName;
+        params.delivId = delivId;
         // params.teamId = ... // not currently used
 
         // '/:courseId/admin/dashboard/:orgName/:delivId
-        const DEV_URL = 'https://localhost:5000/';
-        const PROD_URL = 'https://portal.cs.ubc.ca:5000/';
-        const URL = DEV_URL + 'cs310/admin/dashboard/' + params.orgName + '/' + params.delivId;
+        const url = this.URL + this.courseId + '/admin/dashboard/' + params.orgName + '/' + params.delivId;
 
         // going to be slow; show a modal
         UI.showModal('Dashboard being retrieved. This may be slow.');
-        Network.handleRemote(URL, this.dashboardView, UI.handleError);
+        Network.handleRemote(url, this.dashboardView, UI.handleError);
     }
 
     public adminGitHubPage() {
