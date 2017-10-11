@@ -85,7 +85,7 @@ export class DashboardView {
     private buildFooter() {
         let str = '<div style="text-align:center; padding-top: 1em; padding-bottom: 1em;">'; // TODO: add footer (grade histogram, xy scatter (x=coverage, y=grade))
         str += '<div><b>Deliverable Statistics</b></div>';
-        
+
         let totalProjects = 0;
         let totalScore = 0;
         let scores: number[] = [];
@@ -137,7 +137,7 @@ export class DashboardView {
             str += '<tr class="dashRow" style="color: black; background: white">';
         }
 
-        str += '<td class="dashRowElem"><a target="_blank" href="' + stdioURL + '"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
+        str += '<td class="dashRowElem"><a onclick="myApp.adminController.dashboardView.renderInfo(\'' + stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
         str += '<td class="dashRowElem"><span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span></td>';
         str += '<td class="dashRowElem"><a href="' + row.url + '">' + row.project + '</a></td>';
         str += '<td class="dashRowElem"><a href="https://github.ubc.ca/' + row.user + '">' + row.user + '</a></td>';
@@ -152,6 +152,7 @@ export class DashboardView {
 
         return str;
     }
+
 
     private getDetails(row: any) {
         let passNames = row.passNames as string[];
@@ -251,6 +252,31 @@ export class DashboardView {
         });
 
         this.render(this.data);
+    }
+
+    public renderInfo(url: string) {
+        console.log('DashboardView::renderInfo( ' + url + ' )');
+        /*
+        // this is the old code that handled stdio
+        // probably not useful except for the hacky way the window is created with the text
+
+        var url = this.props.details;
+        console.log("getStdIO( " + url + " )");
+        var oReq = new XMLHttpRequest();
+        oReq.open("GET", url);
+        oReq.setRequestHeader("Authorization", "Basic " + btoa(localStorage.getItem('autodash')));
+
+        oReq.onload = function () {
+            var data = oReq.responseText;
+
+            var newWindow = window.open('text/plain');
+
+            data = data.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/g, "<br/>");
+
+            // and then do
+            newWindow.document.write(data);
+        }
+*/
     }
 
 }
