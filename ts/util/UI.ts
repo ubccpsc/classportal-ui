@@ -1,6 +1,7 @@
 /**
  * Created by rtholmes on 2017-10-04.
  */
+import {OnsModalElement} from "onsenui";
 
 
 // import * as ons from 'onsenui'; // for dev
@@ -61,5 +62,32 @@ export class UI {
         return taskHeader;
     }
 
+    public static showModal(text?: string) {
+        // https://onsen.io/v2/api/js/ons-modal.html
+
+        if (typeof text === 'undefined') {
+            text = null;
+        }
+
+        const modal = document.querySelector('ons-modal') as OnsModalElement;
+        if (modal !== null) {
+            if (text != null) {
+                document.getElementById('modalText').innerHTML = text;
+            }
+            modal.show({animation: 'fade'});
+        } else {
+            console.log('UI::showModal(..) - Modal is null');
+        }
+    }
+
+
+    public static hideModal() {
+        const modal = document.querySelector('ons-modal') as OnsModalElement;
+        if (modal !== null) {
+            modal.hide({animation: 'fade'});
+        } else {
+            console.log('UI::hideModal(..) - Modal is null');
+        }
+    }
 
 }

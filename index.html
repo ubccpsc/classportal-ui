@@ -64,17 +64,13 @@
             <div class="center" id="studentTabsHeader">Student Tabs</div>
         </ons-toolbar>
 
-        <!--
-        <ons-tab page="fav.html" active="true">
-            <ons-icon icon="ion-star"></ons-icon>
-            <span style="font-size: 14px">Favorites</span>
-            -->
-
         <ons-tabbar position="auto" var="studentTabbar">
             <ons-tab page="html/student/summary.html" label="Summary" icon="ion-ios-home-outline" active></ons-tab>
             <ons-tab page="html/student/deliverables.html" label="Deliverables" icon="ion-ios-paper-outline"></ons-tab>
+            <!--
             <ons-tab page="html/student/teams.html" label="Teams" icon="ion-ios-people"></ons-tab>
             <ons-tab page="html/student/grades.html" label="Grades" icon="ion-android-checkmark-circle"></ons-tab>
+            -->
         </ons-tabbar>
     </ons-page>
 </template>
@@ -84,6 +80,13 @@
         <ons-toolbar>
             <div class="center" id="adminTabsHeader">Admin Tabs</div>
         </ons-toolbar>
+
+        <ons-modal id="adminProgress">
+            <div style="display:flex; flex-direction:column; align-items: center;">
+                <div id="modalText" style="padding-top: 1em; padding-bottom: 1em;">Data is being retrieved.</div>
+                <ons-progress-circular indeterminate></ons-progress-circular>
+            </div>
+        </ons-modal>
 
         <ons-tabbar id="adminTabbar" position="auto">
             <ons-tab page="html/admin/deliverables.html" label="Deliverables" icon="ion-ios-paper-outline" active></ons-tab>
@@ -102,7 +105,7 @@
             <div class="center">Login Page</div>
         </ons-toolbar>
         <div style="height: 100%; display:flex; align-items:center; justify-content: center;">
-            <ons-button id="loginButton">Complete Fake Login</ons-button>
+            <ons-button id="loginButton">Complete Login</ons-button>
         </div>
     </ons-page>
 </template>
