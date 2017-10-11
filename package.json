@@ -27,6 +27,7 @@
     "webpack": "^3.6.0"
   },
   "dependencies": {
+    "dotenv": "^4.0.0",
     "python": "^0.0.4",
     "whatwg-fetch": "^2.0.3"
   }

@@ -3,11 +3,12 @@ var path = require('path');
 module.exports = {
 
     entry: {
-        classportal: "./ts/App.ts"
+        classportal: "./app/ts/App.ts"
     },
     output: {
-        path: path.resolve(__dirname, "./dist/"),
-        filename: "[name].js"
+        path: path.resolve(__dirname, "./app/build/dist/"),
+        publicPath: path.resolve(__dirname, "./build/public/"),
+        filename: "classportal.js"
     },
 
     // Enable sourcemaps for debugging webpack's output.
