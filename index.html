@@ -33,6 +33,13 @@
     <ons-page id="main">
         <ons-toolbar>
             <div class="center">UBC CPSC ClassPortal</div>
+
+            <div class="right">
+                <ons-toolbar-button onclick="myApp.logout();">
+                    <ons-icon icon="ion-android-exit"></ons-icon>
+                    <span style="vertical-align: top;">Logout</span>
+                </ons-toolbar-button>
+            </div>
         </ons-toolbar>
 
         <ons-list>
@@ -62,6 +69,12 @@
     <ons-page id="studentTabsPage">
         <ons-toolbar>
             <div class="center" id="studentTabsHeader">Student Tabs</div>
+            <div class="right">
+                <ons-toolbar-button onclick="myApp.logout();">
+                    <ons-icon icon="ion-android-exit"></ons-icon>
+                    <span style="vertical-align: top;">Logout</span>
+                </ons-toolbar-button>
+            </div>
         </ons-toolbar>
 
         <ons-tabbar position="auto" var="studentTabbar">
@@ -79,6 +92,12 @@
     <ons-page id="adminTabsPage">
         <ons-toolbar>
             <div class="center" id="adminTabsHeader">Admin Tabs</div>
+            <div class="right">
+                <ons-toolbar-button onclick="myApp.logout();">
+                    <ons-icon icon="ion-android-exit"></ons-icon>
+                    <span style="vertical-align: top;">Logout</span>
+                </ons-toolbar-button>
+            </div>
         </ons-toolbar>
 
         <ons-modal id="adminProgress">

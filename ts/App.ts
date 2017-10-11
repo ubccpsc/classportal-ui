@@ -162,6 +162,10 @@ export class App {
             UI.pushPage('student.html', courseId);
         }
     }
+
+    logout() {
+        console.log("App::logout() - start");
+    }
 }
 
 console.log('App.ts - preparing App for access');
