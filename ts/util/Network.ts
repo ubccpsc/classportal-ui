@@ -9,7 +9,7 @@ export class Network {
     public static handleRemote(url: string, view: any, onError: any) {
         const USE_REAL = true;
         console.log('Network::handleRemote( ' + url + ' ) - start');
-        
+
         if (USE_REAL === true) {
             const OPTIONS_HTTP_GET: object = {credentials: 'include'};
             const AUTHORIZED_STATUS: string = 'authorized';
