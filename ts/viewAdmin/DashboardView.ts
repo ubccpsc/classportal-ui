@@ -8,22 +8,26 @@ export class DashboardView {
 
         document.querySelector('#adminTabsHeader').innerHTML = "Dashboard";
 
-        // deliverables
-        var dashList = document.querySelector('#admin-dashboard-list');
-        if (dashList !== null) {
-            dashList.innerHTML = '';
+        // dash rows
+        try {
+            var dashList = document.querySelector('#admin-dashboard-list');
+            if (dashList !== null) {
+                dashList.innerHTML = '';
 
-            const header = this.buildHeader();
-            // dashList.innerHTML = header;
+                const header = this.buildHeader();
+                // dashList.innerHTML = header;
 
-            let body = '';
-            for (let row of data) {
-                body = body + this.buildRow(row);
+                let body = '';
+                for (let row of data) {
+                    body = body + this.buildRow(row);
+                }
+
+                dashList.innerHTML = header + body + '</table>';
+            } else {
+                console.log('DashboardView::render - element is null');
             }
-
-            dashList.innerHTML = header + body + '</table>';
-        } else {
-            console.log('DashboardView::render - element is null');
+        } catch (err) {
+            console.log('DashboardView::render - ERROR: ' + err.message);
         }
     }
 
@@ -51,7 +55,7 @@ export class DashboardView {
         str += '<th class="dashHeaderElem"># Pass</th>';
         str += '<th class="dashHeaderElem"># Fail</th>';
         str += '<th class="dashHeaderElem"># Skip</th>';
-        str += '<th class="dashHeaderElem">Results</th>';
+        str += '<th class="dashHeaderElem" style="width: 500px;">Results</th>';
         str += '</tr>';
         return str;
     }
@@ -71,7 +75,7 @@ export class DashboardView {
         */
 
         let str = '<tr class="dashRow" style="color: black">';
-        str += '<td class="dashRowElem"><span title="' + new Date().toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span></td>';
+        str += '<td class="dashRowElem"><span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span></td>';
         str += '<td class="dashRowElem"><a href="' + row.url + '">' + row.project + '</a></td>';
         str += '<td class="dashRowElem">' + row.scoreOverall + '</td>';
         str += '<td class="dashRowElem">' + row.scoreTest + '</td>';
@@ -79,9 +83,50 @@ export class DashboardView {
         str += '<td class="dashRowElem">' + row.passNames.length + '</td>';
         str += '<td class="dashRowElem">' + row.failNames.length + '</td>';
         str += '<td class="dashRowElem">' + row.skipNames.length + '</td>';
-        str += '<td class="dashRowElem">DETAILS HERE!</td>';
+        str += '<td class="dashRowElem">' + this.getDetails(row) + '</td>';
         str += '</tr>';
 
+        return str;
+    }
+
+    private getDetails(row: any) {
+        let passNames = row.passNames;
+        let failNames = row.failNames;
+        let skipNames = row.skipNames;
+
+        let all: any[] = [];
+        all = all.concat(passNames, failNames, skipNames);
+        all = all.sort();
+
+        let annotated: any[] = [];
+        for (var name of all) {
+            let state = 'unknown';
+            let colour = 'black';
+            if (failNames.indexOf(name) > 0) {
+                state = 'fail';
+                colour = 'red';
+            } else if (passNames.indexOf(name) >= 0) {
+                state = 'pass';
+                colour = 'green';
+            } else if (skipNames.indexOf(name) >= 0) {
+                state = 'skip';
+                colour = 'grey';
+            } else {
+                // uhoh
+            }
+            annotated.push({name: name, state: state, colour: colour});
+        }
+
+        let str = '<span><table style="height: 20px;">';
+        str += '<tr>';
+
+        for (var a of annotated) {
+            str += '<td class="dashResultCell" style="width: 5px; height: 20px; background: ' + a.colour + '" title="' + a.name + '"></td>';
+        }
+
+        // str += '<td>RESULTS HERE</td>';
+        str += '</tr>';
+        str += '</table></span>';
         return str;
     }
 
