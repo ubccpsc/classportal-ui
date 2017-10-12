@@ -5,23 +5,24 @@
             <ons-row>
                 <ons-col>
                     Deliverable:
-                    <ons-select id="admin-dashboard-deliverable-select" style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
+                    <ons-select id="admin-dashboard-deliverable-select"
+                                style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
                         <option value="null">Deliv</option>
                         <option value="d0">D0</option>
                         <option value="d1">D1</option>
                         <option value="d2">D2</option>
                         <option value="d3">D3</option>
                     </ons-select>
-
-                    Team:
-                    <ons-select id="admin-dashboard-team-select" style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
-                        <option value="null">All Teams</option>
-                        <option value="team69">Team69</option>
-                        <option value="team14">Team14</option>
-                        <option value="team56">Team56</option>
-                        <option value="team62">Team62</option>
-                    </ons-select>
-
+                    <div style="display: none;">
+                        Team:
+                        <ons-select id="admin-dashboard-team-select" style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
+                            <option value="null">All Teams</option>
+                            <option value="team69">Team69</option>
+                            <option value="team14">Team14</option>
+                            <option value="team56">Team56</option>
+                            <option value="team62">Team62</option>
+                        </ons-select>
+                    </div>
                     <ons-button onclick="myApp.adminController.dashboardView.retrieveDashboard()">Update Dashboard</ons-button>
                 </ons-col>
             </ons-row>

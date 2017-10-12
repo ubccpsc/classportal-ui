@@ -35,6 +35,10 @@ export class UI {
         }
     }
 
+    public static showErrorToast(text: string) {
+        ons.notification.toast({message: text, timeout: 2000});
+    }
+
     public static createListItem(text: string, subtext?: string): HTMLElement {
         if (typeof subtext === 'undefined') {
             // simple list item
