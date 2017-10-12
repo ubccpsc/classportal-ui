@@ -1,6 +1,7 @@
 import {UI} from "../util/UI";
 import {OnsSelectElement} from "onsenui";
 import {Network} from "../util/Network";
+import {AdminController} from "../controllers/AdminController";
 
 declare var myApp: any;
 
@@ -27,9 +28,41 @@ export class DashboardView {
     private data: DashboardResult;
     private sortCol: string = 'timestamp';
 
+    private controller: AdminController;
+
+    constructor(controller: AdminController) {
+        this.controller = controller;
+    }
+
+    public configure() {
+        if (this.controller.deliverables !== null) {
+            const delivSelect = document.getElementById('admin-dashboard-deliverable-select') as OnsSelectElement;
+            console.log('removing Old');
+            while (delivSelect.options.length > 0) {
+                console.log('removing');
+                delivSelect.remove();
+            }
+
+            let option = document.createElement("option");
+            option.text = 'Select';
+            option.value = 'null';
+            (<any>delivSelect).add(option);
+
+            for (let deliv of this.controller.deliverables) {
+                let option = document.createElement("option");
+                option.text = deliv.id;
+                option.value = deliv.id;
+                (<any>delivSelect).add(option);
+            }
+
+
+        }
+    }
+
     public updateTitle() {
         // document.querySelector('#adminTabsHeader').innerHTML = data.course;
         document.querySelector('#adminTabsHeader').innerHTML = "Dashboard";
+
     }
 
     public render(data: DashboardResult) {

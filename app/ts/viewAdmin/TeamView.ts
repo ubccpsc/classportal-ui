@@ -1,6 +1,13 @@
 import {UI} from "../util/UI";
+import {AdminController} from "../controllers/AdminController";
 
 export class TeamView {
+
+    private controller: AdminController;
+
+    constructor(controller: AdminController) {
+        this.controller = controller;
+    }
 
     public updateTitle() {
         // document.querySelector('#adminTabsHeader').innerHTML = data.course;
@@ -8,8 +15,14 @@ export class TeamView {
     }
 
     public render(data: any) {
-        console.log('TeamView::render  - start');
+        console.log('TeamView::render(..)  - start');
         this.updateTitle();
+
+        if (typeof data === 'undefined') {
+            // no data
+            return;
+        }
+        console.log('TeamView::render(..) - data: ' + JSON.stringify(data));
 
         try {
             // teams

@@ -15,11 +15,13 @@ export class AdminController {
 
     private courseId: string;
 
-    private deliverableView = new DeliverableView();
-    private teamView = new TeamView();
-    private gradeView = new GradeView();
-    private githubView = new GitHubView();
-    private dashboardView = new DashboardView();
+    private deliverableView = new DeliverableView(this);
+    private teamView = new TeamView(this);
+    private gradeView = new GradeView(this);
+    private githubView = new GitHubView(this);
+    private dashboardView = new DashboardView(this);
+
+    public deliverables: any = null;
 
     //private DEV_URL = 'https://localhost:5000/';
     //private PROD_URL = 'https://portal.cs.ubc.ca:5000/';
@@ -70,6 +72,7 @@ export class AdminController {
 
         if (typeof delivId === 'undefined') {
             console.log('AdminController::adminDashboardPage - delivId missing!');
+            this.dashboardView.configure();
             // just don't do anything!
             return;
         }
