@@ -80,7 +80,7 @@ export class App {
                 console.log('App::main()::authCheck - starting main.html with auth check');
                 // const DEV_URL = 'https://localhost:5000/currentUser';
                 // const PROD_URL = 'https://portal.cs.ubc.ca:5000/currentUser';
-                const URL = that.backendURL + '/currentUser';
+                const URL = that.backendURL + 'currentUser';
                 fetch(URL, OPTIONS_HTTP_GET).then((data: any) => {
                     if (data.status !== 200) {
                         console.log('App::main()::authCheck WARNING: Response status: ' + data.status);
@@ -113,10 +113,10 @@ export class App {
                     console.log('login pressed for: ' + courseId);
 
                     if (courseId.indexOf('admin') >= 0) {
-                        window.location.replace(that.backendURL + '/auth/login');
+                        window.location.replace(that.backendURL + 'auth/login');
                         // UI.pushPage('admin.html', {courseId: courseId});
                     } else {
-                        window.location.replace(that.backendURL + '/auth/login');
+                        window.location.replace(that.backendURL + 'auth/login');
                         // UI.pushPage('student.html', {courseId: courseId});
                     }
                 };
@@ -177,7 +177,7 @@ export class App {
 
     logout() {
         console.log("App::logout() - start");
-        window.location.replace(this.backendURL + '/logout');
+        window.location.replace(this.backendURL + 'logout');
     }
 }
 
