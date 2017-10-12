@@ -84,11 +84,16 @@ export class App {
                 console.log('App::main()::authCheck - starting main.html with auth check');
                 // const DEV_URL = 'https://localhost:5000/currentUser';
                 // const PROD_URL = 'https://portal.cs.ubc.ca:5000/currentUser';
+
+                // NOTE: why is this happening here? can't we just access that.backendURL?
+                // we shouldn't have multiple copies of this block; it should already be done in App::<init>
                 if (window.location.href.indexOf('localhost') > 0) {
                     this.backendURL = this.backendDEV;
                 } else {
                     this.backendURL = this.backendPROD;
                 }
+
+                that.toggleLoginButton();
 
                 const URL = that.backendURL + 'currentUser';
                 let OPTIONS_HTTP_GET: RequestInit = {credentials: 'include'};
@@ -104,6 +109,7 @@ export class App {
                     localStorage.setItem('username', user.username);
                     localStorage.setItem('authStatus', AUTHORIZED_STATUS);
                     localStorage.setItem('fname', user.fname);
+                    that.toggleLoginButton();
                 }).catch((err: any) => {
                     console.log('App:main()::authCheck ERROR ' + err);
                 });
@@ -190,8 +196,7 @@ export class App {
                 throw 'App::main()::authCheck - API ERROR' + data.status;
             }
             return data.json();
-        })
-        .then((result: any) => {
+        }).then((result: any) => {
             const LOGOUT_SUCCESS = 'Successfully logged out.';
             console.log('App::main()::logout() Logging out... ');
             let logoutResponse = String(result.response);
@@ -201,6 +206,22 @@ export class App {
                 window.location.replace(this.frontendURL);
             }
         });
+    }
+
+    private isLoggedIn(): boolean {
+        return true;
+    }
+
+    private toggleLoginButton() {
+        try {
+            if (this.isLoggedIn() === false) {
+                document.getElementById('indexLogin').style.display = 'none';
+            } else {
+                document.getElementById('indexLogin').style.display = 'block';
+            }
+        } catch (err) {
+            // silently fail
+        }
     }
 }
 
