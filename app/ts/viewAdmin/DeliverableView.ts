@@ -1,10 +1,14 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 
-export interface Deliverable {
+export interface DeliverablePayloadContainer {
+    response: DeliverablePayload[];
+}
+
+export interface DeliverablePayload {
     id: string;
-    open: Date;
-    close: Date;
+    open: number; // timestamp
+    close: number; // timestamp
 }
 
 export class DeliverableView {
@@ -20,7 +24,7 @@ export class DeliverableView {
     }
 
 
-    public render(data: any) {
+    public render(data: DeliverablePayloadContainer) {
         console.log('DeliverableView::render(..) - start');
         this.updateTitle();
 
@@ -30,12 +34,15 @@ export class DeliverableView {
         }
         console.log('DeliverableView::render(..) - data: ' + JSON.stringify(data));
 
-        let deliverables: Deliverable[] = [];
+        /*
+        let deliverables: DeliverablePayload[] = [];
         if (typeof data.response !== 'undefined') {
             for (let deliverable of data.response) {
                 deliverables.push({id: deliverable.name, open: new Date(deliverable.open), close: new Date(deliverable.close)});
             }
         }
+        */
+        const deliverables = data.response;
         this.controller.deliverables = deliverables; // HACK: global
 
         // deliverables
@@ -54,7 +61,6 @@ export class DeliverableView {
         } else {
             console.log('DeliverableView::render() - element is null');
         }
-
         UI.hideModal();
     }
 
