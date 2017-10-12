@@ -178,6 +178,7 @@ export class App {
 
     public logout() {
         console.log("App::logout() - start");
+        localStorage.clear();
         window.location.replace(this.backendURL + 'logout');
     }
 }
