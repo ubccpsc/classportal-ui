@@ -6,11 +6,13 @@ let config = {
 	sslCertPath: _config.SSL_CERT_PATH,
 	sslKeyPath: _config.SSL_KEY_PATH,
 	sslIntCert: _config.SSL_INT_CERT,
+	backendUrl: 'https://localhost:5000'
 }
 
 // alternative settings for production environment
 if (env === 'production') {
-//
+	config.backendApi = _config.PROD_BACKEND_URL;
+	config.frontendUrl = _config.PROD_FRONTEND_URL;
 }
 
 module.exports = config;

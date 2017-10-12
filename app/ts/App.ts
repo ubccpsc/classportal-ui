@@ -7,6 +7,8 @@ import {StudentController} from "./controllers/StudentController";
 import {UI} from "./util/UI";
 import 'whatwg-fetch';
 import {OnsButtonElement, OnsPageElement} from "onsenui";
+import * as config from '../../config';
+
 
 declare var classportal: any;
 
@@ -66,12 +68,12 @@ export class App {
                 const AUTHORIZED_STATUS: string = 'authorized';
 
                 console.log('App::main()::authCheck - starting main.html with auth check');
-                const DEV_URL = 'https://localhost:5000/currentUser';
-                const PROD_URL = 'https://portal.cs.ubc.ca:5000/currentUser';
-                const URL = DEV_URL;
+                // const DEV_URL = 'https://localhost:5000/currentUser';
+                // const PROD_URL = 'https://portal.cs.ubc.ca:5000/currentUser';
+                const URL = config.backendUrl + '/currentUser';
                 fetch(URL, OPTIONS_HTTP_GET).then((data: any) => {
                     if (data.status !== 200) {
-                        console.log('App::main()::authCheck WARNING: Repsonse status: ' + data.status);
+                        console.log('App::main()::authCheck WARNING: Response status: ' + data.status);
                         throw 'App::main()::authCheck - API ERROR' + data.status;
                     }
                     return data.json();
@@ -101,10 +103,10 @@ export class App {
                     console.log('login pressed for: ' + courseId);
 
                     if (courseId.indexOf('admin') >= 0) {
-                        window.location.replace('https://localhost:5000/auth/login');
+                        window.location.replace(config.backendUrl + '/auth/login');
                         // UI.pushPage('admin.html', {courseId: courseId});
                     } else {
-                        window.location.replace('https://localhost:5000/auth/login');
+                        window.location.replace(config.backendUrl + '/auth/login');
                         // UI.pushPage('student.html', {courseId: courseId});
                     }
                 };
@@ -165,6 +167,8 @@ export class App {
 
     logout() {
         console.log("App::logout() - start");
+        window.location.replace(config.backendUrl + '/logout');
+
     }
 }
 
