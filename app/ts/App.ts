@@ -7,6 +7,7 @@ import {StudentController} from "./controllers/StudentController";
 import {UI} from "./util/UI";
 import 'whatwg-fetch';
 import {OnsButtonElement, OnsPageElement} from "onsenui";
+import {Network} from "./util/Network";
 
 declare var classportal: any;
 
@@ -31,7 +32,7 @@ export class App {
         console.log('App::<init> - backend: ' + this.backendURL);
     }
 
-    init() {
+    public init() {
         console.log('App::init() - start');
         var that = this;
         document.addEventListener('init', function (event) {
@@ -147,16 +148,16 @@ export class App {
         });
     }
 
-    getAdminController(courseId: string) {
+    public getAdminController(courseId: string) {
         console.log('App::getAdminController( ' + courseId + ' )');
         return new AdminController(this, courseId);
     }
 
-    pushPage(page: string, opts?: any) {
+    public pushPage(page: string, opts?: any) {
         UI.pushPage(page, opts);
     }
 
-    handleMainPageClick(courseId: object) {
+    public handleMainPageClick(courseId: object) {
         const AUTH_STATUS = 'authorized';
         const UNAUTH_STATUS = 'unauthorized';
 
@@ -175,7 +176,7 @@ export class App {
         }
     }
 
-    logout() {
+    public logout() {
         console.log("App::logout() - start");
         window.location.replace(this.backendURL + 'logout');
     }
@@ -187,9 +188,9 @@ if (typeof classportal === 'undefined') {
     (<any>window).classportal = {};
     (<any>window).classportal.App = App;
     (<any>window).classportal.UI = UI;
+    (<any>window).classportal.Network = Network;
 }
 
 (<any>window).myApp = new classportal.App();
 (<any>window).myApp.init();
-
 console.log('App.ts - App prepared');

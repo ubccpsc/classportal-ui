@@ -72,6 +72,8 @@ export class AdminController {
 
         if (typeof delivId === 'undefined') {
             console.log('AdminController::adminDashboardPage - delivId missing!');
+
+            // configure selects
             this.dashboardView.configure();
             // just don't do anything!
             return;
