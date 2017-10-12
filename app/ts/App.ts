@@ -16,6 +16,8 @@ export class App {
     private studentController: StudentController = null;
     private adminController: AdminController = null;
 
+    private AUTH_STATUS = 'authorized';
+    private UNAUTH_STATUS = 'unauthenticated';
     private backendDEV = 'https://localhost:5000/';
     private backendPROD = 'https://portal.cs.ubc.ca:5000/';
     private frontendDEV = 'https://localhost:3000/';
@@ -178,6 +180,19 @@ export class App {
         } else {
             UI.pushPage('student.html', courseId);
         }
+    }
+
+    /*
+    * @Return Booelan - True if user is authenticated
+    */
+    public isLoggedIn() {
+        let that = this;
+        if (String(localStorage.authStatus) === that.AUTH_STATUS) {
+            console.log(true);
+            return true;
+        }
+        console.log(false);
+        return false;
     }
 
     public logout() {
