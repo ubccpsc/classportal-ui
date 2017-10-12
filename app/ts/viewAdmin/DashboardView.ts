@@ -5,7 +5,7 @@ import {AdminController} from "../controllers/AdminController";
 
 declare var myApp: any;
 
-interface DashboardResult {
+interface DashboardPayloadContainer {
     response: DashboardRow[];
 }
 
@@ -25,7 +25,7 @@ interface DashboardRow {
 
 export class DashboardView {
 
-    private data: DashboardResult;
+    private data: DashboardPayloadContainer;
     private sortCol: string = 'timestamp';
 
     private controller: AdminController;
@@ -65,7 +65,7 @@ export class DashboardView {
 
     }
 
-    public render(data: DashboardResult) {
+    public render(data: DashboardPayloadContainer) {
         console.log('DashboardView::render(..) - start');
 
         this.data = data;
