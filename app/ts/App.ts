@@ -18,15 +18,19 @@ export class App {
 
     private backendDEV = 'https://localhost:5000/';
     private backendPROD = 'https://portal.cs.ubc.ca:5000/';
+    private frontendDEV = 'https://localhost:3000/';
+    private frontendPROD = 'https://portal.cs.ubc.ca';
     public readonly backendURL = this.backendDEV;
+    public readonly frontendURL = this.frontendDEV;
 
     constructor() {
         console.log('App::<init>');
-
         if (window.location.href.indexOf('localhost') > 0) {
             this.backendURL = this.backendDEV;
+            this.frontendURL = this.frontendDEV;
         } else {
             this.backendURL = this.backendPROD;
+            this.frontendURL = this.frontendPROD;
         }
 
         console.log('App::<init> - backend: ' + this.backendURL);
@@ -75,13 +79,19 @@ export class App {
             }
 
             if (pageName === 'main') {
-                const OPTIONS_HTTP_GET: object = {credentials: 'include'};
                 const AUTHORIZED_STATUS: string = 'authorized';
 
                 console.log('App::main()::authCheck - starting main.html with auth check');
                 // const DEV_URL = 'https://localhost:5000/currentUser';
                 // const PROD_URL = 'https://portal.cs.ubc.ca:5000/currentUser';
+                if (window.location.href.indexOf('localhost') > 0) {
+                    this.backendURL = this.backendDEV;
+                } else {
+                    this.backendURL = this.backendPROD;
+                }
+
                 const URL = that.backendURL + 'currentUser';
+                let OPTIONS_HTTP_GET: RequestInit = {credentials: 'include'};
                 fetch(URL, OPTIONS_HTTP_GET).then((data: any) => {
                     if (data.status !== 200) {
                         console.log('App::main()::authCheck WARNING: Response status: ' + data.status);
@@ -113,13 +123,7 @@ export class App {
                 (document.querySelector('#loginButton') as OnsButtonElement).onclick = function () {
                     console.log('login pressed for: ' + courseId);
 
-                    if (courseId.indexOf('admin') >= 0) {
-                        window.location.replace(that.backendURL + 'auth/login');
-                        // UI.pushPage('admin.html', {courseId: courseId});
-                    } else {
-                        window.location.replace(that.backendURL + 'auth/login');
-                        // UI.pushPage('student.html', {courseId: courseId});
-                    }
+                    window.location.replace(that.backendURL + 'auth/login');
                 };
             }
         });
@@ -178,8 +182,25 @@ export class App {
 
     public logout() {
         console.log("App::logout() - start");
-        localStorage.clear();
-        window.location.replace(this.backendURL + 'logout');
+        let url = this.backendURL + '/logout';
+        let OPTIONS_HTTP_GET: RequestInit = {credentials: 'include'};
+        fetch(url, OPTIONS_HTTP_GET).then((data: any) => {
+            if (data.status !== 200) {
+                console.log('App::main()::authCheck WARNING: Response status: ' + data.status);
+                throw 'App::main()::authCheck - API ERROR' + data.status;
+            }
+            return data.json();
+        })
+        .then((result: any) => {
+            const LOGOUT_SUCCESS = 'Successfully logged out.';
+            console.log('App::main()::logout() Logging out... ');
+            let logoutResponse = String(result.response);
+            if (logoutResponse === LOGOUT_SUCCESS) {
+                localStorage.clear();
+                console.log('App::main()::logout() Successfully logged out');
+                window.location.replace(this.frontendURL);
+            }
+        });
     }
 }
 

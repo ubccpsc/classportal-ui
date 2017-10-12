@@ -52,8 +52,8 @@ export class DeliverableView {
             if (deliverables.length > 0) {
                 for (let deliverable of deliverables) {
                     deliverableList.appendChild(UI.createListHeader(deliverable.id));
-                    deliverableList.appendChild(UI.createListItem("Open: " + deliverable.open));
-                    deliverableList.appendChild(UI.createListItem("Close: " + deliverable.close));
+                    deliverableList.appendChild(UI.createListItem("Open: " + new Date(deliverable.open).toISOString()));
+                    deliverableList.appendChild(UI.createListItem("Close: " + new Date(deliverable.close).toISOString()));
                 }
             } else {
                 deliverableList.appendChild(UI.createListItem("No deliverable data returned from server."));

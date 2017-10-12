@@ -118,6 +118,32 @@
 </template>
 
 
+<template id="superadmin.html">
+    <ons-page id="superadminTabsPage">
+        <ons-toolbar>
+            <div class="center" id="superadminTabsHeader">Admin Tabs</div>
+            <div class="right">
+                <ons-toolbar-button onclick="myApp.logout();">
+                    <ons-icon icon="ion-android-exit"></ons-icon>
+                    <span style="vertical-align: top;">Logout</span>
+                </ons-toolbar-button>
+            </div>
+        </ons-toolbar>
+
+        <ons-modal id="superadminProgress">
+            <div style="display:flex; flex-direction:column; align-items: center;">
+                <div id="modalText" style="padding-top: 1em; padding-bottom: 1em;">Data is being retrieved.</div>
+                <ons-progress-circular indeterminate></ons-progress-circular>
+            </div>
+        </ons-modal>
+
+        <ons-tabbar id="superadminTabbar" position="auto">
+            <ons-tab page="html/superadmin/courses.html" label="Courses" icon="ion-ios-paper-outline" active></ons-tab>
+            <ons-tab page="html/superadmin/users.html" label="Users" icon="ion-ios-people"></ons-tab>
+        </ons-tabbar>
+    </ons-page>
+</template>
+
 <template id="login.html">
     <ons-page id="loginPage">
         <ons-toolbar>
