@@ -79,9 +79,9 @@ export class AdminController {
         }
 
         let orgName = '';
-        if (this.courseId === 'cs310') {
+        if (this.courseId === '310') {
             orgName = 'CPSC310-2017W-T1'; // HACK should come from server
-        } else if (this.courseId === 'cs210') {
+        } else if (this.courseId === '210') {
             orgName = 'CPSC210-2017W-T1'; // HACK should come from server
         }
 
