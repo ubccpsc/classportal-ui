@@ -223,10 +223,6 @@ export class App {
         });
     }
 
-    private isLoggedIn(): boolean {
-        return true;
-    }
-
     private toggleLoginButton() {
         try {
             if (this.isLoggedIn() === false) {
