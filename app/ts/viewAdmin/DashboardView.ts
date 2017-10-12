@@ -239,13 +239,19 @@ export class DashboardView {
         const teamSelect = document.getElementById('admin-dashboard-team-select') as OnsSelectElement;
 
         if (delivSelect !== null && teamSelect !== null) {
-            const delivId = delivSelect.value;
+            let delivId = delivSelect.value;
             let teamId: string | null = teamSelect.value;
             console.log('DashboardView::retrieveDashboard() - delivId: ' + delivId + '; teamId: ' + teamId);
             if (teamId === 'null') {
                 teamId = null;
             }
-            myApp.adminController.adminDashboardPage(delivId, teamId);
+            if (delivId === 'null') {
+                delivId = null;
+                UI.showErrorToast("Please select a deliverable.");
+            } else {
+                myApp.adminController.adminDashboardPage(delivId, teamId);
+            }
+
         } else {
             console.log('DashboardView::retrieveDashboard() - select is null');
         }
