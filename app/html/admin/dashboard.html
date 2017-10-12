@@ -1,10 +1,11 @@
 <ons-page id="adminDashboardPage">
     <ons-list>
-        <ons-list-header>Select deliverable:</ons-list-header>
-        <ons-list-item>
+        <ons-list-header>Configure Dashboard:</ons-list-header>
+        <ons-list-item style="text-align: center;">
             <ons-row>
                 <ons-col>
-                    <ons-select id="admin-dashboard-select" style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
+                    Deliverable:
+                    <ons-select id="admin-dashboard-deliverable-select" style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
                         <option value="null">Deliv</option>
                         <option value="d0">D0</option>
                         <option value="d1">D1</option>
@@ -12,7 +13,16 @@
                         <option value="d3">D3</option>
                     </ons-select>
 
-                    <ons-button onclick="myApp.adminController.dashboardView.retrieveDashboard()">Render Dashboard</ons-button>
+                    Team:
+                    <ons-select id="admin-dashboard-team-select" style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
+                        <option value="null">All Teams</option>
+                        <option value="team69">Team69</option>
+                        <option value="team14">Team14</option>
+                        <option value="team56">Team56</option>
+                        <option value="team62">Team62</option>
+                    </ons-select>
+
+                    <ons-button onclick="myApp.adminController.dashboardView.retrieveDashboard()">Update Dashboard</ons-button>
                 </ons-col>
             </ons-row>
         </ons-list-item>

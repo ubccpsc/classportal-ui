@@ -62,13 +62,17 @@ export class AdminController {
         Network.handleRemote(url, this.gradeView, UI.handleError);
     }
 
-    public adminDashboardPage(delivId?: string) {
+    public adminDashboardPage(delivId?: string, teamId?: string | null) {
         this.dashboardView.updateTitle();
 
         if (typeof delivId === 'undefined') {
             console.log('AdminController::adminDashboardPage - delivId missing!');
             // just don't do anything!
             return;
+        }
+
+        if (typeof teamId === 'undefined') {
+            teamId = null;
         }
 
         let orgName = '';
@@ -85,8 +89,15 @@ export class AdminController {
         params.delivId = delivId;
         // params.teamId = ... // not currently used
 
+        let ts = new Date().getTime();
+        let post = '';
+        // let post = '?tsMax=' + ts + '&teamId=team62';
+        if (teamId !== null) {
+            post = '?teamId=' + teamId;
+        }
+
         // '/:courseId/admin/dashboard/:orgName/:delivId
-        const url = this.URL + this.courseId + '/admin/dashboard/' + params.orgName + '/' + params.delivId;
+        const url = this.URL + this.courseId + '/admin/dashboard/' + params.orgName + '/' + params.delivId + post;
 
         // going to be slow; show a modal
         UI.showModal('Dashboard being retrieved. This may be slow.');

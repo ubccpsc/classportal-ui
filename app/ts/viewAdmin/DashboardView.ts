@@ -31,7 +31,7 @@ export class DashboardView {
         // document.querySelector('#adminTabsHeader').innerHTML = data.course;
         document.querySelector('#adminTabsHeader').innerHTML = "Dashboard";
     }
-    
+
     public render(data: DashboardResult) {
         console.log('DashboardView::render(..) - start');
 
@@ -108,6 +108,7 @@ export class DashboardView {
 
         str += '<div><b>Median:</b> ' + (scores[Math.ceil(scores.length / 2)]).toFixed(2) + '</div>';
         str += '<div><b>Average:</b> ' + (totalScore / totalProjects).toFixed(2) + '</div>';
+        str += '<div><b># Rows:</b> ' + totalProjects + '</div>';
 
         str += '<div style="padding-top: 1em"><b>Histogram:</b></div>';
         str += '<table style="margin-left: auto; margin-right: auto;">'; // <tr><th>Bucket</th><th>Count</th></tr>
@@ -201,11 +202,17 @@ export class DashboardView {
 
     public retrieveDashboard() {
         console.log('DashboardView::retrieveDashboard() - start');
-        const select = document.getElementById('admin-dashboard-select') as OnsSelectElement;
-        if (select != null) {
-            const delivId = select.value;
-            console.log('DashboardView::retrieveDashboard() - delivId: ' + delivId);
-            myApp.adminController.adminDashboardPage(delivId);
+        const delivSelect = document.getElementById('admin-dashboard-deliverable-select') as OnsSelectElement;
+        const teamSelect = document.getElementById('admin-dashboard-team-select') as OnsSelectElement;
+
+        if (delivSelect !== null && teamSelect !== null) {
+            const delivId = delivSelect.value;
+            let teamId: string | null = teamSelect.value;
+            console.log('DashboardView::retrieveDashboard() - delivId: ' + delivId + '; teamId: ' + teamId);
+            if (teamId === 'null') {
+                teamId = null;
+            }
+            myApp.adminController.adminDashboardPage(delivId, teamId);
         } else {
             console.log('DashboardView::retrieveDashboard() - select is null');
         }
