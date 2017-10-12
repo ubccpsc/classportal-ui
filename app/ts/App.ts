@@ -7,8 +7,6 @@ import {StudentController} from "./controllers/StudentController";
 import {UI} from "./util/UI";
 import 'whatwg-fetch';
 import {OnsButtonElement, OnsPageElement} from "onsenui";
-import * as config from '../../config';
-
 
 declare var classportal: any;
 
@@ -17,8 +15,20 @@ export class App {
     private studentController: StudentController = null;
     private adminController: AdminController = null;
 
+    private backendDEV = 'https://localhost:5000/';
+    private backendPROD = 'https://portal.cs.ubc.ca:5000/';
+    public readonly backendURL = this.backendDEV;
+
     constructor() {
         console.log('App::<init>');
+
+        if (window.location.href.indexOf('localhost') > 0) {
+            this.backendURL = this.backendDEV;
+        } else {
+            this.backendURL = this.backendPROD;
+        }
+
+        console.log('App::<init> - backend: ' + this.backendURL);
     }
 
     init() {
@@ -41,12 +51,12 @@ export class App {
 
             if (pageName === 'adminTabsPage') {
                 // initializing tabs page for the first time
-                that.adminController = new AdminController(courseId);
+                that.adminController = new AdminController(that, courseId);
             }
 
             if (pageName === 'studentTabsPage') {
                 // initializing tabs page for the first time
-                that.studentController = new StudentController(courseId);
+                that.studentController = new StudentController(that, courseId);
             }
 
             // Each page calls its own initialization controller.
@@ -70,7 +80,7 @@ export class App {
                 console.log('App::main()::authCheck - starting main.html with auth check');
                 // const DEV_URL = 'https://localhost:5000/currentUser';
                 // const PROD_URL = 'https://portal.cs.ubc.ca:5000/currentUser';
-                const URL = config.backendUrl + '/currentUser';
+                const URL = that.backendURL + '/currentUser';
                 fetch(URL, OPTIONS_HTTP_GET).then((data: any) => {
                     if (data.status !== 200) {
                         console.log('App::main()::authCheck WARNING: Response status: ' + data.status);
@@ -103,10 +113,10 @@ export class App {
                     console.log('login pressed for: ' + courseId);
 
                     if (courseId.indexOf('admin') >= 0) {
-                        window.location.replace(config.backendUrl + '/auth/login');
+                        window.location.replace(that.backendURL + '/auth/login');
                         // UI.pushPage('admin.html', {courseId: courseId});
                     } else {
-                        window.location.replace(config.backendUrl + '/auth/login');
+                        window.location.replace(that.backendURL + '/auth/login');
                         // UI.pushPage('student.html', {courseId: courseId});
                     }
                 };
@@ -139,7 +149,7 @@ export class App {
 
     getAdminController(courseId: string) {
         console.log('App::getAdminController( ' + courseId + ' )');
-        return new AdminController(courseId);
+        return new AdminController(this, courseId);
     }
 
     pushPage(page: string, opts?: any) {
@@ -167,8 +177,7 @@ export class App {
 
     logout() {
         console.log("App::logout() - start");
-        window.location.replace(config.backendUrl + '/logout');
-
+        window.location.replace(this.backendURL + '/logout');
     }
 }
 

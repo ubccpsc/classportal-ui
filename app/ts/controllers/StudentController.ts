@@ -8,6 +8,7 @@ import {SummaryView} from "../viewStudent/SummaryView";
 import {GradeView} from "../viewStudent/GradeView";
 import {DeliverableView} from "../viewStudent/DeliverableView";
 import {TeamView} from "../viewStudent/TeamView";
+import {App} from "../App";
 
 
 export class StudentController {
@@ -19,9 +20,11 @@ export class StudentController {
     private gradeView = new GradeView();
     private teamView = new TeamView();
     private deliverableView = new DeliverableView();
+    private app: App;
 
-    constructor(courseId: string) {
+    constructor(app: App, courseId: string) {
         console.log('StudentController::<init> - courseId: ' + courseId);
+        this.app = app;
         this.courseId = courseId;
     }
 

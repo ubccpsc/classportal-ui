@@ -9,6 +9,7 @@ import {DeliverableView} from "../viewAdmin/DeliverableView";
 import {TeamView} from "../viewAdmin/TeamView";
 import {GradeView} from "../viewAdmin/GradeView";
 import {GitHubView} from "../viewAdmin/GitHubView";
+import {App} from "../App";
 
 export class AdminController {
 
@@ -20,12 +21,14 @@ export class AdminController {
     private githubView = new GitHubView();
     private dashboardView = new DashboardView();
 
-    private DEV_URL = 'https://localhost:5000/';
-    private PROD_URL = 'https://portal.cs.ubc.ca:5000/';
-    private URL = this.DEV_URL;
+    //private DEV_URL = 'https://localhost:5000/';
+    //private PROD_URL = 'https://portal.cs.ubc.ca:5000/';
+    //private URL = this.DEV_URL;
+    private app: App;
 
-    constructor(courseId: string) {
+    constructor(app: App, courseId: string) {
         console.log("AdminController::<init>");
+        this.app = app;
         this.courseId = courseId;
     }
 
@@ -40,7 +43,7 @@ export class AdminController {
 
         // params.teamId = ... // not currently used
         // /:courseId/deliverables
-        const url = this.URL + this.courseId + '/deliverables';
+        const url = this.app.backendURL + this.courseId + '/deliverables';
         Network.handleRemote(url, this.deliverableView, UI.handleError);
     }
 
@@ -49,7 +52,7 @@ export class AdminController {
         this.teamView.updateTitle();
 
         // /:courseId/admin/teams
-        const url = this.URL + this.courseId + '/admin/teams';
+        const url = this.app.backendURL + this.courseId + '/admin/teams';
         Network.handleRemote(url, this.teamView, UI.handleError);
     }
 
@@ -58,7 +61,7 @@ export class AdminController {
         this.gradeView.updateTitle();
 
         // /:courseId/admin/grades
-        const url = this.URL + this.courseId + '/admin/grades';
+        const url = this.app.backendURL + this.courseId + '/admin/grades';
         Network.handleRemote(url, this.gradeView, UI.handleError);
     }
 
@@ -97,7 +100,7 @@ export class AdminController {
         }
 
         // '/:courseId/admin/dashboard/:orgName/:delivId
-        const url = this.URL + this.courseId + '/admin/dashboard/' + params.orgName + '/' + params.delivId + post;
+        const url = this.app.backendURL + this.courseId + '/admin/dashboard/' + params.orgName + '/' + params.delivId + post;
 
         // going to be slow; show a modal
         UI.showModal('Dashboard being retrieved. This may be slow.');
