@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowJs" : true,
+    "allowJs": true,
     "lib": [
       "es5",
       "es2015.promise",
@@ -15,7 +15,7 @@
     "target": "es5"
   },
   "include": [
-    "./app/**/*"
+    "./app/ts/**/*ts"
   ],
   "exclude": [
   ]
