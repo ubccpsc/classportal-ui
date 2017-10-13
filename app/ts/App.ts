@@ -119,9 +119,8 @@ export class App {
 
             if (pageName === 'loginPage') {
 
-                let userrole = String(localStorage.userrole);
-                let username = String(localStorage.username);
-
+                const userrole = String(localStorage.userrole);
+                // const username = String(localStorage.username);
                 if (userrole === 'student') {
                     UI.pushPage('student.html', {courseId: courseId});
                 } else if (userrole === 'admin' || userrole === 'superadmin') {
@@ -129,8 +128,7 @@ export class App {
                 }
 
                 (document.querySelector('#loginButton') as OnsButtonElement).onclick = function () {
-                    console.log('login pressed for: ' + courseId);
-
+                    console.log('App::init()::init - login pressed for: ' + courseId);
                     window.location.replace(that.backendURL + 'auth/login');
                 };
             }
@@ -194,10 +192,10 @@ export class App {
     public isLoggedIn() {
         let that = this;
         if (String(localStorage.authStatus) === that.AUTH_STATUS) {
-            console.log(true);
+            // console.log(true);
             return true;
         }
-        console.log(false);
+        // console.log(false);
         return false;
     }
 
