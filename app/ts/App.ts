@@ -84,16 +84,6 @@ export class App {
                 const AUTHORIZED_STATUS: string = 'authorized';
 
                 console.log('App::main()::authCheck - starting main.html with auth check');
-                // const DEV_URL = 'https://localhost:5000/currentUser';
-                // const PROD_URL = 'https://portal.cs.ubc.ca:5000/currentUser';
-
-                // NOTE: why is this happening here? can't we just access that.backendURL?
-                // we shouldn't have multiple copies of this block; it should already be done in App::<init>
-                if (window.location.href.indexOf('localhost') > 0) {
-                    this.backendURL = this.backendDEV;
-                } else {
-                    this.backendURL = this.backendPROD;
-                }
 
                 that.toggleLoginButton();
 
