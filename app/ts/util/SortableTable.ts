@@ -49,7 +49,7 @@ export class SortableTable {
 
         this.divName = targetDiv;
         let table = '';
-        table += this.startTable(this);
+        table += this.startTable();
 
         this.performSort();
 
@@ -73,7 +73,7 @@ export class SortableTable {
         console.log('foo');
     }
 
-    private startTable(tableObject: SortableTable) {
+    private startTable() {
         let tablePrefix = '<table style="width: 100%">';
         tablePrefix += '<tr>';
 

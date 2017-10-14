@@ -102,7 +102,7 @@ export class DashboardView {
                     //    str += '<td class="dashRowElem"><a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\'' + row.stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
                     r.push({
                         value: '',
-                        html:  '<a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\\\'\' + row.stdioURL + \'\\\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a>'
+                        html:  '<a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\'' + row.stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a>'
                     });
                     // str += '<td class="dashRowElem"><span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span></td>';
                     r.push({
