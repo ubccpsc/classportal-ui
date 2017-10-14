@@ -31,8 +31,6 @@ export class DashboardView {
 
     private controller: AdminController;
 
-    private table: SortableTable = null;
-
     constructor(controller: AdminController) {
         this.controller = controller;
     }
@@ -93,78 +91,62 @@ export class DashboardView {
                 headers.push({id: 'results', text: 'Results', sortable: false, defaultSort: false, sortDown: true});
 
                 let table = new SortableTable(headers);
-                this.table = table;
 
-                let rows: any[] = [];
                 for (let row of data.response) {
                     let r: TableCell[] = [];
 
-                    //    str += '<td class="dashRowElem"><a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\'' + row.stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
+                    // configure row values
                     r.push({
                         value: '',
                         html:  '<a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\'' + row.stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a>'
                     });
-                    // str += '<td class="dashRowElem"><span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span></td>';
                     r.push({
                         value: row.timestamp,
                         html:  '<span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span>'
                     });
-                    // str += '<td class="dashRowElem"><a href="' + row.url + '">' + row.project + '</a></td>';
                     r.push({
                         value: row.project,
                         html:  '<a href="' + row.url + '">' + row.project + '</a>'
                     });
-                    // str += '<td class="dashRowElem"><a href="https://github.ubc.ca/' + row.user + '">' + row.user + '</a></td>';
                     r.push({
                         value: row.user,
                         html:  '<a href="https://github.ubc.ca/' + row.user + '">' + row.user + '</a>'
                     });
-                    // str += '<td class="dashRowElem">' + row.scoreOverall + '</td>';
                     r.push({
                         value: row.scoreOverall + '',
                         html:  row.scoreOverall + ''
                     });
-                    // str += '<td class="dashRowElem">' + row.scoreTest + '</td>';
                     r.push({
                         value: row.scoreTest + '',
                         html:  row.scoreTest + ''
                     });
-                    // str += '<td class="dashRowElem">' + row.scoreCover + '</td>';
                     r.push({
                         value: row.scoreCover + '',
                         html:  row.scoreCover + ''
                     });
-                    // str += '<td class="dashRowElem">' + row.passNames.length + '</td>';
                     r.push({
                         value: row.passNames.length + '',
                         html:  row.passNames.length + ''
                     });
-                    // str += '<td class="dashRowElem">' + row.failNames.length + '</td>';
                     r.push({
                         value: row.failNames.length + '',
                         html:  row.failNames.length + ''
                     });
-                    // str += '<td class="dashRowElem">' + row.skipNames.length + '</td>';
                     r.push({
                         value: row.skipNames.length + '',
                         html:  row.skipNames.length + ''
                     });
-                    // str += '<td class="dashRowElem">' + this.getDetails(row) + '</td>';
                     r.push({
                         value: '',
                         html:  this.getDetails(row)
                     });
 
-                    rows.push(r);
                     table.addRow(r);
                 }
 
-
                 table.generate('#admin-dashboard-table');
-
                 var dashFooter = document.querySelector('#admin-dashboard-footer');
                 dashFooter.innerHTML = this.buildFooter();
-
             } else {
                 console.log('DashboardView::render(..) - element is null');
             }
@@ -326,7 +308,6 @@ export class DashboardView {
                 return (aVal - bVal) * mult;
             }
         });
-
         this.render(this.data);
     }
 
