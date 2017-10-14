@@ -1,4 +1,5 @@
 import {UI} from "../util/UI";
+import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsSelectElement} from "onsenui";
 import {Network} from "../util/Network";
 import {AdminController} from "../controllers/AdminController";
@@ -29,6 +30,8 @@ export class DashboardView {
     private sortCol: string = 'timestamp';
 
     private controller: AdminController;
+
+    private table: SortableTable = null;
 
     constructor(controller: AdminController) {
         this.controller = controller;
@@ -69,26 +72,99 @@ export class DashboardView {
         console.log('DashboardView::render(..) - start');
 
         this.data = data;
-
         this.updateTitle();
 
         try {
-            var dashList = document.querySelector('#admin-dashboard-list');
+            var dashList = document.querySelector('#admin-dashboard-table');
             if (dashList !== null) {
                 dashList.innerHTML = '';
 
-                const header = this.buildHeader();
+                let headers: TableHeader[] = [];
+                headers.push({id: 'info', text: 'Info', sortable: false, defaultSort: false, sortDown: true});
+                headers.push({id: 'timestamp', text: 'Date', sortable: true, defaultSort: true, sortDown: true});
+                headers.push({id: 'project', text: 'Project', sortable: true, defaultSort: false, sortDown: true});
+                headers.push({id: 'user', text: 'User', sortable: true, defaultSort: false, sortDown: true});
+                headers.push({id: 'scoreOverall', text: '% Overall', sortable: true, defaultSort: false, sortDown: true});
+                headers.push({id: 'scoreTest', text: '% Test', sortable: true, defaultSort: false, sortDown: true});
+                headers.push({id: 'scoreCover', text: '% Cover', sortable: true, defaultSort: false, sortDown: true});
+                headers.push({id: 'passNames', text: '# Pass', sortable: true, defaultSort: false, sortDown: true});
+                headers.push({id: 'failNames', text: '# Fail', sortable: true, defaultSort: false, sortDown: true});
+                headers.push({id: 'skipNames', text: '# Skip', sortable: true, defaultSort: false, sortDown: true});
+                headers.push({id: 'results', text: 'Results', sortable: false, defaultSort: false, sortDown: true});
 
-                let body = '';
-                let odd = false;
+                let table = new SortableTable(headers);
+                this.table = table;
+
+                let rows: any[] = [];
                 for (let row of data.response) {
-                    body = body + this.buildRow(row, odd);
-                    odd = !odd;
+                    let r: TableCell[] = [];
+
+                    //    str += '<td class="dashRowElem"><a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\'' + row.stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
+                    r.push({
+                        value: '',
+                        html:  '<a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\\\'\' + row.stdioURL + \'\\\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a>'
+                    });
+                    // str += '<td class="dashRowElem"><span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span></td>';
+                    r.push({
+                        value: row.timestamp,
+                        html:  '<span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span>'
+                    });
+                    // str += '<td class="dashRowElem"><a href="' + row.url + '">' + row.project + '</a></td>';
+                    r.push({
+                        value: row.project,
+                        html:  '<a href="' + row.url + '">' + row.project + '</a>'
+                    });
+                    // str += '<td class="dashRowElem"><a href="https://github.ubc.ca/' + row.user + '">' + row.user + '</a></td>';
+                    r.push({
+                        value: row.user,
+                        html:  '<a href="https://github.ubc.ca/' + row.user + '">' + row.user + '</a>'
+                    });
+                    // str += '<td class="dashRowElem">' + row.scoreOverall + '</td>';
+                    r.push({
+                        value: row.scoreOverall + '',
+                        html:  row.scoreOverall + ''
+                    });
+                    // str += '<td class="dashRowElem">' + row.scoreTest + '</td>';
+                    r.push({
+                        value: row.scoreTest + '',
+                        html:  row.scoreTest + ''
+                    });
+                    // str += '<td class="dashRowElem">' + row.scoreCover + '</td>';
+                    r.push({
+                        value: row.scoreCover + '',
+                        html:  row.scoreCover + ''
+                    });
+                    // str += '<td class="dashRowElem">' + row.passNames.length + '</td>';
+                    r.push({
+                        value: row.passNames.length + '',
+                        html:  row.passNames.length + ''
+                    });
+                    // str += '<td class="dashRowElem">' + row.failNames.length + '</td>';
+                    r.push({
+                        value: row.failNames.length + '',
+                        html:  row.failNames.length + ''
+                    });
+                    // str += '<td class="dashRowElem">' + row.skipNames.length + '</td>';
+                    r.push({
+                        value: row.skipNames.length + '',
+                        html:  row.skipNames.length + ''
+                    });
+                    // str += '<td class="dashRowElem">' + this.getDetails(row) + '</td>';
+                    r.push({
+                        value: '',
+                        html:  this.getDetails(row)
+                    });
+
+                    rows.push(r);
+                    table.addRow(r);
                 }
 
-                const footer = this.buildFooter();
 
-                dashList.innerHTML = header + body + '</table>' + footer;
+                table.generate('#admin-dashboard-table');
+
+                var dashFooter = document.querySelector('#admin-dashboard-footer');
+                dashFooter.innerHTML = this.buildFooter();
+
             } else {
                 console.log('DashboardView::render(..) - element is null');
             }
@@ -96,24 +172,6 @@ export class DashboardView {
             console.log('DashboardView::render(..) - ERROR: ' + err.message);
         }
         UI.hideModal();
-    }
-
-    private buildHeader() {
-        let str = '<table class="dashHeaderRow" style="width: 100%; background-color: white; border-collapse: collapse">';
-        str += '<tr style="background-color: rgb(0,33,69); padding-top: 5px; padding-bottom: 5px; color: white">';
-        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'info\')">Info</th>';
-        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'timestamp\')">Date</th>';
-        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'project\')">Repo</th>';
-        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'user\')">User</th>';
-        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'scoreOverall\')">% Overall</th>';
-        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'scoreTest\')">% Pass</th>';
-        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'scoreCover\')">% Cover</th>';
-        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'passNames\')"># Pass</th>';
-        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'failNames\')"># Fail</th>';
-        str += '<th class="dashHeaderElem" onclick="window.myApp.adminController.dashboardView.sort(\'skipNames\')"># Skip</th>';
-        str += '<th class="dashHeaderElem" style="width: 450px;" onclick="window.myApp.adminController.dashboardView.sort(\'results\')">Results</th>';
-        str += '</tr>';
-        return str;
     }
 
     private buildFooter() {
@@ -159,31 +217,6 @@ export class DashboardView {
         str += '</table>';
 
         str += '</div>';
-        return str;
-    }
-
-    private buildRow(row: DashboardRow, odd: boolean) {
-        let str = '';
-        if (odd) {
-            str += '<tr class="dashRow" style="color: black; background: lightgrey">';
-        } else {
-            str += '<tr class="dashRow" style="color: black; background: white">';
-        }
-
-        // str += '<td class="dashRowElem"><a target="_blank" href="' + row.stdioURL + '"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
-        str += '<td class="dashRowElem"><a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\'' + row.stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a></td>';
-        str += '<td class="dashRowElem"><span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span></td>';
-        str += '<td class="dashRowElem"><a href="' + row.url + '">' + row.project + '</a></td>';
-        str += '<td class="dashRowElem"><a href="https://github.ubc.ca/' + row.user + '">' + row.user + '</a></td>';
-        str += '<td class="dashRowElem">' + row.scoreOverall + '</td>';
-        str += '<td class="dashRowElem">' + row.scoreTest + '</td>';
-        str += '<td class="dashRowElem">' + row.scoreCover + '</td>';
-        str += '<td class="dashRowElem">' + row.passNames.length + '</td>';
-        str += '<td class="dashRowElem">' + row.failNames.length + '</td>';
-        str += '<td class="dashRowElem">' + row.skipNames.length + '</td>';
-        str += '<td class="dashRowElem">' + this.getDetails(row) + '</td>';
-        str += '</tr>';
-
         return str;
     }
 

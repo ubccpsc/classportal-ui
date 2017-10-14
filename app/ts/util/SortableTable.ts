@@ -2,34 +2,101 @@ export interface TableHeader {
     id: string;
     text: string;
     sortable: boolean;
-    defaultSort: true; // should only be true for one row
+    defaultSort: boolean; // should only be true for one row
     sortDown: boolean; // probably true on init
 }
 
+export interface TableCell {
+    value: any;
+    html: string;
+}
+
+/**
+ * Sorted table widget.
+ */
 export class SortableTable {
 
+    private divName: string;
     private headers: TableHeader[] = [];
     private rows: any[] = [];
-
-    private sortCol: string = null;
+    private sortHeader: TableHeader = null;
 
     constructor(headers: TableHeader[]) {
         this.headers = headers;
 
         for (let col of headers) {
             if (col.defaultSort) {
-                this.sortCol = col.id;
+                col;
             }
         }
     }
 
-    private startTable() {
-        let tablePrefix = '<table>';
+    public addRow(row: any[]) {
+        this.rows.push(row);
+    }
+
+    public sort(colId: string) {
+        for (let c of this.headers) {
+            if (c.id === colId) {
+                this.sortHeader = c;
+            }
+        }
+        this.generate(this.divName);
+    }
+
+    public generate(targetDiv: any) {
+        let that = this;
+
+        this.divName = targetDiv;
+        let table = '';
+        table += this.startTable(this);
+
+        this.performSort();
+
+        for (let row of this.rows) {
+            table += this.generateRow(row);
+        }
+        table += this.endTable();
+
+        // return table;
+        var div = document.querySelector(targetDiv);
+        div.innerHTML = '';
+        div.innerHTML = table;
+        console.log('foo');
+        let ths = div.getElementsByTagName('th');
+        for (let th of ths) {
+            th.onclick = function () {
+                const colName = this.getAttribute('col');
+                that.sort(colName);
+            };
+        }
+        console.log('foo');
+    }
+
+    private startTable(tableObject: SortableTable) {
+        let tablePrefix = '<table style="width: 100%">';
         tablePrefix += '<tr>';
+
+        // set the default header if one is not yet set
+        if (this.sortHeader === null) {
+            for (let header of this.headers) {
+                if (header.defaultSort) {
+                    this.sortHeader = header;
+                }
+            }
+        }
+
         for (let header of this.headers) {
             // decorate this.sorCol appropriately
-
-            tablePrefix += '<th>' + header.text + '</th>';
+            if (header.id === this.sortHeader.id) {
+                if (this.sortHeader.sortDown) {
+                    tablePrefix += '<th col="' + header.id + '"><b>' + header.text + ' ▼</b></th>';
+                } else {
+                    tablePrefix += '<th col="' + header.id + '"><b>' + header.text + ' ▲</b></th>';
+                }
+            } else {
+                tablePrefix += '<th col="' + header.id + '">' + header.text + '</th>';
+            }
         }
         tablePrefix += '</tr>';
 
@@ -41,25 +108,25 @@ export class SortableTable {
         return tableSuffix;
     }
 
-    public addRow(row: any[]) {
-        this.rows.push(row);
-    }
-
     private generateRow(cols: any[]) {
-        let row = '<tr>';
-        for (let col of row) {
-            row += '<td>' + col + '</td>';
+        let row = '<tr class="dashRow" style="color: black; background: lightgrey">';
+        let count = 0;
+        for (let col of cols) {
+            if (count % 2 === 0) {
+                row += '<td class="dashRowElem" style="color: black; background: white">' + (<any>col).html + '</td>';
+            } else {
+                row += '<td class="dashRowElem" style="color: black; background: lightgrey">' + (<any>col).html + '</td>';
+            }
         }
         row += '</tr>';
         return row;
     }
 
-    private sort() {
-
+    private performSort() {
         let sortHead = null;
         let sortIndex = 0;
         for (let head of this.headers) {
-            if (head.id === this.sortCol) {
+            if (head.id === this.sortHeader.id) {
                 if (head.sortable === false) {
                     console.log('SortableTable::sort() - no sort required; unsortable column: ' + head.id);
                     return;
@@ -67,20 +134,23 @@ export class SortableTable {
                     sortHead = head;
                 }
             }
-            sortIndex++;
+
+            if (sortHead === null) {
+                sortIndex++;
+            }
         }
 
         sortHead.sortDown = !sortHead.sortDown;
-        let mult = 1;
+        let mult = -1;
         if (sortHead.sortDown) {
-            mult = -1;
+            mult = 1;
         }
         console.log('SortableTable::sort() - col: ' + sortHead.id + '; down: ' + sortHead.sortDown + '; mult: ' + mult + '; index: ' + sortIndex);
-        
+
         this.rows = this.rows.sort(function (a, b) {
 
-            let aVal = a[sortIndex];
-            let bVal = b[sortIndex];
+            let aVal = a[sortIndex].value;
+            let bVal = b[sortIndex].value;
 
             if (Array.isArray(aVal)) {
                 // an array
@@ -97,19 +167,6 @@ export class SortableTable {
                 return (aVal - bVal) * mult;
             }
         });
-    }
-
-    generate(): string {
-        let table = '';
-        table += this.startTable();
-
-        this.sort();
-
-        for (let row of this.rows) {
-            this.generateRow(row);
-        }
-        table += this.endTable();
-        return table;
     }
 
 }
