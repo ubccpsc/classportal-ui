@@ -55,15 +55,11 @@ export class DashboardView {
                 option.value = deliv.id;
                 (<any>delivSelect).add(option);
             }
-
-
         }
     }
 
     public updateTitle() {
-        // document.querySelector('#adminTabsHeader').innerHTML = data.course;
         document.querySelector('#adminTabsHeader').innerHTML = "Dashboard";
-
     }
 
     public render(data: DashboardPayloadContainer) {
@@ -90,7 +86,7 @@ export class DashboardView {
                 headers.push({id: 'skipNames', text: '# Skip', sortable: true, defaultSort: false, sortDown: true});
                 headers.push({id: 'results', text: 'Results', sortable: false, defaultSort: false, sortDown: true});
 
-                let table = new SortableTable(headers);
+                let table = new SortableTable(headers, '#admin-dashboard-table');
 
                 for (let row of data.response) {
                     let r: TableCell[] = [];
@@ -144,7 +140,7 @@ export class DashboardView {
                     table.addRow(r);
                 }
 
-                table.generate('#admin-dashboard-table');
+                table.generate();
                 var dashFooter = document.querySelector('#admin-dashboard-footer');
                 dashFooter.innerHTML = this.buildFooter();
             } else {
@@ -154,6 +150,45 @@ export class DashboardView {
             console.log('DashboardView::render(..) - ERROR: ' + err.message);
         }
         UI.hideModal();
+    }
+
+    public retrieveDashboard() {
+        console.log('DashboardView::retrieveDashboard() - start');
+        const delivSelect = document.getElementById('admin-dashboard-deliverable-select') as OnsSelectElement;
+        const teamSelect = document.getElementById('admin-dashboard-team-select') as OnsSelectElement;
+
+        if (delivSelect !== null && teamSelect !== null) {
+            let delivId = delivSelect.value;
+            let teamId: string | null = teamSelect.value;
+            console.log('DashboardView::retrieveDashboard() - delivId: ' + delivId + '; teamId: ' + teamId);
+            if (teamId === 'null') {
+                teamId = null;
+            }
+            if (delivId === 'null') {
+                delivId = null;
+                UI.showErrorToast("Please select a deliverable.");
+            } else {
+                myApp.adminController.adminDashboardPage(delivId, teamId);
+            }
+
+        } else {
+            console.log('DashboardView::retrieveDashboard() - select is null');
+        }
+    }
+
+    public renderInfo(url: string) {
+        console.log('DashboardView::renderInfo( ' + url + ' )');
+
+        const onSuccess: any = {};
+        onSuccess.render = function (data: any) {
+            console.log('DashboardView::renderInfo(..) - onSuccess::render');
+            const newWindow = window.open('text/plain');
+            data = data.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/g, "<br/>");
+            newWindow.document.write(data);
+        };
+
+        // TODO: this network code should probably be in a controller.
+        Network.handleRemoteText(url, onSuccess, UI.handleError);
     }
 
     private buildFooter() {
@@ -246,84 +281,6 @@ export class DashboardView {
         str += '</tr>';
         str += '</table></span>';
         return str;
-    }
-
-    public retrieveDashboard() {
-        console.log('DashboardView::retrieveDashboard() - start');
-        const delivSelect = document.getElementById('admin-dashboard-deliverable-select') as OnsSelectElement;
-        const teamSelect = document.getElementById('admin-dashboard-team-select') as OnsSelectElement;
-
-        if (delivSelect !== null && teamSelect !== null) {
-            let delivId = delivSelect.value;
-            let teamId: string | null = teamSelect.value;
-            console.log('DashboardView::retrieveDashboard() - delivId: ' + delivId + '; teamId: ' + teamId);
-            if (teamId === 'null') {
-                teamId = null;
-            }
-            if (delivId === 'null') {
-                delivId = null;
-                UI.showErrorToast("Please select a deliverable.");
-            } else {
-                myApp.adminController.adminDashboardPage(delivId, teamId);
-            }
-
-        } else {
-            console.log('DashboardView::retrieveDashboard() - select is null');
-        }
-    }
-
-    public sort(columnName: string) {
-        if (columnName === 'info' || columnName === 'results') {
-            console.log('DashboardView::sort( ' + columnName + ' ) - unsortable column; not doing anything');
-            // do nothing
-            return;
-        }
-
-        let mult = 1;
-        if (this.sortCol === columnName) {
-            mult = -1;
-            this.sortCol = '';
-        } else {
-            this.sortCol = columnName;
-        }
-
-        console.log('DashboardView::sort( ' + columnName + ' ) - mult: ' + mult + '; - start');
-        this.data.response = this.data.response.sort(function (a, b) {
-
-            let aVal = a[columnName];
-            let bVal = b[columnName];
-
-            if (Array.isArray(aVal)) {
-                // an array
-                return (aVal.length - bVal.length) * mult;
-            } else if (isNaN(aVal) === false) {
-                // as a number
-                // something that isn't an array or string
-                return (Number(aVal) - Number(bVal)) * mult;
-            } else if (typeof aVal === 'string') {
-                // as a string
-                return aVal.localeCompare(bVal) * mult;
-            } else {
-                // something that isn't an array or string or number
-                return (aVal - bVal) * mult;
-            }
-        });
-        this.render(this.data);
-    }
-
-    public renderInfo(url: string) {
-        console.log('DashboardView::renderInfo( ' + url + ' )');
-
-        const onSuccess: any = {};
-        onSuccess.render = function (data: any) {
-            console.log('DashboardView::renderInfo(..) - onSuccess::render');
-            const newWindow = window.open('text/plain');
-            data = data.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/g, "<br/>");
-            newWindow.document.write(data);
-        };
-
-        // TODO: this network code should probably be in a controller?
-        Network.handleRemoteText(url, onSuccess, UI.handleError);
     }
 
 }

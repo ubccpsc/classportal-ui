@@ -1,14 +1,17 @@
+/**
+ * These correspond to the columns in the table.
+ */
 export interface TableHeader {
-    id: string;
-    text: string;
-    sortable: boolean;
-    defaultSort: boolean; // should only be true for one row
-    sortDown: boolean; // probably true on init
+    id: string; // The name of the column, used when sorting.
+    text: string; // The displayed text for the column.
+    sortable: boolean; // Whether the column is sortable (sometimes sorting does not make sense).
+    defaultSort: boolean; // Whether the column is the default sort for the table. should only be true for one column.
+    sortDown: boolean; // Whether the column should initially sort descending or ascending.
 }
 
 export interface TableCell {
-    value: any;
-    html: string;
+    value: any; // The value used while sorting.
+    html: string; // The HTML that should be rendered in the cell. Simple strings are fine too.
 }
 
 /**
@@ -16,75 +19,97 @@ export interface TableCell {
  */
 export class SortableTable {
 
+    /**
+     * This is the div name that will have its innerHTML set to the table.
+     */
     private divName: string;
     private headers: TableHeader[] = [];
-    private rows: any[] = [];
-    private sortHeader: TableHeader = null;
+    private rows: TableCell[][] = [];
+    /**
+     * The current sortHeader
+     * @type {TableHeader | null}
+     */
+    private sortHeader: TableHeader | null = null;
 
-    constructor(headers: TableHeader[]) {
+    constructor(headers: TableHeader[], divName: string) {
         this.headers = headers;
+        this.divName = divName;
 
         for (let col of headers) {
             if (col.defaultSort) {
-                col;
+                this.sortHeader = col;
+                // the first encountered default sort will be used
+                return;
             }
         }
     }
 
-    public addRow(row: any[]) {
+    /**
+     * Adds a row to the existing rows.
+     *
+     * @param {TableCell[]} row
+     */
+    public addRow(row: TableCell[]) {
         this.rows.push(row);
     }
 
+    /**
+     * Replaces all of the current rows.
+     *
+     * @param {TableCell[][]} rows
+     */
+    public addRows(rows: TableCell[][]) {
+        this.rows = rows;
+    }
+
+    /**
+     * Sorts by the provided column id (TableHeader.id) and renders the table.
+     *
+     * @param {string} colId
+     */
     public sort(colId: string) {
         for (let c of this.headers) {
             if (c.id === colId) {
                 this.sortHeader = c;
             }
         }
-        this.generate(this.divName);
+        this.generate();
     }
 
-    public generate(targetDiv: any) {
-        let that = this;
+    public generate() {
+        console.log('SortableTable::generate() - start');
 
-        this.divName = targetDiv;
-        let table = '';
-        table += this.startTable();
-
+        const that = this;
         this.performSort();
 
+        let table = '';
+        table += this.startTable();
         for (let row of this.rows) {
             table += this.generateRow(row);
         }
         table += this.endTable();
 
-        // return table;
-        var div = document.querySelector(targetDiv);
-        div.innerHTML = '';
-        div.innerHTML = table;
-        console.log('foo');
-        let ths = div.getElementsByTagName('th');
-        for (let th of ths) {
-            th.onclick = function () {
-                const colName = this.getAttribute('col');
-                that.sort(colName);
-            };
+        var div = document.querySelector(this.divName);
+        if (div !== null) {
+            div.innerHTML = '';
+            div.innerHTML = table;
+            console.log('foo');
+            const ths = div.getElementsByTagName('th');
+            const thsArray = Array.prototype.slice.call(ths, 0);
+            for (let th of thsArray) {
+                th.onclick = function () {
+                    const colName = this.getAttribute('col');
+                    that.sort(colName);
+                };
+            }
+        } else {
+            console.log('SortableTable::generate() - ' + this.divName + ' is null');
         }
-        console.log('foo');
     }
 
     private startTable() {
         let tablePrefix = '<table style="width: 100%">';
         tablePrefix += '<tr>';
-
-        // set the default header if one is not yet set
-        if (this.sortHeader === null) {
-            for (let header of this.headers) {
-                if (header.defaultSort) {
-                    this.sortHeader = header;
-                }
-            }
-        }
 
         for (let header of this.headers) {
             // decorate this.sorCol appropriately
