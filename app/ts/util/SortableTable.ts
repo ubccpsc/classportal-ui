@@ -68,9 +68,15 @@ export class SortableTable {
      * @param {string} colId
      */
     public sort(colId: string) {
+
         for (let c of this.headers) {
             if (c.id === colId) {
-                this.sortHeader = c;
+                if (c.sortable === true) {
+                    this.sortHeader = c;
+                } else {
+                    this.sortHeader = null;
+                }
+
             }
         }
         this.generate();
@@ -84,8 +90,10 @@ export class SortableTable {
 
         let table = '';
         table += this.startTable();
+        let isOdd = false;
         for (let row of this.rows) {
-            table += this.generateRow(row);
+            table += this.generateRow(row, isOdd);
+            isOdd = !isOdd;
         }
         table += this.endTable();
 
@@ -93,7 +101,6 @@ export class SortableTable {
         if (div !== null) {
             div.innerHTML = '';
             div.innerHTML = table;
-            console.log('foo');
             const ths = div.getElementsByTagName('th');
             const thsArray = Array.prototype.slice.call(ths, 0);
             for (let th of thsArray) {
@@ -108,19 +115,19 @@ export class SortableTable {
     }
 
     private startTable() {
-        let tablePrefix = '<table style="width: 100%">';
+        let tablePrefix = '<table style="margin-left: auto; margin-right: auto; border-collapse: collapse;">'; // width: 100%;
         tablePrefix += '<tr>';
 
         for (let header of this.headers) {
             // decorate this.sorCol appropriately
-            if (header.id === this.sortHeader.id) {
+            if (this.sortHeader !== null && header.id === this.sortHeader.id) {
                 if (this.sortHeader.sortDown) {
-                    tablePrefix += '<th col="' + header.id + '"><b>' + header.text + ' ▼</b></th>';
+                    tablePrefix += '<th col="' + header.id + '"><b>&nbsp;&nbsp;' + header.text + ' ▲&nbsp;</b></th>';
                 } else {
-                    tablePrefix += '<th col="' + header.id + '"><b>' + header.text + ' ▲</b></th>';
+                    tablePrefix += '<th col="' + header.id + '"><b>&nbsp;&nbsp;' + header.text + ' ▼&nbsp;</b></th>';
                 }
             } else {
-                tablePrefix += '<th col="' + header.id + '">' + header.text + '</th>';
+                tablePrefix += '<th col="' + header.id + '">&nbsp;&nbsp;' + header.text + '&nbsp;&nbsp;</th>';
             }
         }
         tablePrefix += '</tr>';
@@ -133,15 +140,17 @@ export class SortableTable {
         return tableSuffix;
     }
 
-    private generateRow(cols: any[]) {
-        let row = '<tr class="dashRow" style="color: black; background: lightgrey">';
-        let count = 0;
+    private generateRow(cols: any[], isOdd: boolean) {
+        let row = '';
+
+        if (isOdd) {
+            row = '<tr class="dashRow" style="color: black; background: white">';
+        } else {
+            row = '<tr class="dashRow" style="color: black; background: lightgrey">';
+        }
+
         for (let col of cols) {
-            if (count % 2 === 0) {
-                row += '<td class="dashRowElem" style="color: black; background: white">' + (<any>col).html + '</td>';
-            } else {
-                row += '<td class="dashRowElem" style="color: black; background: lightgrey">' + (<any>col).html + '</td>';
-            }
+            row += '<td class="dashRowElem" style="color: black;">' + (<any>col).html + '</td>';
         }
         row += '</tr>';
         return row;
@@ -150,6 +159,11 @@ export class SortableTable {
     private performSort() {
         let sortHead = null;
         let sortIndex = 0;
+
+        if (this.sortHeader === null) {
+            // do nothing (happens when there is no default sort or an unsortable column has been selected)
+            return;
+        }
         for (let head of this.headers) {
             if (head.id === this.sortHeader.id) {
                 if (head.sortable === false) {
