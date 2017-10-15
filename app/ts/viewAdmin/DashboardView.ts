@@ -3,6 +3,7 @@ import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsSelectElement} from "onsenui";
 import {Network} from "../util/Network";
 import {AdminController} from "../controllers/AdminController";
+import * as moment from 'moment';
 
 declare var myApp: any;
 
@@ -96,9 +97,12 @@ export class DashboardView {
                         value: '',
                         html:  '<a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\'' + row.stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a>'
                     });
+
+                    let tsString = moment(row.timestamp).format('ddd [@] HH:mm');
+                    let tsLongString = moment(row.timestamp).format('dddd, MMMM Do YYYY, h:mm:ss a');
                     r.push({
                         value: row.timestamp,
-                        html:  '<span title="' + new Date(row.timestamp).toISOString() + '">' + new Date(row.timestamp).toLocaleTimeString() + '</span>'
+                        html:  '<span title="' + tsLongString + '">' + tsString + '</span>'
                     });
                     r.push({
                         value: row.project,
