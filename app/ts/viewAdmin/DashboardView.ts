@@ -93,10 +93,17 @@ export class DashboardView {
                     let r: TableCell[] = [];
 
                     // configure row values
-                    r.push({
-                        value: '',
-                        html:  '<a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\'' + row.stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a>'
-                    });
+                    if (row.stdioURL.indexOf('undefined') === -1) {
+                        r.push({
+                            value: '',
+                            html:  '<a style="cursor: pointer; cursor: hand;" onclick="myApp.adminController.dashboardView.renderInfo(\'' + row.stdioURL + '\');"><ons-icon icon="ion-ios-help-outline"</ons-icon></a>'
+                        });
+                    } else {
+                        r.push({
+                            value: '',
+                            html:  ''
+                        });
+                    }
 
                     let tsString = moment(row.timestamp).format('ddd [@] HH:mm');
                     let tsLongString = moment(row.timestamp).format('dddd, MMMM Do YYYY, h:mm:ss a');
