@@ -2,14 +2,24 @@
 DASHBOARD
  */
 
-.dashRowElem {
+.sortableHeader {
+    white-space: nowrap;
+}
+
+.sortableRow {
+
+}
+
+.sortableCell {
     text-align: center;
+    white-space: nowrap;
 }
 
 .dashHistoBucket {
     font-weight: bold;
     padding-right: 1em;
 }
+
 .dashHistoValue {
     padding-left: 2em;
 }

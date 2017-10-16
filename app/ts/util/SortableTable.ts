@@ -122,12 +122,12 @@ export class SortableTable {
             // decorate this.sorCol appropriately
             if (this.sortHeader !== null && header.id === this.sortHeader.id) {
                 if (this.sortHeader.sortDown) {
-                    tablePrefix += '<th col="' + header.id + '"><b>&nbsp;&nbsp;' + header.text + ' ▲&nbsp;</b></th>';
+                    tablePrefix += '<th class="sortableHeader" col="' + header.id + '"><b>&nbsp;&nbsp;' + header.text + ' ▲&nbsp;</b></th>';
                 } else {
-                    tablePrefix += '<th col="' + header.id + '"><b>&nbsp;&nbsp;' + header.text + ' ▼&nbsp;</b></th>';
+                    tablePrefix += '<th class="sortableHeader"  col="' + header.id + '"><b>&nbsp;&nbsp;' + header.text + ' ▼&nbsp;</b></th>';
                 }
             } else {
-                tablePrefix += '<th col="' + header.id + '">&nbsp;&nbsp;' + header.text + '&nbsp;&nbsp;</th>';
+                tablePrefix += '<th class="sortableHeader" col="' + header.id + '">&nbsp;&nbsp;' + header.text + '&nbsp;&nbsp;</th>';
             }
         }
         tablePrefix += '</tr>';
@@ -144,13 +144,13 @@ export class SortableTable {
         let row = '';
 
         if (isOdd) {
-            row = '<tr class="dashRow" style="color: black; background: white">';
+            row = '<tr class="sortableRow" style="color: black; background: white">';
         } else {
-            row = '<tr class="dashRow" style="color: black; background: lightgrey">';
+            row = '<tr class="sortableRow" style="color: black; background: lightgrey">';
         }
 
         for (let col of cols) {
-            row += '<td class="dashRowElem" style="color: black;">' + (<any>col).html + '</td>';
+            row += '<td class="sortableCell" style="color: black;">' + (<any>col).html + '</td>';
         }
         row += '</tr>';
         return row;
