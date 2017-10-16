@@ -1,7 +1,25 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
+import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
+
+interface TeamPayloadContainer {
+    response: TeamRow[];
+}
+
+interface TeamRow {
+    labSection: string;
+    name: string;
+    members: TeamMember[];
+}
+
+interface TeamMember {
+    lname: string;
+    fname: string;
+    username: string;
+}
 
 export class TeamView {
+    data: TeamRow[] = [];
 
     private controller: AdminController;
 
@@ -14,7 +32,7 @@ export class TeamView {
         document.querySelector('#adminTabsHeader').innerHTML = "Teams";
     }
 
-    public render(data: any) {
+    public render(data: TeamPayloadContainer) {
         console.log('TeamView::render(..)  - start');
         this.updateTitle();
 
@@ -22,9 +40,78 @@ export class TeamView {
             // no data
             return;
         }
-        console.log('TeamView::render(..) - data: ' + JSON.stringify(data));
+
+        this.data = data.response;
+
+        console.log('TeamView::render(..) - data: ' + JSON.stringify(this.data));
 
         try {
+
+            let maxTeamMembers = 0;
+            for (let row of this.data) {
+                if (row.members.length > maxTeamMembers) {
+                    maxTeamMembers = row.members.length;
+                }
+            }
+
+            var teamList = document.querySelector('#admin-team-table');
+            if (teamList !== null) {
+                teamList.innerHTML = '';
+
+                let headers: TableHeader[] = [];
+                headers.push({id: 'name', text: 'Name', sortable: true, defaultSort: true, sortDown: true});
+                headers.push({id: 'lab', text: 'Lab', sortable: true, defaultSort: false, sortDown: true});
+                for (let i = 0; i < maxTeamMembers; i++) {
+                    headers.push({id: 'members' + (i + 1), text: 'Member ' + (i + 1), sortable: true, defaultSort: false, sortDown: true});
+                }
+
+                let table = new SortableTable(headers, '#admin-team-table');
+
+                for (let row of data.response) {
+                    let r: TableCell[] = [];
+
+                    let teamURL = null;
+                    try {
+                        teamURL = (<any>row).githubState.repo.url;
+                    } catch (err) {
+                        // do nothing
+                    }
+                    if (teamURL !== null) {
+                        r.push({
+                            value: row.name,
+                            html:  '<a href="' + teamURL + '">' + row.name + '</a>'
+                        });
+                    } else {
+                        r.push({
+                            value: row.name,
+                            html:  row.name
+                        });
+                    }
+
+                    r.push({
+                        value: row.labSection,
+                        html:  row.labSection
+                    });
+
+                    if (row.members.length === maxTeamMembers) {
+                        for (let member of row.members) {
+                            r.push({value: member.username, html: this.generateMember(member)});
+                        }
+                    } else {
+                        console.log('missing member; length: ' + row.members.length);
+                        for (let i = 0; i < maxTeamMembers; i++) {
+                            if (typeof row.members[i] !== 'undefined') {
+                                r.push({value: row.members[i].username, html: this.generateMember(row.members[i])});
+                            } else {
+                                r.push({value: '', html: ''});
+                            }
+                        }
+                    }
+                    table.addRow(r);
+                }
+                table.generate();
+            }
+            /*
             // teams
             var teamsList = document.querySelector('#admin-team-list');
             if (teamsList !== null) {
@@ -50,10 +137,28 @@ export class TeamView {
             } else {
                 console.log('TeamView::render  - element is null');
             }
+            */
         } catch (err) {
             console.log('TeamView::render - ERROR: ' + err);
         }
         UI.hideModal();
     }
 
+    private generateTeam(members: TeamMember[]) {
+        let ret = '';
+        // this is terrible. TeamMember should also have a URL
+        for (let member of members) {
+            ret += this.generateMember(member) + ', ';
+        }
+        ret = ret.substr(0, ret.length - 2); // pull off last comma
+        return ret;
+    }
+
+    private generateMember(member: TeamMember) {
+        let ret = '';
+        // this is terrible. TeamMember should also have a URL
+        ret += member.fname + ' ' + member.lname + ' ( <i>' + member.username + '</i> )';
+
+        return ret;
+    }
 }
