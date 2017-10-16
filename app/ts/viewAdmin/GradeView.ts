@@ -16,9 +16,11 @@ export class GradeView {
 
     public render(data: any) {
 
-        console.log('GradeView::render - start');
+        console.log('GradeView::render(..) - start');
         this.updateTitle();
 
+        console.log('GradeView::render(..) - data: ' + JSON.stringify(data));
+        
         // grades
         var gradeList = document.querySelector('#admin-grade-list');
         if (gradeList !== null) {
