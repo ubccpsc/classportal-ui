@@ -6,6 +6,43 @@ import 'whatwg-fetch';
 
 export class Network {
 
+    public static handleRemotePost(url: string, payload: object, view: any, onError: any) {
+        const USE_REAL = true;
+        console.log('Network::handleRemote( ' + url + ' ) - start');
+
+        if (USE_REAL === true) {
+            const OPTIONS_HTTP_POST: object = {credentials: 'include', method: 'post', cors: 'enabled',
+                body: JSON.stringify(payload), headers: {'Content-Type': 'application/json'} };
+            const AUTHORIZED_STATUS: string = 'authorized';
+
+            fetch(url, OPTIONS_HTTP_POST).then((data: any) => {
+                if (data.status !== 200) {
+                    console.log('Network::handleRemote() WARNING: Repsonse status: ' + data.status);
+                    throw new Error('Network::handleRemote() - API ERROR: ' + data.status);
+                } else {
+                    console.log('Network::handleRemote() 200 return');
+                    data.json().then(function (json: any) {
+                        view.render(json); // calls render instead of the function
+                    });
+                }
+            }).catch((err: Error) => {
+                console.error('Network::handleRemote( ' + url + ' ) - ERROR ' + err, err);
+                // onError(err.message);
+            });
+
+        } else {
+            // if you want to use fake data
+            // probably won't work once we start hooking up real data since the formats will be different
+            Network.getData(url).then(function (data: any) {
+                console.log('Network::handleRemote( \' + url + \' ) - then; data: ' + JSON.stringify(data));
+                view.render(data);
+            }).catch(function (err: Error) {
+                console.log('Network::handleRemote( \' + url + \' ) - catch; ERROR: ' + err);
+                onError(err);
+            });
+        }
+    }
+
     public static handleRemote(url: string, view: any, onError: any) {
         const USE_REAL = true;
         console.log('Network::handleRemote( ' + url + ' ) - start');
