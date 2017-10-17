@@ -46,8 +46,8 @@ export class GradeView {
                             value: cell,
                             html:  cell
                         });
-                        table.addRow(r);
                     }
+                    table.addRow(r);
                 } else {
                     // do nothing; this is the header row
                 }
