@@ -1,5 +1,6 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
+import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 
 export class GradeView {
 
@@ -19,46 +20,42 @@ export class GradeView {
         console.log('GradeView::render(..) - start');
         this.updateTitle();
 
-        console.log('GradeView::render(..) - data: ' + JSON.stringify(data));
-        // grades
-        var gradeList = document.querySelector('#admin-grade-list');
+        data = data.response;
+        // ["csid","snum","lname","fname","username","deliverable","finalGrade"]
+
+        var gradeList = document.querySelector('#admin-grade-table');
         if (gradeList !== null) {
             gradeList.innerHTML = '';
 
-            var headers = null;
-
-            var table = '<table style="width: 100%"><tr>';
-
-            if (typeof data.response.students !== 'undefined') {
-                for (let student of data.response.students) {
-                    if (headers === null) {
-                        table += '<th style="text-align:left;">Student</th>';
-                        for (let deliv of student.deliverables) {
-                            if (typeof deliv.final !== 'undefined') {
-                                table += '<th>' + deliv.id + '</th>'
-                            }
-                        }
-                        table += '</tr>';
-                        headers = true;
-                    }
-
-                    table += '<tr>';
-                    table += '<td>' + student.id + '</td>';
-                    for (let deliv of student.deliverables) {
-                        if (typeof deliv.final !== 'undefined') {
-                            table += '<td style="text-align: center;">' + deliv.final + '</td>'
-                        }
-                    }
-                    table += '</tr>';
-                }
-                table += '</table>';
-                gradeList.innerHTML = table;
-            } else {
-                gradeList.innerHTML = '<h2 style="text-align: center;">No grades returned.</h2>';
+            let headers: TableHeader[] = [];
+            const headerRow = data[0];
+            let defaultSort = true;
+            for (let h of headerRow) {
+                headers.push({id: h, text: h, sortable: true, defaultSort: defaultSort, sortDown: true});
+                defaultSort = false;
             }
-        } else {
-            console.log('GradeView::render - element is null');
+
+            let table = new SortableTable(headers, '#admin-grade-table');
+
+            let count = 0;
+            for (let row of data) {
+                if (count > 0) {
+                    let r: TableCell[] = [];
+                    for (let cell of row) {
+                        r.push({
+                            value: cell,
+                            html:  cell
+                        });
+                        table.addRow(r);
+                    }
+                } else {
+                    // do nothing; this is the header row
+                }
+                count++;
+            }
+            table.generate();
         }
+
         UI.hideModal();
     }
 
