@@ -3,24 +3,31 @@ import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 
 interface TeamPayloadContainer {
-    response: TeamRow[];
+    response: TeamPayload;
+}
+
+interface TeamPayload {
+    noTeam: Student[]; // these are the students who do not have teams
+    teams: TeamRow[]; // these are the teams
 }
 
 interface TeamRow {
     labSection: string;
     name: string;
-    members: TeamMember[];
+    teamUrl: string;
+    members: Student[];
 }
 
-interface TeamMember {
+interface Student {
     lname: string;
     fname: string;
     username: string;
+    profileUrl: string;
 }
 
 export class TeamView {
-    data: TeamRow[] = [];
 
+    private data: TeamPayload = null;
     private controller: AdminController;
 
     constructor(controller: AdminController) {
@@ -48,7 +55,7 @@ export class TeamView {
         try {
 
             let maxTeamMembers = 0;
-            for (let row of this.data) {
+            for (let row of this.data.teams) {
                 if (row.members.length > maxTeamMembers) {
                     maxTeamMembers = row.members.length;
                 }
@@ -67,7 +74,7 @@ export class TeamView {
 
                 let table = new SortableTable(headers, '#admin-team-table');
 
-                for (let row of data.response) {
+                for (let row of this.data.teams) {
                     let r: TableCell[] = [];
 
                     let teamURL = null;
@@ -144,7 +151,7 @@ export class TeamView {
         UI.hideModal();
     }
 
-    private generateTeam(members: TeamMember[]) {
+    private generateTeam(members: Student[]) {
         let ret = '';
         // this is terrible. TeamMember should also have a URL
         for (let member of members) {
@@ -154,7 +161,7 @@ export class TeamView {
         return ret;
     }
 
-    private generateMember(member: TeamMember) {
+    private generateMember(member: Student) {
         let ret = '';
         // this is terrible. TeamMember should also have a URL
         ret += member.fname + ' ' + member.lname + ' ( <i>' + member.username + '</i> )';
