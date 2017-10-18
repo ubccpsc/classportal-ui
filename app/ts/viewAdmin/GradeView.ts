@@ -145,7 +145,7 @@ export class GradeView {
         };
         let delivKeys = Object.keys(delivNamesMap).sort(customSort);
 
-        let headers = ['cwl'];
+        let headers = ['CWL'];
         headers = headers.concat(delivKeys);
         students['_index'] = headers;
 
