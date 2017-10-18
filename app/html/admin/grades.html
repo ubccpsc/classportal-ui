@@ -1,8 +1,29 @@
 <ons-page id="adminGradesPage">
-    <!--
+
     <ons-list id="admin-grade-list">
+        <ons-list-header>Configure Grade View:</ons-list-header>
+        <ons-list-item style="text-align: center;">
+            <ons-row>
+                <ons-col style="display: flex; justify-content: center; align-items: center;">
+                    Deliverable:
+                    <ons-select id="admin-grade-deliverable-select" style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
+                        <option value="all">All</option>
+                        <option value="d0">D0</option>
+                        <option value="d1">D1</option>
+                        <option value="d2">D2</option>
+                        <option value="d3">D3</option>
+                    </ons-select>
+                    <div style="display: block;">
+                        Last only:
+                        <ons-checkbox id="admin-grade-last"
+                                      style="padding-left: 2em; padding-right: 1em; vertical-align: middle;"></ons-checkbox>
+                    </div>
+                    <ons-button onclick="myApp.adminController.gradeView.update()">Update Grades</ons-button>
+                </ons-col>
+            </ons-row>
+        </ons-list-item>
     </ons-list>
-    -->
+
     <!-- not wired in, this is a mock -->
     <!--
     <ons-list>
@@ -19,10 +40,12 @@
         </ons-list-item>
     </ons-list>
     -->
+
+
     <ons-list id="admin-grade-list">
         <ons-list-header>Grades</ons-list-header>
         <ons-list-item>
-            <div id="admin-grade-table">None</div>
+            <div id="admin-grade-table" style="width:100%;">None</div>
         </ons-list-item>
     </ons-list>
 </ons-page>

@@ -1,13 +1,41 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
+import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
 
 export class GradeView {
+    private data: any; // TODO: add types
+
+    private delivId = 'all';
+    private lastOnly = false;
 
     private controller: AdminController;
 
     constructor(controller: AdminController) {
         this.controller = controller;
+    }
+
+    public configure() {
+        console.log('GradeView::configure() - start');
+        if (this.controller.deliverables !== null) {
+            const delivSelect = document.getElementById('admin-grade-deliverable-select') as OnsSelectElement;
+            while (delivSelect.options.length > 0) {
+                console.log('removing');
+                delivSelect.remove();
+            }
+
+            let option = document.createElement("option");
+            option.text = 'All';
+            option.value = 'all';
+            (<any>delivSelect).add(option);
+
+            for (let deliv of this.controller.deliverables) {
+                let option = document.createElement("option");
+                option.text = deliv.id;
+                option.value = deliv.id;
+                (<any>delivSelect).add(option);
+            }
+        }
     }
 
     public updateTitle() {
@@ -21,11 +49,12 @@ export class GradeView {
         this.updateTitle();
 
         // console.log('GradeView::render(..) - data: ' + JSON.stringify(data));
+        this.data = data;
 
         data = data.response;
 
         let processedData = this.process(data);
-        
+
         var gradeList = document.querySelector('#admin-grade-table');
         if (gradeList !== null) {
             gradeList.innerHTML = '';
@@ -73,6 +102,25 @@ export class GradeView {
         UI.hideModal();
     }
 
+    public update() {
+        console.log('GradeView::update() - start');
+        const delivSelect = document.getElementById('admin-grade-deliverable-select') as OnsSelectElement;
+        const lastCheckbox = document.getElementById('admin-grade-last') as OnsCheckboxElement;
+
+        if (delivSelect !== null && lastCheckbox !== null) {
+            let delivId = delivSelect.value;
+            let lastOnly: boolean = lastCheckbox.checked;
+
+            this.delivId = delivId;
+            this.lastOnly = lastOnly;
+
+            this.render(this.data);
+        } else {
+            console.log('GradeView::update() - ERROR: element missing');
+            return;
+        }
+    }
+
     private process(data: any) {
 
         let students = {};
@@ -84,8 +132,11 @@ export class GradeView {
             if (typeof students[userName] === 'undefined') {
                 students[userName] = []; // get ready for grades
             }
-            if (typeof delivNamesMap[delivKey] === 'undefined') {
-                delivNamesMap[delivKey] = delivKey;
+            if (this.includeRecord(row)) {
+                // not captured yet
+                if (typeof delivNamesMap[delivKey] === 'undefined') {
+                    delivNamesMap[delivKey] = delivKey;
+                }
             }
         }
 
@@ -96,17 +147,27 @@ export class GradeView {
         students['_index'] = headers;
 
         for (var row of data) {
-            const userName = row.username;
-            const delivKey = row.gradeKey;
+            if (this.includeRecord(row)) {
+                const userName = row.username;
+                const delivKey = row.gradeKey;
 
-            const student = students[userName];
-            const index = delivKeys.indexOf(delivKey);
-            student[index] = {url: row.projectUrl, value: row.gradeValue};
+                const student = students[userName];
+                const index = delivKeys.indexOf(delivKey);
+                student[index] = {url: row.projectUrl, value: row.gradeValue};
+            }
         }
 
         // console.log('grade data processed: ' + JSON.stringify(students));
         return students;
     }
 
+    private includeRecord(row: any): boolean {
+        if (this.delivId === 'all' || this.delivId === row.delivId) {
+            if (this.lastOnly === false || row.gradeKey.indexOf('Last') >= 0) { // HACK: checking this string is a bad idea
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
