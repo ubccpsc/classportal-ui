@@ -68,7 +68,7 @@ export class App {
 
             /*
             // DO NOT DO THIS HERE; DO IT ON SHOW BELOW!
-            
+
             // Each page calls its own initialization controller.
             if (that.studentController !== null) {
                 if (typeof that.studentController[pageName] === 'function') {
