@@ -112,6 +112,8 @@ export class SortableTable {
         } else {
             console.log('SortableTable::generate() - ' + this.divName + ' is null');
         }
+
+        this.attachDownload();
     }
 
     private startTable() {
@@ -222,6 +224,10 @@ export class SortableTable {
 
         // Download link
         downloadLink = document.createElement("a");
+        downloadLink.innerHTML = 'Download Table as CSV';
+
+        let table = document.querySelector(this.divName);
+        table.appendChild(downloadLink);
 
         // File name
         downloadLink.download = filename;
@@ -230,18 +236,20 @@ export class SortableTable {
         downloadLink.href = window.URL.createObjectURL(csvFile);
 
         // Hide download link
-        downloadLink.style.display = "none";
+        downloadLink.style.display = "block";
 
         // Add the link to DOM
-        document.body.appendChild(downloadLink);
+        // document.body.appendChild(downloadLink);
 
         // Click download link
-        downloadLink.click();
+        // downloadLink.click();
     }
 
     private exportTableToCSV(filename: string) {
-        var csv = [];
-        var rows = document.querySelectorAll("table tr");
+        let csv = [];
+        let root = document.querySelector(this.divName);
+        //var rows = document.querySelectorAll("table tr");
+        let rows = root.querySelectorAll("table tr");
 
         for (var i = 0; i < rows.length; i++) {
             var row = [], cols = rows[i].querySelectorAll("td, th");
@@ -254,5 +262,9 @@ export class SortableTable {
 
         // Download CSV file
         this.downloadCSV(csv.join("\n"), filename);
+    }
+
+    private attachDownload() {
+        this.exportTableToCSV('table.csv');
     }
 }
