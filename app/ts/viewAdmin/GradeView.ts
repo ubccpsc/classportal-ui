@@ -65,37 +65,66 @@ export class GradeView {
                 headers.push({id: h, text: h, sortable: true, defaultSort: defaultSort, sortDown: true});
                 defaultSort = false;
             }
-            let numCells = headerRow.length - 1;
+            // let headers = ['CWL', 'Student #', 'First', 'Last', 'Team'];
+            let numCells = headerRow.length - 5;
+            if (this.delivId === 'all') {
+                numCells = headerRow.length - 4; // no team column
+            }
 
             let table = new SortableTable(headers, '#admin-grade-table');
 
             for (let key of Object.keys(processedData)) {
                 if (key !== '_index') {
-                    let row = processedData[key];
+                    if (typeof processedData[key] !== 'undefined' && typeof processedData[key].cwl !== 'undefined') {
+                        let row = processedData[key];
 
-                    let r: TableCell[] = [];
-                    r.push({
-                        value: key,
-                        html:  key
-                    });
-                    for (let i = 0; i < numCells; i++) {
-                        // let cell: any = [];
-                        let html = '';
-                        let val = '';
-                        if (typeof row[i] !== 'undefined') {
-                            // cell = row[i];
-                            html = '<a href="' + row[i].url + '">' + row[i].value + '</a>';
-                            val = row[i].value;
-                        } else {
-                            html = '0'; // no record: 0
-                            val = '0'; // no record: 0
-                        }
+                        let r: TableCell[] = [];
+
                         r.push({
-                            value: val,
-                            html:  html
+                            value: row.cwl,
+                            html:  '<a href="https://github.ubc.ca/' + row.cwl + '">' + row.cwl + '</a>'
                         });
+                        r.push({
+                            value: row.snum,
+                            html:  row.snum
+                        });
+                        r.push({
+                            value: row.fName,
+                            html:  row.fName
+                        });
+                        r.push({
+                            value: row.lName,
+                            html:  row.lName
+                        });
+                        if (this.delivId !== 'all') {
+                            r.push({
+                                value: row.team.value,
+                                html:  row.team.html
+                            });
+                        }
+
+
+                        for (let i = 0; i < numCells; i++) {
+                            // let cell: any = [];
+                            let html = '';
+                            let val = '';
+                            if (typeof row.grades[i] !== 'undefined') {
+                                // cell = row[i];
+                                html = row.grades[i].html;
+                                val = row.grades[i].value;
+                            } else {
+                                html = '0'; // no record: 0
+                                val = '0'; // no record: 0
+                            }
+                            r.push({
+                                value: val,
+                                html:  html
+                            });
+                        }
+                        table.addRow(r);
+                    } else {
+                        console.log('GradeView::render(..) - missing value for key: ' + key);
                     }
-                    table.addRow(r);
                 } else {
                     // do nothing; this is the header row
                 }
@@ -148,7 +177,10 @@ export class GradeView {
         };
         let delivKeys = Object.keys(delivNamesMap).sort(customSort);
 
-        let headers = ['CWL'];
+        let headers = ['CWL', 'Student #', 'First', 'Last'];// , 'Team'];
+        if (this.delivId !== 'all') {
+            headers.push('Team');
+        }
         headers = headers.concat(delivKeys);
         students['_index'] = headers;
 
@@ -159,7 +191,26 @@ export class GradeView {
 
                 const student = students[userName];
                 const index = delivKeys.indexOf(delivKey);
-                student[index] = {url: row.projectUrl, value: row.gradeValue};
+                // const index = headers.indexOf(delivKey);
+
+                const commitUrl = row.projectUrl;
+                const projectUrl = commitUrl.substring(0, commitUrl.lastIndexOf('/commit/'));
+                const projectName = projectUrl.substring(projectUrl.lastIndexOf('/') + 1);
+
+                student.cwl = row.username;
+                student.snum = row.snum;
+                student.fName = row.fname;
+                student.lName = row.lname;
+                student.team = {value: projectName, html: '<a href="' + projectUrl + '">' + projectName + '</a>'};
+
+                if (typeof student.grades === 'undefined') {
+                    student.grades = [];
+                }
+
+                student.grades[index] = {
+                    value: row.gradeValue,
+                    html:  '<a href="' + commitUrl + '">' + row.gradeValue + '</a>'
+                };
             }
         }
 
@@ -168,7 +219,7 @@ export class GradeView {
     }
 
     private includeRecord(row: any): boolean {
-        if (this.delivId === 'all' || this.delivId === row.delivId) {
+        if ((this.delivId === 'all' || this.delivId === row.delivId) && typeof row.snum !== 'undefined') { // test rows don't have snums
             if (this.lastOnly === false || row.gradeKey.indexOf('Last') >= 0) { // HACK: checking this string is a bad idea
                 return true;
             }
