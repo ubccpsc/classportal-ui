@@ -34,7 +34,13 @@ export class DeliverableView {
         }
         console.log('DeliverableView::render(..) - data: ' + JSON.stringify(data));
 
-        const deliverables = data.response;
+        let deliverables = data.response;
+        const customSort = function (a: DeliverablePayload, b: DeliverablePayload) {
+            return (Number(a.id.match(/(\d+)/g)[0]) - Number((b.id.match(/(\d+)/g)[0])));
+        };
+        deliverables = deliverables.sort(customSort);
+
+        console.log('DeliverableView::render(..) - setting deliverables: ' + JSON.stringify(deliverables));
         this.controller.deliverables = deliverables; // HACK: global
 
         // deliverables

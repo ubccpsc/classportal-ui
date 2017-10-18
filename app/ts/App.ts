@@ -66,6 +66,9 @@ export class App {
                 that.studentController = new StudentController(that, courseId);
             }
 
+            /*
+            // DO NOT DO THIS HERE; DO IT ON SHOW BELOW!
+
             // Each page calls its own initialization controller.
             if (that.studentController !== null) {
                 if (typeof that.studentController[pageName] === 'function') {
@@ -79,6 +82,7 @@ export class App {
                     that.adminController[pageName]();//(page);
                 }
             }
+            */
 
             if (pageName === 'main') {
                 const AUTHORIZED_STATUS: string = 'authorized';

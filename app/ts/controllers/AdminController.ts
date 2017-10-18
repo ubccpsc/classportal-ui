@@ -62,6 +62,11 @@ export class AdminController {
         console.log('AdminController::adminGradesPage - start');
         this.gradeView.updateTitle();
 
+        UI.showModal('Grades being retrieved. Should take < 5 seconds.');
+
+        // configure selects
+        this.gradeView.configure();
+
         // /:courseId/admin/grades
         const url = this.app.backendURL + this.courseId + '/admin/grades/results';
         const payload: object = {allDeliverables: true} // {deliverableNum: 'd1', gradeOnly: true};

@@ -196,6 +196,20 @@ export class SortableTable {
             let aVal = a[sortIndex].value;
             let bVal = b[sortIndex].value;
 
+            // handle mismatches
+            // mainly happens when one cell is empty
+            if (typeof aVal !== typeof bVal) {
+                // console.log('comparing: ' + aVal + ' to: ' + bVal);
+                if (aVal === '') {
+                    // console.log('bad aval');
+                    return -1 * mult;
+                } else if (bVal === '') {
+                    // console.log('bad bval');
+                    return 1 * mult;
+                }
+            }
+
+
             if (Array.isArray(aVal)) {
                 // an array
                 return (aVal.length - bVal.length) * mult;
@@ -215,28 +229,29 @@ export class SortableTable {
 
     // not used yet
     // code from: https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
-    private downloadCSV(csv: string, filename: string) {
+    private downloadCSV(csv: string, fileName: string) {
         var csvFile;
         var downloadLink;
 
         // CSV file
-        csvFile = new Blob([csv], {type: "text/csv"});
+        csvFile = new Blob([csv], {type: 'text/csv'});
 
         // Download link
-        downloadLink = document.createElement("a");
+        downloadLink = document.createElement('a');
         downloadLink.innerHTML = 'Download Table as CSV';
 
         let table = document.querySelector(this.divName);
         table.appendChild(downloadLink);
 
         // File name
-        downloadLink.download = filename;
+        downloadLink.download = fileName;
 
         // Create a link to the file
         downloadLink.href = window.URL.createObjectURL(csvFile);
 
         // Hide download link
-        downloadLink.style.display = "block";
+        downloadLink.style.display = 'block';
+        downloadLink.style.textAlign = 'center';
 
         // Add the link to DOM
         // document.body.appendChild(downloadLink);
@@ -245,26 +260,26 @@ export class SortableTable {
         // downloadLink.click();
     }
 
-    private exportTableToCSV(filename: string) {
+    private exportTableToCSV(fileName: string) {
         let csv = [];
         let root = document.querySelector(this.divName);
         //var rows = document.querySelectorAll("table tr");
-        let rows = root.querySelectorAll("table tr");
+        let rows = root.querySelectorAll('table tr');
 
         for (var i = 0; i < rows.length; i++) {
-            var row = [], cols = rows[i].querySelectorAll("td, th");
+            var row = [], cols = rows[i].querySelectorAll('td, th');
 
             for (var j = 0; j < cols.length; j++)
                 row.push((<HTMLTableCellElement>cols[j]).innerText);
 
-            csv.push(row.join(","));
+            csv.push(row.join(','));
         }
 
         // Download CSV file
-        this.downloadCSV(csv.join("\n"), filename);
+        this.downloadCSV(csv.join('\n'), fileName);
     }
 
     private attachDownload() {
-        this.exportTableToCSV('table.csv');
+        this.exportTableToCSV('classPortal.csv');
     }
 }
