@@ -140,7 +140,10 @@ export class GradeView {
             }
         }
 
-        let delivKeys = Object.keys(delivNamesMap).sort();
+        const customSort = function (a: any, b: any) {
+            return (Number(a.match(/(\d+)/g)[0]) - Number((b.match(/(\d+)/g)[0])));
+        };
+        let delivKeys = Object.keys(delivNamesMap).sort(customSort);
 
         let headers = ['cwl'];
         headers = headers.concat(delivKeys);
