@@ -21,13 +21,13 @@ export class App {
     private backendDEV = 'https://localhost:5000/';
     private backendPROD = 'https://portal.cs.ubc.ca:5000/';
     private frontendDEV = 'https://localhost:3000/';
-    private frontendPROD = 'https://portal.cs.ubc.ca';
+    private frontendPROD = 'https://portal.cs.ubc.ca/';
     public readonly backendURL = this.backendDEV;
     public readonly frontendURL = this.frontendDEV;
 
     constructor() {
         console.log('App::<init>');
-        if (window.location.href.indexOf('localhost') > 0) {
+        if (window.location.href.indexOf('://localhost') > 0) {
             this.backendURL = this.backendDEV;
             this.frontendURL = this.frontendDEV;
         } else {
@@ -91,8 +91,8 @@ export class App {
                 let OPTIONS_HTTP_GET: RequestInit = {credentials: 'include'};
                 fetch(URL, OPTIONS_HTTP_GET).then((data: any) => {
                     if (data.status !== 200) {
-                        console.log('App::main()::authCheck WARNING: Response status: ' + data.status);
-                        throw 'App::main()::authCheck - API ERROR' + data.status;
+                        console.log('App::main()::authCheck - WARNING: Response status: ' + data.status);
+                        throw new Error('App::main()::authCheck - API ERROR: ' + data.status);
                     }
                     return data.json();
                 }).then((response: any) => {
@@ -103,15 +103,14 @@ export class App {
                     localStorage.setItem('fname', user.fname);
                     that.toggleLoginButton();
                 }).catch((err: any) => {
-                    console.log('App:main()::authCheck ERROR ' + err);
+                    console.log('App:main()::authCheck - ERROR: ' + err.message);
                 });
             }
 
             if (pageName === 'loginPage') {
 
-                let userrole = String(localStorage.userrole);
-                let username = String(localStorage.username);
-
+                const userrole = String(localStorage.userrole);
+                // const username = String(localStorage.username);
                 if (userrole === 'student') {
                     UI.pushPage('student.html', {courseId: courseId});
                 } else if (userrole === 'admin' || userrole === 'superadmin') {
@@ -119,8 +118,7 @@ export class App {
                 }
 
                 (document.querySelector('#loginButton') as OnsButtonElement).onclick = function () {
-                    console.log('login pressed for: ' + courseId);
-
+                    console.log('App::init()::init - login pressed for: ' + courseId);
                     window.location.replace(that.backendURL + 'auth/login');
                 };
             }
@@ -184,10 +182,10 @@ export class App {
     public isLoggedIn() {
         let that = this;
         if (String(localStorage.authStatus) === that.AUTH_STATUS) {
-            console.log(true);
+            // console.log(true);
             return true;
         }
-        console.log(false);
+        // console.log(false);
         return false;
     }
 
@@ -195,21 +193,28 @@ export class App {
         console.log("App::logout() - start");
         let url = this.backendURL + '/logout';
         let OPTIONS_HTTP_GET: RequestInit = {credentials: 'include'};
+        const that = this;
         fetch(url, OPTIONS_HTTP_GET).then((data: any) => {
             if (data.status !== 200) {
-                console.log('App::main()::authCheck WARNING: Response status: ' + data.status);
-                throw 'App::main()::authCheck - API ERROR' + data.status;
+                console.log('App::logout() - authCheck WARNING: Response status: ' + data.status);
+                throw new Error('App::logout() - authCheck - API ERROR' + data.status);
             }
             return data.json();
         }).then((result: any) => {
             const LOGOUT_SUCCESS = 'Successfully logged out.';
-            console.log('App::main()::logout() Logging out... ');
+            console.log('App::logout() Logging out... ');
             let logoutResponse = String(result.response);
             if (logoutResponse === LOGOUT_SUCCESS) {
                 localStorage.clear();
-                console.log('App::main()::logout() Successfully logged out');
-                window.location.replace(this.frontendURL);
+                console.log('App::logout() Successfully logged out');
+                window.location.replace(that.frontendURL);
             }
+        }).catch((err: Error) => {
+            // just force the logout if we run into a problem
+            console.log('App::logout() - ERROR: ' + err.message);
+            console.log('App::logout() - Clearing localstorage and refreshing');
+            localStorage.clear();
+            window.location.replace(that.frontendURL);
         });
     }
 

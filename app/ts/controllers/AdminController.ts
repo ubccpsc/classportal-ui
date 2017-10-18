@@ -54,7 +54,7 @@ export class AdminController {
         this.teamView.updateTitle();
 
         // /:courseId/admin/teams
-        const url = this.app.backendURL + this.courseId + '/admin/teams';
+        const url = this.app.backendURL + this.courseId + '/admin/teams/byBatch';
         Network.handleRemote(url, this.teamView, UI.handleError);
     }
 
@@ -63,8 +63,9 @@ export class AdminController {
         this.gradeView.updateTitle();
 
         // /:courseId/admin/grades
-        const url = this.app.backendURL + this.courseId + '/admin/grades';
-        Network.handleRemote(url, this.gradeView, UI.handleError);
+        const url = this.app.backendURL + this.courseId + '/admin/grades/results';
+        const payload: object = {allDeliverables: true} // {deliverableNum: 'd1', gradeOnly: true};
+        Network.handleRemotePost(url, payload, this.gradeView, UI.handleError);
     }
 
     public adminDashboardPage(delivId?: string, teamId?: string | null) {

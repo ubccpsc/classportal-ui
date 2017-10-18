@@ -34,14 +34,6 @@ export class DeliverableView {
         }
         console.log('DeliverableView::render(..) - data: ' + JSON.stringify(data));
 
-        /*
-        let deliverables: DeliverablePayload[] = [];
-        if (typeof data.response !== 'undefined') {
-            for (let deliverable of data.response) {
-                deliverables.push({id: deliverable.name, open: new Date(deliverable.open), close: new Date(deliverable.close)});
-            }
-        }
-        */
         const deliverables = data.response;
         this.controller.deliverables = deliverables; // HACK: global
 
@@ -51,9 +43,11 @@ export class DeliverableView {
             deliverableList.innerHTML = '';
             if (deliverables.length > 0) {
                 for (let deliverable of deliverables) {
+                    const close = new Date(deliverable.close);
+                    const open = new Date(deliverable.open);
                     deliverableList.appendChild(UI.createListHeader(deliverable.id));
-                    deliverableList.appendChild(UI.createListItem("Open: " + new Date(deliverable.open).toISOString()));
-                    deliverableList.appendChild(UI.createListItem("Close: " + new Date(deliverable.close).toISOString()));
+                    deliverableList.appendChild(UI.createListItem("Open: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString()));
+                    deliverableList.appendChild(UI.createListItem("Close: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString()));
                 }
             } else {
                 deliverableList.appendChild(UI.createListItem("No deliverable data returned from server."));
