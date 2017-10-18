@@ -20,40 +20,12 @@ export class GradeView {
         console.log('GradeView::render(..) - start');
         this.updateTitle();
 
-        console.log('GradeView::render(..) - data: ' + JSON.stringify(data));
-
-        /*
-        data = {
-            "response": [{
-                "username":   "parisar7",
-                "projectUrl": "https://github.ubc.ca/CPSC310-2017W-T1/cpsc310_team84/commit/1064cf9",
-                "gradeName":  'd1max',
-                "gradeValue": 14.41
-            }, {
-                "username":   "sjp1991",
-                "projectUrl": "https://github.ubc.ca/CPSC310-2017W-T1/cpsc310_team138/commit/37306d4",
-                "gradeName":  'd1max',
-                "gradeValue": 10.77
-            }, {
-                "username":   "channick",
-                "projectUrl": "https://github.ubc.ca/CPSC310-2017W-T1/cpsc310_team60/commit/4e46d26",
-                "gradeName":  'd1max',
-                "gradeValue": 7.44
-            }, {
-                "username":   "rarcilla",
-                "projectUrl": "https://github.ubc.ca/CPSC310-2017W-T1/cpsc310_team176/commit/3651ff2",
-                "gradeName":  'd1max',
-                "gradeValue": 14.41
-            }]
-        };
-        */
+        // console.log('GradeView::render(..) - data: ' + JSON.stringify(data));
 
         data = data.response;
 
         let processedData = this.process(data);
-
-        // ["csid","snum","lname","fname","username","deliverable","finalGrade"]
-
+        
         var gradeList = document.querySelector('#admin-grade-table');
         if (gradeList !== null) {
             gradeList.innerHTML = '';
@@ -81,7 +53,8 @@ export class GradeView {
                     for (let i = 0; i < numCells; i++) {
                         let cell: any = [];
                         if (typeof row[i] !== 'undefined') {
-                            cell = row[i];
+                            // cell = row[i];
+                            cell = '<a href="' + row[i].url + '">' + row[i].value + '</a>';
                         } else {
                             cell = '';
                         }
@@ -125,13 +98,13 @@ export class GradeView {
         for (var row of data) {
             const userName = row.username;
             const delivKey = row.gradeKey;
-            
+
             const student = students[userName];
             const index = delivKeys.indexOf(delivKey);
-            student[index] = row.gradeValue;
+            student[index] = {url: row.projectUrl, value: row.gradeValue};
         }
 
-        console.log('grade data processed: ' + JSON.stringify(students));
+        // console.log('grade data processed: ' + JSON.stringify(students));
         return students;
     }
 
