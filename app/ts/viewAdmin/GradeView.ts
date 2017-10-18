@@ -86,6 +86,9 @@ export class GradeView {
                             // cell = row[i];
                             html = '<a href="' + row[i].url + '">' + row[i].value + '</a>';
                             val = row[i].value;
+                        } else {
+                            html = '0'; // no record: 0
+                            val = '0'; // no record: 0
                         }
                         r.push({
                             value: val,
