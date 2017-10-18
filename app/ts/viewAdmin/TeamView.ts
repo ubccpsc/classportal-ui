@@ -79,7 +79,7 @@ export class TeamView {
 
                     let teamURL = null;
                     try {
-                        teamURL = (<any>row).githubState.repo.url;
+                        teamURL = row.teamUrl;
                     } catch (err) {
                         // do nothing
                     }
@@ -164,7 +164,7 @@ export class TeamView {
     private generateMember(member: Student) {
         let ret = '';
         // this is terrible. TeamMember should also have a URL
-        ret += member.fname + ' ' + member.lname + ' ( <i>' + member.username + '</i> )';
+        ret += member.fname + ' ' + member.lname + ' ( <a href="'+member.profileUrl+'">' + member.username + '</a> )';
 
         return ret;
     }
