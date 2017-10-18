@@ -20,7 +20,6 @@ export class GradeView {
         if (this.controller.deliverables !== null) {
             const delivSelect = document.getElementById('admin-grade-deliverable-select') as OnsSelectElement;
             while (delivSelect.options.length > 0) {
-                console.log('removing');
                 delivSelect.remove();
             }
 

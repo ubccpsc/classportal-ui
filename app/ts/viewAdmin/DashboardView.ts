@@ -39,9 +39,7 @@ export class DashboardView {
     public configure() {
         if (this.controller.deliverables !== null) {
             const delivSelect = document.getElementById('admin-dashboard-deliverable-select') as OnsSelectElement;
-            console.log('removing Old');
             while (delivSelect.options.length > 0) {
-                console.log('removing');
                 delivSelect.remove();
             }
 
