@@ -196,6 +196,20 @@ export class SortableTable {
             let aVal = a[sortIndex].value;
             let bVal = b[sortIndex].value;
 
+            // handle mismatches
+            // mainly happens when one cell is empty
+            if (typeof aVal !== typeof bVal) {
+                // console.log('comparing: ' + aVal + ' to: ' + bVal);
+                if (aVal === '') {
+                    // console.log('bad aval');
+                    return -1 * mult;
+                } else if (bVal === '') {
+                    // console.log('bad bval');
+                    return 1 * mult;
+                }
+            }
+
+
             if (Array.isArray(aVal)) {
                 // an array
                 return (aVal.length - bVal.length) * mult;

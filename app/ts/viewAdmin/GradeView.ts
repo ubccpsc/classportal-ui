@@ -79,16 +79,17 @@ export class GradeView {
                         html:  key
                     });
                     for (let i = 0; i < numCells; i++) {
-                        let cell: any = [];
+                        // let cell: any = [];
+                        let html = '';
+                        let val = '';
                         if (typeof row[i] !== 'undefined') {
                             // cell = row[i];
-                            cell = '<a href="' + row[i].url + '">' + row[i].value + '</a>';
-                        } else {
-                            cell = '';
+                            html = '<a href="' + row[i].url + '">' + row[i].value + '</a>';
+                            val = row[i].value;
                         }
                         r.push({
-                            value: cell,
-                            html:  cell
+                            value: val,
+                            html:  html
                         });
                     }
                     table.addRow(r);
