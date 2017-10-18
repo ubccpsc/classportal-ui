@@ -125,7 +125,7 @@ export class GradeView {
         for (var row of data) {
             const userName = row.username;
             const delivKey = row.gradeKey;
-
+            
             const student = students[userName];
             const index = delivKeys.indexOf(delivKey);
             student[index] = row.gradeValue;
