@@ -34,8 +34,8 @@ export interface GradeRow {
 /**
  * Future interface for exposing TestRecords to courses for converting into their own GradeRecord.
  */
-export interface TestContainer {
-    records: TestRecord[];
+export interface TestPayloadContainer {
+    response: TestRecord[];
 }
 
 export interface TestRecord {
