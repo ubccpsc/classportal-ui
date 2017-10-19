@@ -8,11 +8,18 @@ export interface GradePayloadContainer {
     response: GradeRow[];
 }
 
+export interface GradeContainer {
+    headers: string[];
+    grades: GradeRow[];
+}
+
 export interface GradeRow {
     userName: string; // cwl
+    timeStamp: number; // Date.getTime()
     commitUrl: string; // full URL to commit corresponding to the row
-    delivKey: string; // deliverable name (e.g., d0)
-    delivValue: string; // score for deliverable key (use string rep for flexibility)
+    delivId: string; // deliverable name
+    gradeKey: string; // deliverable name (e.g., d0last)
+    gradeValue: string; // score for deliverable key (use string rep for flexibility)
     projectUrl: string; // full URL to project
     projectName: string; // string name for project (e.g., cpsc310_team22)
     sNum: string; // may be removed in future
@@ -30,6 +37,22 @@ export interface GradeDetail {
     key: string;
     value: string;
 }
+
+export interface RenderRow {
+    timeStamp: string;
+    userName: string; // cwl
+    sNum: string; // may be removed in future
+    fName: string; // may be removed in future
+    lName: string; // may be removed in future
+    project: GradeCell | null;
+    grades: GradeCell[];
+}
+
+export interface GradeCell {
+    value: string;
+    html: string;
+}
+
 
 export class GradeView {
     private data: any; // TODO: add types
@@ -181,13 +204,13 @@ export class GradeView {
         }
     }
 
-    private process(data: any) {
+    private process(data: GradeRow[]) {
 
         let students = {};
         let delivNamesMap = {};
 
         for (var row of data) {
-            const userName = row.username;
+            const userName = row.userName;
             const delivKey = row.gradeKey;
             if (typeof students[userName] === 'undefined') {
                 students[userName] = []; // get ready for grades
@@ -214,21 +237,24 @@ export class GradeView {
 
         for (var row of data) {
             if (this.includeRecord(row)) {
-                const userName = row.username;
+                const userName = row.userName;
                 const delivKey = row.gradeKey;
 
                 const student = students[userName];
                 const index = delivKeys.indexOf(delivKey);
                 // const index = headers.indexOf(delivKey);
 
-                const commitUrl = row.projectUrl;
-                const projectUrl = commitUrl.substring(0, commitUrl.lastIndexOf('/commit/'));
-                const projectName = projectUrl.substring(projectUrl.lastIndexOf('/') + 1);
+                const commitUrl = row.commitUrl;
+                const projectUrl = row.projectUrl;
+                const projectName = row.projectName;
+                // const projectUrl = commitUrl.substring(0, commitUrl.lastIndexOf('/commit/'));
+                // const projectName = projectUrl.substring(projectUrl.lastIndexOf('/') + 1);
 
-                student.cwl = row.username;
-                student.snum = row.snum;
-                student.fName = row.fname;
-                student.lName = row.lname;
+                student.timeStamp = row.timeStamp;
+                student.cwl = row.userName;
+                student.snum = row.sNum;
+                student.fName = row.fName;
+                student.lName = row.lName;
                 student.team = {value: projectName, html: '<a href="' + projectUrl + '">' + projectName + '</a>'};
 
                 if (typeof student.grades === 'undefined') {
@@ -239,6 +265,8 @@ export class GradeView {
                     value: row.gradeValue,
                     html:  '<a href="' + commitUrl + '">' + row.gradeValue + '</a>'
                 };
+
+                // row.delivDetails // UNUSED right now
             }
         }
 
@@ -246,8 +274,8 @@ export class GradeView {
         return students;
     }
 
-    private includeRecord(row: any): boolean {
-        if ((this.delivId === 'all' || this.delivId === row.delivId) && typeof row.snum !== 'undefined') { // test rows don't have snums
+    private includeRecord(row: GradeRow): boolean {
+        if ((this.delivId === 'all' || this.delivId === row.delivId) && typeof row.sNum !== 'undefined') { // test rows don't have snums
             if (this.lastOnly === false || row.gradeKey.indexOf('Last') >= 0) { // HACK: checking this string is a bad idea
                 return true;
             }

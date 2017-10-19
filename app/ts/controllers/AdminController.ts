@@ -62,7 +62,7 @@ export class AdminController {
         console.log('AdminController::adminGradesPage - start');
         this.gradeView.updateTitle();
 
-        UI.showModal('Grades being retrieved. Should take < 5 seconds.');
+        UI.showModal('Grades being retrieved. Should take < 10 seconds.');
 
         // configure selects
         this.gradeView.configure();
@@ -114,7 +114,7 @@ export class AdminController {
         const url = this.app.backendURL + this.courseId + '/admin/dashboard/' + params.orgName + '/' + params.delivId + post;
 
         // going to be slow; show a modal
-        UI.showModal('Dashboard being retrieved. This may be slow.');
+        UI.showModal('Dashboard being retrieved. This should take < 10 seconds.');
         Network.handleRemote(url, this.dashboardView, UI.handleError);
     }
 
