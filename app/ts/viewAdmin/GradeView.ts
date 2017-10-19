@@ -11,19 +11,20 @@ export interface GradePayloadContainer {
 export interface GradeRow {
     userName: string; // cwl
     commitUrl: string; // full URL to commit corresponding to the row
-    delivKey: string; // deliverable name (e.g., d0)
-    delivValue: string; // score for deliverable key (use string rep for flexibility)
+    gradeKey: string; // deliv key shows Last or Max with delivNum ie . d1Last, d3Max
+    gradeValue: string; // score for deliverable key (use string rep for flexibility)
+    delivId: string; // deliverable Name e.g. d0
     projectUrl: string; // full URL to project
     projectName: string; // string name for project (e.g., cpsc310_team22)
     sNum: string; // may be removed in future
     fName: string; // may be removed in future
     lName: string; // may be removed in future
+    timeStamp: number;
     delivDetails: GradeDetail[];
 }
 
 /**
  * This is for extra detail about grades. E.g., if we wanted to return the test and cover score components as well.
- *
  * Will probably be useful for future grade extensions.
  */
 export interface GradeDetail {
