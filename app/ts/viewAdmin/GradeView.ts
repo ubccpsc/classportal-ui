@@ -14,8 +14,6 @@ export interface GradeContainer {
 }
 
 export interface GradeRow {
-    timeStamp: number; // Date.getTime()
-
     userName: string; // cwl
     userUrl: string;
     sNum: string; // may be removed in future
@@ -24,13 +22,47 @@ export interface GradeRow {
     projectUrl: string; // full URL to project
     projectName: string; // string name for project (e.g., cpsc310_team22)
 
+    timeStamp: number; // Date.getTime()
     commitUrl: string; // full URL to commit corresponding to the row
     delivId: string; // deliverable name
     gradeKey: string; // deliverable name (e.g., d0last)
     gradeValue: string; // score for deliverable key (use string rep for flexibility)
     gradeRequested: boolean; // was the result explicitly requested by the student
-    delivDetails: GradeDetail[];
+    gradeDetails: GradeDetail[];
 }
+
+/**
+ * Future interface for exposing TestRecords to courses for converting into their own GradeRecord.
+ */
+export interface TestContainer {
+    records: TestRecord[];
+}
+
+export interface TestRecord {
+    target: TestTarget;
+    entries: TestEntry[]
+}
+
+export interface TestTarget {
+    userName: string; // cwl
+    userUrl: string;
+    sNum: string; // may be removed in future
+    fName: string; // may be removed in future
+    lName: string; // may be removed in future
+    projectUrl: string; // full URL to project
+    projectName: string; // string name for project (e.g., cpsc310_team22)
+}
+
+export interface TestEntry {
+    timeStamp: number; // Date.getTime()
+    commitUrl: string; // full URL to commit corresponding to the row
+    delivId: string; // deliverable name
+    gradeKey: string; // deliverable name (e.g., d0last)
+    gradeValue: string; // score for deliverable key (use string rep for flexibility)
+    gradeRequested: boolean; // was the result explicitly requested by the student
+    gradeDetails: GradeDetail[];
+}
+
 
 /**
  * This is for extra detail about grades. E.g., if we wanted to return the test and cover score components as well.
@@ -42,27 +74,6 @@ export interface GradeDetail {
     value: string;
 }
 
-/**
- * This just makes it easier for the UI to render the rows
- */
-
-/*
-export interface RenderRow {
-    timeStamp: string;
-    userName: GradeCell; // cwl & link to profile
-    sNum: string; // may be removed in future
-    fName: string; // may be removed in future
-    lName: string; // may be removed in future
-    project: GradeCell | null;  // if null the row corresponds to more than one deliverable
-    gradeRequested: boolean;
-    grades: GradeCell[];
-}
-
-export interface GradeCell {
-    value: string;
-    html: string;
-}
-*/
 
 export class GradeView {
     private data: any; // TODO: add types
