@@ -14,17 +14,21 @@ export interface GradeContainer {
 }
 
 export interface GradeRow {
-    userName: string; // cwl
     timeStamp: number; // Date.getTime()
+
+    userName: string; // cwl
+    userUrl: string;
+    sNum: string; // may be removed in future
+    fName: string; // may be removed in future
+    lName: string; // may be removed in future
+    projectUrl: string; // full URL to project
+    projectName: string; // string name for project (e.g., cpsc310_team22)
+
     commitUrl: string; // full URL to commit corresponding to the row
     delivId: string; // deliverable name
     gradeKey: string; // deliverable name (e.g., d0last)
     gradeValue: string; // score for deliverable key (use string rep for flexibility)
-    projectUrl: string; // full URL to project
-    projectName: string; // string name for project (e.g., cpsc310_team22)
-    sNum: string; // may be removed in future
-    fName: string; // may be removed in future
-    lName: string; // may be removed in future
+    gradeRequested: boolean; // was the result explicitly requested by the student
     delivDetails: GradeDetail[];
 }
 
@@ -38,13 +42,19 @@ export interface GradeDetail {
     value: string;
 }
 
+/**
+ * This just makes it easier for the UI to render the rows
+ */
+
+/*
 export interface RenderRow {
     timeStamp: string;
-    userName: string; // cwl
+    userName: GradeCell; // cwl & link to profile
     sNum: string; // may be removed in future
     fName: string; // may be removed in future
     lName: string; // may be removed in future
-    project: GradeCell | null;
+    project: GradeCell | null;  // if null the row corresponds to more than one deliverable
+    gradeRequested: boolean;
     grades: GradeCell[];
 }
 
@@ -52,7 +62,7 @@ export interface GradeCell {
     value: string;
     html: string;
 }
-
+*/
 
 export class GradeView {
     private data: any; // TODO: add types
@@ -103,7 +113,7 @@ export class GradeView {
 
         data = data.response;
 
-        let processedData = this.process(data);
+        let processedData = this.processResponse(data);
 
         var gradeList = document.querySelector('#admin-grade-table');
         if (gradeList !== null) {
@@ -116,7 +126,8 @@ export class GradeView {
                 headers.push({id: h, text: h, sortable: true, defaultSort: defaultSort, sortDown: true});
                 defaultSort = false;
             }
-            // let headers = ['CWL', 'Student #', 'First', 'Last', 'Team'];
+
+            // this is a hack that should be dealt with better
             let numCells = headerRow.length - 5;
             if (this.delivId === 'all') {
                 numCells = headerRow.length - 4; // no team column
@@ -149,20 +160,17 @@ export class GradeView {
                         });
                         if (this.delivId !== 'all') {
                             r.push({
-                                value: row.team.value,
-                                html:  row.team.html
+                                value: row.projectName,
+                                html:  '<a href="' + row.projectUrl + '">' + row.projectName + '</a>'
                             });
                         }
 
-
                         for (let i = 0; i < numCells; i++) {
-                            // let cell: any = [];
                             let html = '';
                             let val = '';
                             if (typeof row.grades[i] !== 'undefined') {
-                                // cell = row[i];
-                                html = row.grades[i].html;
                                 val = row.grades[i].value;
+                                html = row.grades[i].html;
                             } else {
                                 html = '0'; // no record: 0
                                 val = '0'; // no record: 0
@@ -204,7 +212,7 @@ export class GradeView {
         }
     }
 
-    private process(data: GradeRow[]) {
+    private processResponse(data: GradeRow[]) {
 
         let students = {};
         let delivNamesMap = {};
@@ -228,9 +236,9 @@ export class GradeView {
         };
         let delivKeys = Object.keys(delivNamesMap).sort(customSort);
 
-        let headers = ['CWL', 'Student #', 'First', 'Last'];// , 'Team'];
+        let headers = ['CWL', 'Student #', 'First', 'Last'];
         if (this.delivId !== 'all') {
-            headers.push('Team');
+            headers.push('Project');
         }
         headers = headers.concat(delivKeys);
         students['_index'] = headers;
@@ -242,20 +250,14 @@ export class GradeView {
 
                 const student = students[userName];
                 const index = delivKeys.indexOf(delivKey);
-                // const index = headers.indexOf(delivKey);
-
-                const commitUrl = row.commitUrl;
-                const projectUrl = row.projectUrl;
-                const projectName = row.projectName;
-                // const projectUrl = commitUrl.substring(0, commitUrl.lastIndexOf('/commit/'));
-                // const projectName = projectUrl.substring(projectUrl.lastIndexOf('/') + 1);
 
                 student.timeStamp = row.timeStamp;
                 student.cwl = row.userName;
                 student.snum = row.sNum;
                 student.fName = row.fName;
                 student.lName = row.lName;
-                student.team = {value: projectName, html: '<a href="' + projectUrl + '">' + projectName + '</a>'};
+                student.projectName = row.projectName;
+                student.projectUrl = row.projectUrl;
 
                 if (typeof student.grades === 'undefined') {
                     student.grades = [];
@@ -263,7 +265,7 @@ export class GradeView {
 
                 student.grades[index] = {
                     value: row.gradeValue,
-                    html:  '<a href="' + commitUrl + '">' + row.gradeValue + '</a>'
+                    html:  '<a href="' + row.commitUrl + '">' + row.gradeValue + '</a>'
                 };
 
                 // row.delivDetails // UNUSED right now
@@ -282,5 +284,4 @@ export class GradeView {
         }
         return false;
     }
-
 }
