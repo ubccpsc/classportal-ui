@@ -63,6 +63,20 @@ export interface TestEntry {
     gradeDetails: GradeDetail[];
 }
 
+/**
+ * Proposed grade record.
+ */
+export interface GradeRecord {
+    userName: string;       // cwl
+    userUrl: string;
+    sNum: string;
+    fName: string;
+    lName: string;
+    delivId: string;
+    projectName: string;    // shouldn't be here, but this handles teams & individuals
+    projectUrl: string;
+    gradeDetails: GradeDetail[]
+}
 
 /**
  * This is for extra detail about grades. E.g., if we wanted to return the test and cover score components as well.
@@ -73,7 +87,6 @@ export interface GradeDetail {
     key: string;
     value: string;
 }
-
 
 export class GradeView {
     private data: any; // TODO: add types
