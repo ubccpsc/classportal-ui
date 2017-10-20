@@ -1,15 +1,6 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
-
-export interface DeliverablePayloadContainer {
-    response: DeliverablePayload[];
-}
-
-export interface DeliverablePayload {
-    id: string;
-    open: number; // timestamp
-    close: number; // timestamp
-}
+import {DeliverablePayload, DeliverablePayloadContainer} from "../Models";
 
 export class DeliverableView {
     private controller: AdminController;
