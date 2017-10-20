@@ -160,7 +160,22 @@ export class ResultView {
         }
     }
 
-    private processNewResponse(data: ResultPayload) {
+
+    /**
+     * Analyzes the complete results list for a deliverable (aka all test executions for a user
+     * or team) to create a single result for each student that can be used for a grade.
+     *
+     * This is essentially example code as a sample for course instructors to be used for
+     * analyzing result records. It is not expected that course instructors will emit
+     * StudentResults[] but will instead print a CSV for their own use (aka UBC Connect).
+     *
+     * By January it will also be possible to upload this CSV to ClassPortal to serve as
+     * a Grade record that will be served to the students.
+     *
+     * @param {ResultPayload} data
+     * @returns {StudentResults[]}
+     */
+    private convertResultsToGrades(data: ResultPayload) { // : StudentResults[]  (interface inline for clarity)
 
         interface StudentResults {
             userName: string;
