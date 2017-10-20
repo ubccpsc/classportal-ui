@@ -4,6 +4,16 @@ import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
 import {GradeRow, ResultPayload, ResultRecord, Student} from "../Models";
 
+
+/**
+ * Just used for rendering student results
+ */
+interface StudentResults {
+    userName: string;
+    student: Student;
+    executions: ResultRecord[];
+}
+
 export class ResultView {
     private data: any; // TODO: add types
     private processedData: GradeRow[]; // TODO: change to new type
@@ -26,8 +36,8 @@ export class ResultView {
             }
 
             let option = document.createElement("option");
-            option.text = 'All';
-            option.value = 'all';
+            option.text = 'Deliv';
+            option.value = 'null';
             (<any>delivSelect).add(option);
 
             for (let deliv of this.controller.deliverables) {
@@ -57,78 +67,87 @@ export class ResultView {
         // let processedData = this.processResponse(data);
         let processedData = this.convertResultsToGrades(data);
 
+        if (this.delivId === 'null' || this.delivId === null) {
+            this.delivId = null;
+            UI.showErrorToast("Please select a deliverable.");
+            return;
+        }
+
+
         var gradeList = document.querySelector('#admin-result-table');
         if (gradeList !== null) {
             gradeList.innerHTML = '';
 
             let headers: TableHeader[] = [];
-            const headerRow = processedData['_index'];
-            let defaultSort = true;
-            for (let h of headerRow) {
-                headers.push({id: h, text: h, sortable: true, defaultSort: defaultSort, sortDown: true});
-                defaultSort = false;
-            }
+            //const headerRow = processedData['_index'];
 
-            // this is a hack that should be dealt with better
-            let numCells = headerRow.length - 5;
-            if (this.delivId === 'all') {
-                numCells = headerRow.length - 4; // no team column
-            }
+            headers.push({id: 'userName', text: 'CWL', sortable: true, defaultSort: false, sortDown: true});
+            headers.push({id: 'studentNumber', text: 'Student #', sortable: true, defaultSort: false, sortDown: true});
+            headers.push({id: 'fName', text: 'First', sortable: true, defaultSort: false, sortDown: true});
+            headers.push({id: 'lName', text: 'Last', sortable: true, defaultSort: false, sortDown: true});
+            headers.push({id: 'project', text: 'Project', sortable: true, defaultSort: false, sortDown: true});
+            headers.push({id: 'grade', text: this.delivId + ' Grade', sortable: true, defaultSort: true, sortDown: true});
 
             let table = new SortableTable(headers, '#admin-result-table');
 
             for (let key of Object.keys(processedData)) {
-                if (key !== '_index') {
-                    if (typeof processedData[key] !== 'undefined' && typeof processedData[key].cwl !== 'undefined') {
-                        let row = processedData[key];
 
-                        let r: TableCell[] = [];
+                let row = processedData[key] as StudentResults;
 
-                        r.push({
-                            value: row.cwl,
-                            html:  '<a href="https://github.ubc.ca/' + row.cwl + '">' + row.cwl + '</a>'
-                        });
-                        r.push({
-                            value: row.snum,
-                            html:  row.snum
-                        });
-                        r.push({
-                            value: row.fName,
-                            html:  row.fName
-                        });
-                        r.push({
-                            value: row.lName,
-                            html:  row.lName
-                        });
-                        if (this.delivId !== 'all') {
-                            r.push({
-                                value: row.projectName,
-                                html:  '<a href="' + row.projectUrl + '">' + row.projectName + '</a>'
-                            });
+                // HACK: this does not print people who did nothing!
+                if (typeof row !== 'undefined' && typeof row.student.sNum !== 'undefined' && row.executions.length > 0) {
+                    let r: TableCell[] = [];
+
+                    r.push({
+                        value: row.userName,
+                        html:  '<a href="' + row.student.userUrl + '">' + row.userName + '</a>'
+                    });
+                    r.push({
+                        value: row.student.sNum,
+                        html:  row.student.sNum
+                    });
+                    r.push({
+                        value: row.student.fName,
+                        html:  row.student.fName
+                    });
+                    r.push({
+                        value: row.student.lName,
+                        html:  row.student.lName
+                    });
+                    r.push({
+                        value: row.executions[0].projectName,
+                        html:  '<a href="' + row.executions[0].projectUrl + '">' + row.executions[0].projectName + '</a>'
+                    });
+                    r.push({
+                        value: row.executions[0].grade,
+                        html:  '<a href="' + row.executions[0].commitUrl + '">' + row.executions[0].grade + '</a>'
+                    });
+
+                    /**
+                     * Should do this for the extraDetails
+                     */
+                    /*
+                    for (let i = 0; i < numCells; i++) {
+                        let html = '';
+                        let val = '';
+                        if (typeof row.grades[i] !== 'undefined') {
+                            val = row.grades[i].value;
+                            html = row.grades[i].html;
+                        } else {
+                            html = '0'; // no record: 0
+                            val = '0'; // no record: 0
                         }
-
-                        for (let i = 0; i < numCells; i++) {
-                            let html = '';
-                            let val = '';
-                            if (typeof row.grades[i] !== 'undefined') {
-                                val = row.grades[i].value;
-                                html = row.grades[i].html;
-                            } else {
-                                html = '0'; // no record: 0
-                                val = '0'; // no record: 0
-                            }
-                            r.push({
-                                value: val,
-                                html:  html
-                            });
-                        }
-                        table.addRow(r);
-                    } else {
-                        console.log('ResultView::render(..) - missing value for key: ' + key);
+                        r.push({
+                            value: val,
+                            html:  html
+                        });
                     }
+                    */
+                    table.addRow(r);
                 } else {
-                    // do nothing; this is the header row
+                    console.log('ResultView::render(..) - missing value for key: ' + key);
                 }
+
             }
             table.generate();
         }
@@ -180,14 +199,6 @@ export class ResultView {
         console.log('ResultsView::convertResultsToGrades(..) - start');
         try {
             const start = new Date().getTime();
-
-
-            interface StudentResults {
-                userName: string;
-                student: Student;
-                // projectUrl: string | null;
-                executions: ResultRecord[];
-            }
 
             // Just a caveat; this could all be done in one pass
             // but is split up for clarity into 4 steps:
