@@ -62,7 +62,7 @@ export class AdminController {
         console.log('AdminController::adminResultsPage - start');
         this.resultView.updateTitle();
 
-        UI.showModal('Test results being retrieved. Should take < 10 seconds.');
+        UI.showModal('Test results being retrieved. This is a slow query.');
 
         // configure selects
         this.resultView.configure();

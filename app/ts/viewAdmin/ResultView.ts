@@ -54,7 +54,8 @@ export class ResultView {
 
         data = data.response;
 
-        let processedData = this.processResponse(data);
+        // let processedData = this.processResponse(data);
+        let processedData = this.convertResultsToGrades(data);
 
         var gradeList = document.querySelector('#admin-result-table');
         if (gradeList !== null) {
@@ -176,94 +177,121 @@ export class ResultView {
      * @returns {StudentResults[]}
      */
     private convertResultsToGrades(data: ResultPayload) { // : StudentResults[]  (interface inline for clarity)
+        console.log('ResultsView::convertResultsToGrades(..) - start');
+        try {
+            const start = new Date().getTime();
 
-        interface StudentResults {
-            userName: string;
-            student: Student;
-            projectUrl: string | null;
-            executions: ResultRecord[];
-        }
 
-        // Just a caveat; this could all be done in one pass
-        // but is split up for clarity into 4 steps:
-        // 1) Create a student map
-        // 2) Update students to know what their projectUrl is for the deliverable
-        //    This is needed for teams, but not for single projects (but will work for both)
-        // 3) Add executions to the Student record
-        // 4) Choose the execution we care about from the Student record
-
-        // map: student.userName -> StudentResults
-        let studentMap: { [userName: string]: StudentResults } = {};
-        for (let student of data.students) {
-            const studentResult: StudentResults = {
-                userName:   student.userName,
-                student:    student,
-                projectUrl: null,
-                executions: []
-            };
-            studentMap[student.userName] = studentResult;
-        }
-
-        // map execution.projectUrl -> [StudentResults]
-        let projectMap: { [projectUrl: string]: StudentResults[] } = {};
-        for (let record of data.records) {
-            if (typeof studentMap[record.userName] !== 'undefined') {
-                const key = record.projectUrl;
-                if (typeof  projectMap[key] === 'undefined') {
-                    // not in map
-                    projectMap[record.projectUrl] = [];
-                }
-                const existingStudent = projectMap[key].find(function (student: StudentResults) {
-                    return student.userName === record.userName;
-                });
-                if (existingStudent === null) {
-                    // add the student to the projectUrl
-                    projectMap[key].push(studentMap[record.userName]);
-                }
-            } else {
-                // this only happens if the student cause a result but was not in the student list
-                // could happen for TAs / instructors, but should not happen for students
-                console.warn('WARN: unknown student: ' + record.userName);
+            interface StudentResults {
+                userName: string;
+                student: Student;
+                // projectUrl: string | null;
+                executions: ResultRecord[];
             }
-        }
 
-        // add all project executions to student
-        for (let record of data.records) {
-            const studentResult = studentMap[record.userName];
-            const project = projectMap[record.projectUrl];
-            if (typeof project !== 'undefined' && typeof studentResult !== 'undefined') {
-                for (let s of project) {
-                    // all students associated with that projectUrl
-                    s.executions.push(record);
-                }
-            } else {
-                // drop the record (either the student does not exist or the project does not exist).
-                // project case would happen if in the last loop we dropped an execution from a TA.
+            // Just a caveat; this could all be done in one pass
+            // but is split up for clarity into 4 steps:
+            // 1) Create a student map
+            // 2) Update students to know what their projectUrl is for the deliverable
+            //    This is needed for teams, but not for single projects (but will work for both)
+            // 3) Add executions to the Student record
+            // 4) Choose the execution we care about from the Student record
+
+            // map: student.userName -> StudentResults
+            let studentMap: { [userName: string]: StudentResults } = {};
+            for (let student of data.students) {
+                const studentResult: StudentResults = {
+                    userName:   student.userName,
+                    student:    student,
+                    // projectUrl: null,
+                    executions: []
+                };
+                studentMap[student.userName] = studentResult;
             }
+
+            // map execution.projectUrl -> [StudentResults]
+            let projectMap: { [projectUrl: string]: StudentResults[] } = {};
+            for (let record of data.records) {
+                if (typeof studentMap[record.userName] !== 'undefined') {
+                    const key = record.projectName; //record.projectUrl;
+                    if (key.length > 0) {
+                        // ignore missing keys
+                        if (typeof  projectMap[key] === 'undefined') {
+                            // not in map
+                            projectMap[key] = [];
+                        }
+                        const existingStudent = projectMap[key].find(function (student: StudentResults) {
+                            return student.userName === record.userName;
+                        });
+                        if (typeof existingStudent === 'undefined') {
+                            // add the student to the projectUrl
+                            projectMap[key].push(studentMap[record.userName]);
+                        }
+                        // studentMap[record.userName].projectUrl = key; // HACK: is name now because projectUrl is not working
+                    } else {
+                        console.warn('WARN: missing key: ' + record.commitUrl);
+                    }
+                } else {
+                    // this only happens if the student cause a result but was not in the student list
+                    // could happen for TAs / instructors, but should not happen for students
+                    console.log('WARN: unknown student (probably a TA): ' + record.userName);
+                }
+            }
+
+            // add all project executions to student
+            for (let record of data.records) {
+                const studentResult = studentMap[record.userName];
+                const project = projectMap[record.projectName]; // HACK: should be projectUrl
+                if (typeof project !== 'undefined' && typeof studentResult !== 'undefined') {
+                    for (let s of project) {
+                        // all students associated with that projectUrl
+                        s.executions.push(record);
+                    }
+                } else {
+                    // drop the record (either the student does not exist or the project does not exist).
+                    // project case would happen if in the last loop we dropped an execution from a TA.
+                }
+            }
+
+            // now choose the record we want to emit per-student
+            let studentFinal: StudentResults[] = [];
+            for (let userName of Object.keys(studentMap)) {
+                const studentResult = studentMap[userName];
+                const executionsToConsider = studentResult.executions;
+
+                let finalStudentRecord: StudentResults;
+
+                if (executionsToConsider.length > 0) {
+
+                    // in this case we're going to take the last execution
+                    // but you can use any of the ResultRecord rows here (branchName, gradeRequested, grade, etc.)
+                    const orderedExecutions = executionsToConsider.sort(function (a: ResultRecord, b: ResultRecord) {
+                        return b.timeStamp - a.timeStamp;
+                    });
+                    const gradedResult = orderedExecutions[0];
+
+                    finalStudentRecord = {
+                        userName:   userName,
+                        student:    studentResult.student,
+                        executions: [gradedResult]
+                    };
+                } else {
+                    // no records for student
+                    console.log('WARN: no execution records for student: ' + userName);
+                    finalStudentRecord = {
+                        userName:   userName,
+                        student:    studentResult.student,
+                        executions: [] // empty array (means 0 probably)
+                    };
+                }
+                studentFinal.push(finalStudentRecord);
+            }
+            console.log('Result->Grade conversion complete for: ' + data.students.length +
+                ' students and ' + data.records.length + ' records. Took: ' + (new Date().getTime() - start) + ' ms');
+            return studentFinal;
+        } catch (err) {
+            console.error('ResultView::convertResultsToGrades(..) - ERROR: ' + err.members, err);
         }
-
-        // now choose the record we want to emit per-student
-        let studentFinal: StudentResults[] = [];
-        for (let userName of Object.keys(studentMap)) {
-            const studentResult = studentMap[userName];
-            const executionsToConsider = studentResult.executions;
-
-            // in this case we're going to take the last execution
-            // but you can use any of the ResultRecord rows here (branchName, gradeRequested, grade, etc.)
-            const orderedExecutions = executionsToConsider.sort(function (a: ResultRecord, b: ResultRecord) {
-                return a.timeStamp - b.timeStamp;
-            });
-            const gradedResult = orderedExecutions[0];
-
-            let finalStudentRecord: StudentResults = {
-                userName:   userName,
-                student:    studentResult.student,
-                projectUrl: gradedResult.projectUrl,
-                executions: [gradedResult]
-            };
-            studentFinal.push(finalStudentRecord);
-        }
-        return studentFinal;
     }
 
     private processResponse(data: GradeRow[]) {
