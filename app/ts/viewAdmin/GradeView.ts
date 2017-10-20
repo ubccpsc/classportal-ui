@@ -44,22 +44,22 @@ export interface TestRecord {
 }
 
 export interface TestTarget {
-    userName: string; // cwl
-    userUrl: string;
-    sNum: string; // may be removed in future
-    fName: string; // may be removed in future
-    lName: string; // may be removed in future
-    projectUrl: string; // full URL to project
-    projectName: string; // string name for project (e.g., cpsc310_team22)
+    userName: string;           // cwl
+    userUrl: string;            // full URL to user
+    sNum: string;
+    fName: string;
+    lName: string;
+    projectUrl: string;         // full URL to project
+    projectName: string;        // string name for project (e.g., cpsc310_team22)
 }
 
 export interface TestEntry {
-    timeStamp: number; // Date.getTime()
-    commitUrl: string; // full URL to commit corresponding to the row
-    delivId: string; // deliverable name
-    gradeKey: string; // deliverable name (e.g., d0last)
-    gradeValue: string; // score for deliverable key (use string rep for flexibility)
-    gradeRequested: boolean; // was the result explicitly requested by the student
+    timeStamp: number;          // timestamp of the webhoook push event
+    commitUrl: string;          // full URL to commit corresponding to the row
+    commitBranch: string;       // branch name
+    delivId: string;            // deliverable name
+    finalGrade: number;
+    gradeRequested: boolean;    // was the result explicitly requested by the student
     gradeDetails: GradeDetail[];
 }
 
@@ -79,9 +79,15 @@ export interface GradeRecord {
 }
 
 /**
- * This is for extra detail about grades. E.g., if we wanted to return the test and cover score components as well.
+ * This is for extra detail about grades.
  *
- * Will probably be useful for future grade extensions.
+ * This will not be used this term, but future containers can emit things like:
+ *
+ * {key: 'testScore', value: 92}
+ * {key: 'branchCoverage', value: 65}
+ *
+ * And those can be forwarded back with the GradeRecords.
+ *
  */
 export interface GradeDetail {
     key: string;
