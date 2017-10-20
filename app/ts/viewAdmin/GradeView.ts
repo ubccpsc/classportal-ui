@@ -13,6 +13,9 @@ export interface GradeContainer {
     grades: GradeRow[];
 }
 
+/**
+ * This is the old format we're going to get away from shortly.
+ */
 export interface GradeRow {
     userName: string; // cwl
     userUrl: string;
@@ -28,7 +31,7 @@ export interface GradeRow {
     gradeKey: string; // deliverable name (e.g., d0last)
     gradeValue: string; // score for deliverable key (use string rep for flexibility)
     gradeRequested: boolean; // was the result explicitly requested by the student
-    gradeDetails: GradeDetail[];
+    gradeDetails: ExtraDetail[];
 }
 
 /**
@@ -49,6 +52,7 @@ export interface TestTarget {
     sNum: string;
     fName: string;
     lName: string;
+    labId: string;
     projectUrl: string;         // full URL to project
     projectName: string;        // string name for project (e.g., cpsc310_team22)
 }
@@ -60,11 +64,36 @@ export interface TestEntry {
     delivId: string;            // deliverable name
     finalGrade: number;
     gradeRequested: boolean;    // was the result explicitly requested by the student
-    gradeDetails: GradeDetail[];
+    gradeDetails: ExtraDetail[];
 }
 
 /**
- * Proposed grade record.
+ * Required columns for CSV upload; the first row must contain thes labels with this case.
+ * If any of these are missing, the upload will be rejected.
+ * If the CSV contains more than one delivId, the upload will be rejected.
+ *
+ * Uploads will always overwrite all previous records for each student for that deliverable.
+ *
+ * You can add _any_ other columns you want. Only columns with headers will be considered.
+ * The column header _must_ not collide with any existing column (from any deliverable);
+ * this will _not_ be validated by the system.
+ *
+ * The grade and any additional columns you add will be visible to students when they view
+ * their grade details.
+ *
+ * Empty cells will be treated as ''.
+ *
+ * userName
+ * sNum
+ * labId
+ * projectName
+ * delivId
+ * grade
+ *
+ */
+
+/**
+ * Proposed grade record for our backend tracking & supporting editing.
  */
 export interface GradeRecord {
     userName: string;       // cwl
@@ -72,10 +101,17 @@ export interface GradeRecord {
     sNum: string;
     fName: string;
     lName: string;
+}
+
+/**
+ * Details about a graded deliverable.
+ */
+export interface GradeDeliverable {
     delivId: string;
-    projectName: string;    // shouldn't be here, but this handles teams & individuals
+    projectName: string;        // shouldn't be here, but this handles teams & individuals
     projectUrl: string;
-    gradeDetails: GradeDetail[]
+    grade: string;
+    gradeDetails: ExtraDetail[]
 }
 
 /**
@@ -86,10 +122,11 @@ export interface GradeRecord {
  * {key: 'testScore', value: 92}
  * {key: 'branchCoverage', value: 65}
  *
- * And those can be forwarded back with the GradeRecords.
+ * And those can be forwarded back with the TestRecord.
+ *
  *
  */
-export interface GradeDetail {
+export interface ExtraDetail {
     key: string;
     value: string;
 }
