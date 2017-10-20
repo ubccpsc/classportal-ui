@@ -7,7 +7,7 @@ import {Network} from '../util/Network';
 import {DashboardView} from "../viewAdmin/DashboardView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
 import {TeamView} from "../viewAdmin/TeamView";
-import {GradeView} from "../viewAdmin/GradeView";
+import {ResultView} from "../viewAdmin/ResultView";
 import {GitHubView} from "../viewAdmin/GitHubView";
 import {App} from "../App";
 
@@ -17,7 +17,7 @@ export class AdminController {
 
     private deliverableView = new DeliverableView(this);
     private teamView = new TeamView(this);
-    private gradeView = new GradeView(this);
+    private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
     private dashboardView = new DashboardView(this);
 
@@ -60,17 +60,17 @@ export class AdminController {
 
     public adminGradesPage() {
         console.log('AdminController::adminGradesPage - start');
-        this.gradeView.updateTitle();
+        this.resultView.updateTitle();
 
-        UI.showModal('Grades being retrieved. Should take < 10 seconds.');
+        UI.showModal('Test results being retrieved. Should take < 10 seconds.');
 
         // configure selects
-        this.gradeView.configure();
+        this.resultView.configure();
 
         // /:courseId/admin/grades
         const url = this.app.backendURL + this.courseId + '/admin/grades/results';
         const payload: object = {allDeliverables: true} // {deliverableNum: 'd1', gradeOnly: true};
-        Network.handleRemotePost(url, payload, this.gradeView, UI.handleError);
+        Network.handleRemotePost(url, payload, this.resultView, UI.handleError);
     }
 
     public adminDashboardPage(delivId?: string, teamId?: string | null) {

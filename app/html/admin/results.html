@@ -18,9 +18,9 @@
                         <ons-checkbox id="admin-grade-last"
                                       style="padding-left: 2em; padding-right: 1em; vertical-align: middle;"></ons-checkbox>
                     </div>
-                    <ons-button onclick="myApp.adminController.gradeView.update()">Update Results</ons-button>
+                    <ons-button onclick="myApp.adminController.resultView.update()">Update Results</ons-button>
                     <span>&nbsp;&nbsp;</span>
-                    <ons-button id='gradeDataDownloadButton' style='display: none;' onclick="myApp.adminController.gradeView.downloadData()">Download Result Data</ons-button>
+                    <ons-button id='gradeDataDownloadButton' style='display: none;' onclick="myApp.adminController.resultView.downloadData()">Download Result Data</ons-button>
                 </ons-col>
             </ons-row>
         </ons-list-item>
@@ -45,7 +45,7 @@
 
 
     <ons-list id="admin-grade-list">
-        <ons-list-header>Grades</ons-list-header>
+        <ons-list-header>Results</ons-list-header>
         <ons-list-item>
             <div id="admin-grade-table" style="width:100%;">None</div>
         </ons-list-item>

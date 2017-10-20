@@ -131,7 +131,7 @@ export interface ExtraDetail {
     value: string;
 }
 
-export class GradeView {
+export class ResultView {
     private data: any; // TODO: add types
     private processedData: GradeRow[]; // TODO: change to new type
 
@@ -168,7 +168,7 @@ export class GradeView {
 
     public updateTitle() {
         // document.querySelector('#adminTabsHeader').innerHTML = data.course;
-        document.querySelector('#adminTabsHeader').innerHTML = "Grades";
+        document.querySelector('#adminTabsHeader').innerHTML = "AutoTest Results";
     }
 
     public render(data: any) {
