@@ -1,7 +1,7 @@
 <ons-page id="adminGradesPage">
 
     <ons-list id="admin-grade-list">
-        <ons-list-header>Configure Grade View:</ons-list-header>
+        <ons-list-header>Configure Result View:</ons-list-header>
         <ons-list-item style="text-align: center;">
             <ons-row>
                 <ons-col style="display: flex; justify-content: center; align-items: center;">
@@ -18,7 +18,9 @@
                         <ons-checkbox id="admin-grade-last"
                                       style="padding-left: 2em; padding-right: 1em; vertical-align: middle;"></ons-checkbox>
                     </div>
-                    <ons-button onclick="myApp.adminController.gradeView.update()">Update Grades</ons-button>
+                    <ons-button onclick="myApp.adminController.gradeView.update()">Update Results</ons-button>
+                    <span>&nbsp;&nbsp;</span>
+                    <ons-button id='gradeDataDownloadButton' style='display: none;' onclick="myApp.adminController.gradeView.downloadData()">Download Result Data</ons-button>
                 </ons-col>
             </ons-row>
         </ons-list-item>

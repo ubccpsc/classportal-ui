@@ -133,6 +133,7 @@ export interface ExtraDetail {
 
 export class GradeView {
     private data: any; // TODO: add types
+    private processedData: GradeRow[]; // TODO: change to new type
 
     private delivId = 'all';
     private lastOnly = false;
@@ -273,6 +274,13 @@ export class GradeView {
             this.lastOnly = lastOnly;
 
             this.render(this.data);
+
+            if (this.delivId !== 'all') {
+                document.getElementById('gradeDataDownloadButton').style.display = 'block';
+            } else {
+                document.getElementById('gradeDataDownloadButton').style.display = 'none';
+            }
+
         } else {
             console.log('GradeView::update() - ERROR: element missing');
             return;
@@ -351,4 +359,50 @@ export class GradeView {
         }
         return false;
     }
+
+    public downloadData() {
+        console.log('GradeView::downloadData() - start');
+        this.downloadJSON(this.data, 'TestResults_' + this.delivId + '.json');
+    }
+
+    // not used yet
+    // code from: https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
+    private downloadJSON(json: any, fileName: string) {
+
+        let downloadLink: HTMLAnchorElement;
+
+        // CSV file
+        let jsonFile = new Blob([JSON.stringify(json, null, '\t')], {type: 'application/json'});
+
+        if (document.getElementById('resultDataDownload') === null) {
+            // Download link
+            downloadLink = document.createElement('a');
+            downloadLink.innerHTML = 'Download Table as CSV';
+            downloadLink.id = 'resultDataDownload';
+            document.body.appendChild(downloadLink);
+        } else {
+            downloadLink = document.getElementById('resultDataDownload') as HTMLAnchorElement;
+        }
+        /*
+        let table = document.querySelector(this.divName);
+        table.appendChild(downloadLink);
+        */
+
+        // File name
+        downloadLink.download = fileName;
+
+        // Create a link to the file
+        downloadLink.href = window.URL.createObjectURL(jsonFile);
+
+        // Hide download link
+        downloadLink.style.display = 'none';
+        downloadLink.style.textAlign = 'center';
+
+        // Add the link to DOM
+        // document.body.appendChild(downloadLink);
+
+        // Click download link
+        downloadLink.click();
+    }
+
 }
