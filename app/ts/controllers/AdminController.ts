@@ -58,8 +58,8 @@ export class AdminController {
         Network.handleRemote(url, this.teamView, UI.handleError);
     }
 
-    public adminGradesPage() {
-        console.log('AdminController::adminGradesPage - start');
+    public adminResultsPage() {
+        console.log('AdminController::adminResultsPage - start');
         this.resultView.updateTitle();
 
         UI.showModal('Test results being retrieved. Should take < 10 seconds.');

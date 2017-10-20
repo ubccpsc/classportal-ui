@@ -145,9 +145,9 @@ export class ResultView {
     }
 
     public configure() {
-        console.log('GradeView::configure() - start');
+        console.log('ResultView::configure() - start');
         if (this.controller.deliverables !== null) {
-            const delivSelect = document.getElementById('admin-grade-deliverable-select') as OnsSelectElement;
+            const delivSelect = document.getElementById('admin-result-deliverable-select') as OnsSelectElement;
             while (delivSelect.options.length > 0) {
                 delivSelect.remove();
             }
@@ -173,17 +173,17 @@ export class ResultView {
 
     public render(data: any) {
 
-        console.log('GradeView::render(..) - start');
+        console.log('ResultView::render(..) - start');
         this.updateTitle();
 
-        // console.log('GradeView::render(..) - data: ' + JSON.stringify(data));
+        // console.log('ResultView::render(..) - data: ' + JSON.stringify(data));
         this.data = data;
 
         data = data.response;
 
         let processedData = this.processResponse(data);
 
-        var gradeList = document.querySelector('#admin-grade-table');
+        var gradeList = document.querySelector('#admin-result-table');
         if (gradeList !== null) {
             gradeList.innerHTML = '';
 
@@ -201,7 +201,7 @@ export class ResultView {
                 numCells = headerRow.length - 4; // no team column
             }
 
-            let table = new SortableTable(headers, '#admin-grade-table');
+            let table = new SortableTable(headers, '#admin-result-table');
 
             for (let key of Object.keys(processedData)) {
                 if (key !== '_index') {
@@ -250,7 +250,7 @@ export class ResultView {
                         }
                         table.addRow(r);
                     } else {
-                        console.log('GradeView::render(..) - missing value for key: ' + key);
+                        console.log('ResultView::render(..) - missing value for key: ' + key);
                     }
                 } else {
                     // do nothing; this is the header row
@@ -262,9 +262,9 @@ export class ResultView {
     }
 
     public update() {
-        console.log('GradeView::update() - start');
-        const delivSelect = document.getElementById('admin-grade-deliverable-select') as OnsSelectElement;
-        const lastCheckbox = document.getElementById('admin-grade-last') as OnsCheckboxElement;
+        console.log('ResultView::update() - start');
+        const delivSelect = document.getElementById('admin-result-deliverable-select') as OnsSelectElement;
+        const lastCheckbox = document.getElementById('admin-result-last') as OnsCheckboxElement;
 
         if (delivSelect !== null && lastCheckbox !== null) {
             let delivId = delivSelect.value;
@@ -276,13 +276,13 @@ export class ResultView {
             this.render(this.data);
 
             if (this.delivId !== 'all') {
-                document.getElementById('gradeDataDownloadButton').style.display = 'block';
+                document.getElementById('resultDataDownloadButton').style.display = 'block';
             } else {
-                document.getElementById('gradeDataDownloadButton').style.display = 'none';
+                document.getElementById('resultDataDownloadButton').style.display = 'none';
             }
 
         } else {
-            console.log('GradeView::update() - ERROR: element missing');
+            console.log('ResultView::update() - ERROR: element missing');
             return;
         }
     }
@@ -361,7 +361,7 @@ export class ResultView {
     }
 
     public downloadData() {
-        console.log('GradeView::downloadData() - start');
+        console.log('ResultView::downloadData() - start');
         this.downloadJSON(this.data, 'TestResults_' + this.delivId + '.json');
     }
 

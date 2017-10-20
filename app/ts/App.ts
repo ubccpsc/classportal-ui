@@ -140,15 +140,14 @@ export class App {
 
             if (that.studentController !== null) {
                 if (typeof that.studentController[pageName] === 'function') {
-                    that.studentController[pageName]();//(page);
+                    that.studentController[pageName]();
                 }
             }
             if (that.adminController !== null) {
                 if (typeof that.adminController[pageName] === 'function') {
-                    that.adminController[pageName]()//(page);
+                    that.adminController[pageName]();
                 }
             }
-
         });
     }
 
