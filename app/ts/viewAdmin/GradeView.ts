@@ -62,7 +62,7 @@ export interface TestEntry {
     commitUrl: string;          // full URL to commit corresponding to the row
     commitBranch: string;       // branch name
     delivId: string;            // deliverable name
-    finalGrade: number;
+    grade: string;              // string, just in case people want to use letters instead of numbers
     gradeRequested: boolean;    // was the result explicitly requested by the student
     gradeDetails: ExtraDetail[];
 }
