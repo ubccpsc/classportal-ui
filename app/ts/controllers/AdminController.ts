@@ -58,9 +58,14 @@ export class AdminController {
         Network.handleRemote(url, this.teamView, UI.handleError);
     }
 
-    public adminResultsPage() {
-        console.log('AdminController::adminResultsPage - start');
+    public adminResultsPage(delivId?: string) {
+        console.log('AdminController::adminResultsPage( ' + delivId + ' ) - start');
         this.resultView.updateTitle();
+
+        if (typeof delivId === 'undefined' || delivId === null || delivId === 'null') {
+            console.log('AdminController::adminResultsPage - skipped; select deliverable.');
+            return;
+        }
 
         UI.showModal('Test results being retrieved. This is a slow query.');
 

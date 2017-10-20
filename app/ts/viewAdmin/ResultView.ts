@@ -4,6 +4,7 @@ import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
 import {GradeRow, ResultPayload, ResultRecord, Student} from "../Models";
 
+declare var myApp: any;
 
 /**
  * Just used for rendering student results
@@ -55,25 +56,21 @@ export class ResultView {
     }
 
     public render(data: any) {
-
         console.log('ResultView::render(..) - start');
         this.updateTitle();
 
-        // console.log('ResultView::render(..) - data: ' + JSON.stringify(data));
         this.data = data;
-
         data = data.response;
 
         // let processedData = this.processResponse(data);
         let processedData = this.convertResultsToGrades(data);
 
-        if (this.delivId === 'null' || this.delivId === null) {
-            this.delivId = null;
-            UI.showErrorToast("Please select a deliverable.");
-            return;
+        if (this.delivId !== 'null' && this.delivId !== null) {
+            document.getElementById('resultDataDownloadButton').style.display = 'block';
+        } else {
+            document.getElementById('resultDataDownloadButton').style.display = 'none';
         }
-
-
+        
         var gradeList = document.querySelector('#admin-result-table');
         if (gradeList !== null) {
             gradeList.innerHTML = '';
@@ -166,13 +163,13 @@ export class ResultView {
             this.delivId = delivId;
             this.lastOnly = lastOnly;
 
-            this.render(this.data);
-
-            if (this.delivId !== 'all') {
-                document.getElementById('resultDataDownloadButton').style.display = 'block';
-            } else {
-                document.getElementById('resultDataDownloadButton').style.display = 'none';
+            if (this.delivId === 'null' || this.delivId === null) {
+                this.delivId = null;
+                UI.showErrorToast("Please select a deliverable.");
+                return;
             }
+
+            myApp.adminController.adminResultsPage(delivId);
 
         } else {
             console.log('ResultView::update() - ERROR: element missing');
