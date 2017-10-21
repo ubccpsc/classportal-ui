@@ -7,7 +7,7 @@ import {GradeRow, ResultPayload, ResultRecord, Student} from "../Models";
 declare var myApp: any;
 
 /**
- * Just used for rendering student results
+ * Internal object for tracking students and executions.
  */
 interface StudentResults {
     userName: string;

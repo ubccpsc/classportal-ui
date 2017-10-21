@@ -9,7 +9,7 @@
  **/
 
 /**
- * Standard student object.
+ * All of the information ClassPortal knows about a given student.
  */
 export interface Student {
     userName: string;           // CWL: Primary Key for object
@@ -96,11 +96,20 @@ export interface ResultPayloadContainer {
     response: ResultPayload;
 }
 
+/**
+ * Aggregates all students and records for a single deliverable.
+ *
+ * students[]   will contain _all_ students in the course, whether they invoked AutoTest or not.
+ * records[]    will contain _all_ executions within the valid time range for that deliverable.
+ */
 export interface ResultPayload {
-    students: Student[];        // _all_ students in the course, whether they invoked AutoTest or not
-    records: ResultRecord[];    // all records within the valid time range. Single deliverable only (v0 at least).
+    students: Student[];
+    records: ResultRecord[];
 }
 
+/**
+ * Each ResultRecord corresponds to a single AutoTest execution.
+ */
 export interface ResultRecord {
     userName: string;           // cwl; key back to Student
     timeStamp: number;          // timestamp of the webhoook push event
@@ -110,10 +119,10 @@ export interface ResultRecord {
 
     commitUrl: string;          // full URL to commit corresponding to the row
     branchName: string;         // branch name
-    gradeRequested: boolean;    // was the result explicitly requested by the student
+    gradeRequested: boolean;    // whether the result explicitly requested by the student
 
     delivId: string;            // deliverable name
-    grade: string;              // string, just in case people want to use letters instead of numbers
+    grade: string;              // final grade assigned by AutoTest for the execution
     gradeDetails: ResultDetail[];
 }
 
@@ -130,6 +139,7 @@ export interface ResultRecord {
  *
  * {key: 'testScore', value: '92'}
  * {key: 'branchCoverage', value: '65'}
+ * {key: 'totalTime', value: '10993'}
  *
  */
 export interface ResultDetail {
