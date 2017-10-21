@@ -82,8 +82,9 @@ export class ResultView {
             headers.push({id: 'studentNumber', text: 'Student #', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'fName', text: 'First', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'lName', text: 'Last', sortable: true, defaultSort: false, sortDown: true});
+            headers.push({id: 'lab', text: 'Lab', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'project', text: 'Project', sortable: true, defaultSort: false, sortDown: true});
-            headers.push({id: 'grade', text: this.delivId + ' Grade', sortable: true, defaultSort: true, sortDown: true});
+            headers.push({id: 'grade', text: this.delivId + ' Last Execution', sortable: true, defaultSort: true, sortDown: true});
 
             let table = new SortableTable(headers, '#admin-result-table');
 
@@ -109,6 +110,10 @@ export class ResultView {
                     r.push({
                         value: row.student.lName,
                         html:  row.student.lName
+                    });
+                    r.push({
+                        value: row.student.labId,
+                        html:  row.student.labId
                     });
                     if (row.executions[0].projectUrl !== '') {
                         r.push({
