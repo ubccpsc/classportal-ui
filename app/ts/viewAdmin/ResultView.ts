@@ -70,7 +70,7 @@ export class ResultView {
         } else {
             document.getElementById('resultDataDownloadButton').style.display = 'none';
         }
-        
+
         var gradeList = document.querySelector('#admin-result-table');
         if (gradeList !== null) {
             gradeList.innerHTML = '';
@@ -88,13 +88,12 @@ export class ResultView {
             let table = new SortableTable(headers, '#admin-result-table');
 
             for (let key of Object.keys(processedData)) {
-
                 let row = processedData[key] as StudentResults;
-
                 // HACK: this does not print people who did nothing!
-                if (typeof row !== 'undefined' && typeof row.student.sNum !== 'undefined' && row.executions.length > 0) {
-                    let r: TableCell[] = [];
+                if (typeof row !== 'undefined' && typeof row.student.sNum !== 'undefined') {
 
+
+                    let r: TableCell[] = [];
                     r.push({
                         value: row.userName,
                         html:  '<a href="' + row.student.userUrl + '">' + row.userName + '</a>'
@@ -111,15 +110,28 @@ export class ResultView {
                         value: row.student.lName,
                         html:  row.student.lName
                     });
-                    r.push({
-                        value: row.executions[0].projectName,
-                        html:  '<a href="' + row.executions[0].projectUrl + '">' + row.executions[0].projectName + '</a>'
-                    });
-                    r.push({
-                        value: row.executions[0].grade,
-                        html:  '<a href="' + row.executions[0].commitUrl + '">' + row.executions[0].grade + '</a>'
-                    });
-
+                    if (row.executions[0].projectUrl !== '') {
+                        r.push({
+                            value: row.executions[0].projectName,
+                            html:  '<a href="' + row.executions[0].projectUrl + '">' + row.executions[0].projectName + '</a>'
+                        });
+                    } else {
+                        r.push({
+                            value: row.executions[0].projectName,
+                            html:  row.executions[0].projectUrl
+                        });
+                    }
+                    if (row.executions[0].commitUrl !== '') {
+                        r.push({
+                            value: row.executions[0].grade,
+                            html:  '<a href="' + row.executions[0].commitUrl + '">' + row.executions[0].grade + '</a>'
+                        });
+                    } else {
+                        r.push({
+                            value: row.executions[0].grade,
+                            html:  row.executions[0].grade
+                        });
+                    }
                     /**
                      * Should do this for the extraDetails
                      */
@@ -220,24 +232,30 @@ export class ResultView {
             // map execution.projectUrl -> [StudentResults]
             let projectMap: { [projectUrl: string]: StudentResults[] } = {};
             for (let record of data.records) {
-                if (typeof studentMap[record.userName] !== 'undefined') {
+                const student = studentMap[record.userName];
+                if (typeof student !== 'undefined' && student.student.sNum !== '') {
                     const key = record.projectName; //record.projectUrl;
-                    if (key.length > 0) {
-                        // ignore missing keys
-                        if (typeof  projectMap[key] === 'undefined') {
-                            // not in map
-                            projectMap[key] = [];
+                    if (record.delivId === this.delivId && record.projectUrl !== '') {
+
+                        if (key.length > 0) { // } && record.timeStamp < new Date(2018, 10, 20, 8, 0, 0).getTime()) { // HACK: date shouldn't be hard coded
+                            // ignore missing keys
+                            if (typeof  projectMap[key] === 'undefined') {
+                                // not in map
+                                projectMap[key] = [];
+                            }
+                            const existingStudent = projectMap[key].find(function (student: StudentResults) {
+                                return student.userName === record.userName;
+                            });
+                            if (typeof existingStudent === 'undefined') {
+                                // add the student to the projectUrl
+                                projectMap[key].push(studentMap[record.userName]);
+                            }
+                            // studentMap[record.userName].projectUrl = key; // HACK: is name now because projectUrl is not working
+                        } else {
+                            console.warn('WARN: missing key: ' + record.commitUrl);
                         }
-                        const existingStudent = projectMap[key].find(function (student: StudentResults) {
-                            return student.userName === record.userName;
-                        });
-                        if (typeof existingStudent === 'undefined') {
-                            // add the student to the projectUrl
-                            projectMap[key].push(studentMap[record.userName]);
-                        }
-                        // studentMap[record.userName].projectUrl = key; // HACK: is name now because projectUrl is not working
                     } else {
-                        console.warn('WARN: missing key: ' + record.commitUrl);
+                        // wrong deliverable or malformed record
                     }
                 } else {
                     // this only happens if the student cause a result but was not in the student list
@@ -248,16 +266,18 @@ export class ResultView {
 
             // add all project executions to student
             for (let record of data.records) {
-                const studentResult = studentMap[record.userName];
-                const project = projectMap[record.projectName]; // HACK: should be projectUrl
-                if (typeof project !== 'undefined' && typeof studentResult !== 'undefined') {
-                    for (let s of project) {
-                        // all students associated with that projectUrl
-                        s.executions.push(record);
+                if (record.delivId === this.delivId && record.projectUrl !== '') { // right deliv and all info
+                    const studentResult = studentMap[record.userName];
+                    const project = projectMap[record.projectName]; // HACK: should be projectUrl
+                    if (typeof project !== 'undefined' && typeof studentResult !== 'undefined') {
+                        for (let s of project) {
+                            // all students associated with that projectUrl
+                            s.executions.push(record);
+                        }
+                    } else {
+                        // drop the record (either the student does not exist or the project does not exist).
+                        // project case would happen if in the last loop we dropped an execution from a TA.
                     }
-                } else {
-                    // drop the record (either the student does not exist or the project does not exist).
-                    // project case would happen if in the last loop we dropped an execution from a TA.
                 }
             }
 
@@ -267,8 +287,7 @@ export class ResultView {
                 const studentResult = studentMap[userName];
                 const executionsToConsider = studentResult.executions;
 
-                let finalStudentRecord: StudentResults;
-
+                let result: ResultRecord;
                 if (executionsToConsider.length > 0) {
 
                     // in this case we're going to take the last execution
@@ -276,22 +295,28 @@ export class ResultView {
                     const orderedExecutions = executionsToConsider.sort(function (a: ResultRecord, b: ResultRecord) {
                         return b.timeStamp - a.timeStamp;
                     });
-                    const gradedResult = orderedExecutions[0];
-
-                    finalStudentRecord = {
-                        userName:   userName,
-                        student:    studentResult.student,
-                        executions: [gradedResult]
-                    };
+                    result = orderedExecutions[0];
                 } else {
                     // no records for student
                     console.log('WARN: no execution records for student: ' + userName);
-                    finalStudentRecord = {
-                        userName:   userName,
-                        student:    studentResult.student,
-                        executions: [] // empty array (means 0 probably)
-                    };
+                    result = {
+                        userName:       userName,
+                        timeStamp:      -1, // never happened
+                        projectName:    'No Request', // unknown
+                        projectUrl:     '', //
+                        commitUrl:      '',
+                        branchName:     '',
+                        gradeRequested: false,
+                        grade:          '0',
+                        delivId:        this.delivId,
+                        gradeDetails:   []
+                    }
                 }
+                const finalStudentRecord = {
+                    userName:   userName,
+                    student:    studentResult.student,
+                    executions: [result]
+                };
                 studentFinal.push(finalStudentRecord);
             }
             console.log('Result->Grade conversion complete for: ' + data.students.length +

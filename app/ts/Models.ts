@@ -97,8 +97,8 @@ export interface ResultPayloadContainer {
 }
 
 export interface ResultPayload {
-    students: Student[]; // _all_ students in the course, whether they invoked AutoTest or not
-    records: ResultRecord[]; // all records within the valid time range. Single deliverable only (v0 at least).
+    students: Student[];        // _all_ students in the course, whether they invoked AutoTest or not
+    records: ResultRecord[];    // all records within the valid time range. Single deliverable only (v0 at least).
 }
 
 export interface ResultRecord {
