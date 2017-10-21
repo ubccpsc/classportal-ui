@@ -4,15 +4,17 @@ AutoTest and ClassPortal have been designed to let course staff assign grades as
 
 The core difficulty is that AutoTest is just a test runner. This means that for any given course deliverable each student and/or team will have many AutoTest records associated with them that needs to be distilled into a single final deliverable mark. Each course has complete flexibility for defining how a series of AutoTest records are translated into a single grade.
 
+To get an idea of why this is important, the fall 2017 instance of CPSC 310 ran 14,659 AutoTest executions for 322 students during d1. Since the students were working in pairs, these executions needed to be reduced to the 161 test executions that corresponded to real student grades (aka 99% of executions needed to be processed and ignored according to the course rubric). This document describes the process and data structures that enable staff to do this with complete flexibility.
+
 ## Process
 
 The high-level process for this task looks like this:
 
-1. AutoTest executes the student deliverables as they are received. Each of these executions generates `ResultRecord`.
+1. AutoTest executes the student deliverables as they are received. Each of these executions generates a `ResultRecord`.
 
 1. Course staff visit the _Test Results_ tab in ClassPortal, selects a single deliverable, and downloads a JSON file containing the complete AutoTest data for that deliverable (`ResultPayload`).
 
-1. Course staff iterate over the test execution data structure and apply their own course-specific rubric to determine a grade for the deliverable for each student. This can then be uploaded to UBC connect for further editing and sharing with the students. Starting January 2018 these will also be visible in ClassPortal for both displaying to students and editing by course staff.
+1. Course staff iterate over the test execution results (`ResultRecord`) and apply their own course-specific rubric to determine a grade for the deliverable for each student (`Student`). This can then be uploaded to UBC connect for further editing and sharing with the students. Starting January 2018 these will also be visible in ClassPortal for both displaying to students and editing by course staff.
 
 
 ## Transformation
@@ -41,6 +43,13 @@ The transformation process should be relatively straightforward. Our sample impl
 ## Data Types
 
 The current data types are shown here. These should be the same as those found in [Models.ts](https://github.com/ubccpsc/classportal-ui-next/blob/master/app/ts/Models.ts). If they are not, please file an issue.
+
+All fields should always be present for all objects. But if a field is not available on the backend it will be filled with a default value. These are:
+
+* for `string`: `''`
+* for `boolean`: `false`
+* for any array: `[]`
+* for any number: `-1`
 
 ### `ResultPayload`
 
@@ -136,7 +145,7 @@ export interface ResultDetail {
 
 ## FAQ
 
-* ***Why does this have to happen per-deliverable?*** This unfortunate limitation revolves around teams since some courses allow different teams per deliverable (and indeed individual projects are usually on independent projects). This is a limitation we may change in the future, but for now this ensures maximum flexibility. Usually grades are released as the deliverables are completed as well, so this will be less work after this term is completed.
+* ***Why does this have to be per-deliverable?*** This unfortunate limitation revolves around teams since some courses allow different teams per deliverable (and indeed individual projects are usually on independent projects). This is a limitation we may change in the future, but for now this ensures maximum flexibility. Usually grades are released as the deliverables are completed as well, so this will be less work after this term is completed. NOTE: once ClassPortal is able to render these grades they will be shown one row-per-student so this limitation will go away (not in the execution to grades mapping process, but at least during grade viewing and editing).
 
 * ***Why can't ClassPortal just do this automatically?*** Even with just considering `branchName` as a boolean (master or not), `gradeRequested`, and the notion of lastGrade vs maxGrade there are 8 combinations of grade exporter that are needed. To enable maximum flexibility, and to support manual overriding of grades (e.g., by manipulating the CSV directly), the TestRecord --> Grade translation process has been left to the course staff to handle. In future we may add the simplest version of this (e.g., last execution on a project regardless of other features) for courses that want to take a 'no exceptions' approach to translating grades.
 
