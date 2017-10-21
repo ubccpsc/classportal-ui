@@ -34,10 +34,9 @@ The transformation process should be relatively straightforward. Our sample impl
 
 * Some `Student` objects in `ResultPayload.students` will not correspond to real students (aka there will be course staff, test accounts, and TAs). You probably want to ignore these. One easy way to do this is to note that only real students will have a valid value for `Student.sNum`.
 
-* Some students will exist in `Student` but will _never_ make an execution that runs to completion and returns a grade. While you might want to give them 0, if they are working on course project they might technically deserve their team grade.
-
 * When the AutoTest container fails to exit successfully (e.g., returning a `finalGrade`, even if it is 0, the `ResultRecord`s might be corrupted. While we are going to fix this in future, right now the best way to deal with these is to check for `ResultRecord.projectUrl === ''` and drop those records.
 
+* Some students will exist in `Student` but will _never_ make an execution that runs to completion and returns a grade. While you might want to give them 0, if they are working on course project they might technically deserve their team grade. The problem though is because of the point above: we can't associate a student with a project with a student without at least one execution. We are working on fixing this, but it is a rare edge case we need to be aware of for now. (Really the bar is not high here: a student just needs to run AutoTest once successfully. In 310d1 this only came up once across 14,000+ executions).
 
 ## Data Types
 
