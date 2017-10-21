@@ -17,9 +17,9 @@ The high-level process for this task looks like this:
 
 ## Transformation
 
-The transformation process should be relatively straightforward. While it could be handled in one large loop, we find it easiest to split it into five steps:
+The transformation process should be relatively straightforward. Our sample implementation of this can be found in [ResultView::convertResultsToGrades](https://github.com/ubccpsc/classportal-ui-next/blob/master/app/ts/viewAdmin/ResultView.ts). While it could be handled in one large loop, we find it easiest to split it into five steps:
 
-1. Create a map from `userName` to `Student` objects (`studentMap`) by iterating through `ResultPayload.students`. One thing to note here is that course staff & TAs may have records here that you wish to ignore. One easy way to do this is to note that only students will have a valid value for `Student.sNum`.
+1. Create a map from `userName` to `Student` objects (`studentMap`) by iterating through `ResultPayload.students`. 
 
 1. Loop through `ResultPayload.records` to determine which project each student was associated with. This isn't strictly needed for individual projects, but is required for teams. For single projects though it still works fine because they work on a project too so there is no harm in including this step. This creates a `projectMap` that maps `ResultRecord.projectUrl` to a student (e.g.,  by their `userName` or some other internal data structure).
 
@@ -28,6 +28,16 @@ The transformation process should be relatively straightforward. While it could 
 1. The key part of this process involves iterating through the students in the course and for each student, examining all of the executions their team has made to determine which one corresponds to their final grade. Usually we sort by `ResultRecord.timeStamp` before we proceed. Useful fields in this process include `timeStamp` (e.g., for finding the last execution), `grade` (e.g., for finding the max grade), `branchName` (e.g., for figuring out if the commit was on master or not), and `gradeRequested` (e.g., for determining if the grade was explicitly requested by the student). 
 
 1. Once this process is complete, the data should be exported in a CSV. This can be any format UBC Connect uses; further detail about the CSV needed to upload the grades back to ClassPortal will be included here once they are known.
+
+#### Things to watch out for:
+
+
+* Some `Student` objects in `ResultPayload.students` will not correspond to real students (aka there will be course staff, test accounts, and TAs). You probably want to ignore these. One easy way to do this is to note that only real students will have a valid value for `Student.sNum`.
+
+* Some students will exist in `Student` but will _never_ make an execution that runs to completion and returns a grade. While you might want to give them 0, if they are working on course project they might technically deserve their team grade.
+
+* When the AutoTest container fails to exit successfully (e.g., returning a `finalGrade`, even if it is 0, the `ResultRecord`s might be corrupted. While we are going to fix this in future, right now the best way to deal with these is to check for `ResultRecord.projectUrl === ''` and drop those records.
+
 
 ## Data Types
 
