@@ -1,3 +1,9 @@
+# TODO: before we can release
+
+1. Andrew: Backend has to return rows per-deliverable (getting a 500 now when I change `AdminController` to do this).
+1. Andrew: Need to handle `REPORT_FAILED` better so fields are right. We can assign `grade: 0` for these, but we should really have the right data to otherwise populate the `ResultRecord` for these executions.
+1. Reid: Sample code needs to be updated to reflect the above (will make things less verbose).
+
 # AutoTest, ClassPortal, and Grades
 
 AutoTest and ClassPortal have been designed to let course staff assign grades as flexibly as possible. To enable this flexibility though, this does require a small amount of work to determine how they want to translate the AutoTest results into grades.
