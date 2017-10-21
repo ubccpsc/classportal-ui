@@ -203,7 +203,7 @@ export class ResultView {
      * @param {ResultPayload} data
      * @returns {StudentResults[]}
      */
-    private convertResultsToGrades(data: ResultPayload) { // : StudentResults[]  (interface inline for clarity)
+    private convertResultsToGrades(data: ResultPayload) {
         console.log('ResultsView::convertResultsToGrades(..) - start');
         try {
             const start = new Date().getTime();
@@ -234,18 +234,15 @@ export class ResultView {
                     const student = studentMap[record.userName];
                     if (typeof student !== 'undefined' && student.student.sNum !== '') {
                         const key = record.projectUrl;
-                        if (key !== '') {
-                            // ignore missing keys
+                        if (key !== '') { // HACK: ignore missing key; this should not come back from the backend; fix and remove
                             if (typeof  projectMap[key] === 'undefined') {
-                                // not in map
-                                projectMap[key] = [];
+                                projectMap[key] = []; // we don't know about this project yet
                             }
                             const existingStudent = projectMap[key].find(function (student: StudentResults) {
-                                return student.userName === record.userName;
+                                return student.userName === record.userName; // see if student is already associated with project
                             });
                             if (typeof existingStudent === 'undefined') {
-                                // add the student to the projectUrl
-                                projectMap[key].push(studentMap[record.userName]);
+                                projectMap[key].push(studentMap[record.userName]); // add student to the project
                             }
                         } else {
                             console.warn('WARN: missing key: ' + record.commitUrl);
@@ -262,14 +259,14 @@ export class ResultView {
 
             // add all project executions to student
             for (let record of data.records) {
-                if (record.delivId === this.delivId) {
-                    if (record.projectUrl !== '') { // right deliv and all info
+                if (record.delivId === this.delivId) { // HACK: backend should return only the right deliverable
+                    if (record.projectUrl !== '') { // HACK: backend should only return complete records
                         const studentResult = studentMap[record.userName];
-                        const project = projectMap[record.projectUrl]; // TODO: only projectName tested
+                        const project = projectMap[record.projectUrl];
                         if (typeof project !== 'undefined' && typeof studentResult !== 'undefined') {
-                            for (let s of project) {
-                                // all students associated with that projectUrl
-                                s.executions.push(record);
+                            for (let studentResult of project) {
+                                // associate the execution with all students on that project
+                                studentResult.executions.push(record);
                             }
                         } else {
                             // drop the record (either the student does not exist or the project does not exist).
@@ -289,7 +286,6 @@ export class ResultView {
 
                 let result: ResultRecord;
                 if (executionsToConsider.length > 0) {
-
                     // in this case we're going to take the last execution
                     // but you can use any of the ResultRecord rows here (branchName, gradeRequested, grade, etc.)
                     const orderedExecutions = executionsToConsider.sort(function (a: ResultRecord, b: ResultRecord) {
@@ -297,7 +293,7 @@ export class ResultView {
                     });
                     result = orderedExecutions[0];
                 } else {
-                    // no records for student
+                    // no execution records for student; put in a fake one that counts as 0
                     console.log('WARN: no execution records for student: ' + userName);
                     result = {
                         userName:       userName,
@@ -319,8 +315,12 @@ export class ResultView {
                 };
                 studentFinal.push(finalStudentRecord);
             }
-            console.log('Result->Grade conversion complete for: ' + data.students.length +
-                ' students and ' + data.records.length + ' records. Took: ' + (new Date().getTime() - start) + ' ms');
+
+            const delta = new Date().getTime() - start;
+            console.log('Result->Grade conversion complete; # students: ' + data.students.length +
+                '; # records: ' + data.records.length + '. Took: ' + delta + ' ms');
+
+            // this array can be trivially iterated on to turn into a CSV or any other format
             return studentFinal;
         } catch (err) {
             console.error('ResultView::convertResultsToGrades(..) - ERROR: ' + err.members, err);
