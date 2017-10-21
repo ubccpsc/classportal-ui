@@ -189,7 +189,6 @@ export class ResultView {
         }
     }
 
-
     /**
      * Analyzes the complete results list for a deliverable (aka all test executions for a user
      * or team) to create a single result for each student that can be used for a grade.
@@ -223,7 +222,6 @@ export class ResultView {
                 const studentResult: StudentResults = {
                     userName:   student.userName,
                     student:    student,
-                    // projectUrl: null,
                     executions: []
                 };
                 studentMap[student.userName] = studentResult;
@@ -232,12 +230,11 @@ export class ResultView {
             // map execution.projectUrl -> [StudentResults]
             let projectMap: { [projectUrl: string]: StudentResults[] } = {};
             for (let record of data.records) {
-                const student = studentMap[record.userName];
-                if (typeof student !== 'undefined' && student.student.sNum !== '') {
-                    const key = record.projectName; //record.projectUrl;
-                    if (record.delivId === this.delivId && record.projectUrl !== '') {
-
-                        if (key.length > 0) { // } && record.timeStamp < new Date(2018, 10, 20, 8, 0, 0).getTime()) { // HACK: date shouldn't be hard coded
+                if (record.delivId === this.delivId) { // HACK: the query should only get the right deliverables
+                    const student = studentMap[record.userName];
+                    if (typeof student !== 'undefined' && student.student.sNum !== '') {
+                        const key = record.projectUrl;
+                        if (key !== '') {
                             // ignore missing keys
                             if (typeof  projectMap[key] === 'undefined') {
                                 // not in map
@@ -250,34 +247,37 @@ export class ResultView {
                                 // add the student to the projectUrl
                                 projectMap[key].push(studentMap[record.userName]);
                             }
-                            // studentMap[record.userName].projectUrl = key; // HACK: is name now because projectUrl is not working
                         } else {
                             console.warn('WARN: missing key: ' + record.commitUrl);
                         }
                     } else {
-                        // wrong deliverable or malformed record
+                        // this only happens if the student cause a result but was not in the student list
+                        // could happen for TAs / instructors, but should not happen for students
+                        console.log('WARN: unknown student (probably a TA): ' + record.userName);
                     }
                 } else {
-                    // this only happens if the student cause a result but was not in the student list
-                    // could happen for TAs / instructors, but should not happen for students
-                    console.log('WARN: unknown student (probably a TA): ' + record.userName);
+                    // wrong deliverable
                 }
             }
 
             // add all project executions to student
             for (let record of data.records) {
-                if (record.delivId === this.delivId && record.projectUrl !== '') { // right deliv and all info
-                    const studentResult = studentMap[record.userName];
-                    const project = projectMap[record.projectName]; // HACK: should be projectUrl
-                    if (typeof project !== 'undefined' && typeof studentResult !== 'undefined') {
-                        for (let s of project) {
-                            // all students associated with that projectUrl
-                            s.executions.push(record);
+                if (record.delivId === this.delivId) {
+                    if (record.projectUrl !== '') { // right deliv and all info
+                        const studentResult = studentMap[record.userName];
+                        const project = projectMap[record.projectUrl]; // TODO: only projectName tested
+                        if (typeof project !== 'undefined' && typeof studentResult !== 'undefined') {
+                            for (let s of project) {
+                                // all students associated with that projectUrl
+                                s.executions.push(record);
+                            }
+                        } else {
+                            // drop the record (either the student does not exist or the project does not exist).
+                            // project case would happen if in the last loop we dropped an execution from a TA.
                         }
-                    } else {
-                        // drop the record (either the student does not exist or the project does not exist).
-                        // project case would happen if in the last loop we dropped an execution from a TA.
                     }
+                } else {
+                    // wrong deliverable
                 }
             }
 
@@ -327,95 +327,17 @@ export class ResultView {
         }
     }
 
-    private processResponse(data: GradeRow[]) {
-
-        let students = {};
-        let delivNamesMap = {};
-
-        for (var row of data) {
-            const userName = row.userName;
-            const delivKey = row.gradeKey;
-            if (typeof students[userName] === 'undefined') {
-                students[userName] = []; // get ready for grades
-            }
-            if (this.includeRecord(row)) {
-                // not captured yet
-                if (typeof delivNamesMap[delivKey] === 'undefined') {
-                    delivNamesMap[delivKey] = delivKey;
-                }
-            }
-        }
-
-        const customSort = function (a: any, b: any) {
-            return (Number(a.match(/(\d+)/g)[0]) - Number((b.match(/(\d+)/g)[0])));
-        };
-        let delivKeys = Object.keys(delivNamesMap).sort(customSort);
-
-        let headers = ['CWL', 'Student #', 'First', 'Last'];
-        if (this.delivId !== 'all') {
-            headers.push('Project');
-        }
-        headers = headers.concat(delivKeys);
-        students['_index'] = headers;
-
-        for (var row of data) {
-            if (this.includeRecord(row)) {
-                const userName = row.userName;
-                const delivKey = row.gradeKey;
-
-                const student = students[userName];
-                const index = delivKeys.indexOf(delivKey);
-
-                student.timeStamp = row.timeStamp;
-                student.cwl = row.userName;
-                student.snum = row.sNum;
-                student.fName = row.fName;
-                student.lName = row.lName;
-                student.projectName = row.projectName;
-                student.projectUrl = row.projectUrl;
-
-                if (typeof student.grades === 'undefined') {
-                    student.grades = [];
-                }
-
-                student.grades[index] = {
-                    value: row.gradeValue,
-                    html:  '<a href="' + row.commitUrl + '">' + row.gradeValue + '</a>'
-                };
-
-                // row.delivDetails // UNUSED right now
-            }
-        }
-
-        // console.log('grade data processed: ' + JSON.stringify(students));
-        return students;
-    }
-
-    private includeRecord(row: GradeRow): boolean {
-        if ((this.delivId === 'all' || this.delivId === row.delivId) && typeof row.sNum !== 'undefined') { // test rows don't have snums
-            if (this.lastOnly === false || row.gradeKey.indexOf('Last') >= 0) { // HACK: checking this string is a bad idea
-                return true;
-            }
-        }
-        return false;
-    }
-
     public downloadData() {
         console.log('ResultView::downloadData() - start');
         this.downloadJSON(this.data, 'TestResults_' + this.delivId + '.json');
     }
 
-    // not used yet
-    // code from: https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
     private downloadJSON(json: any, fileName: string) {
-
         let downloadLink: HTMLAnchorElement;
 
-        // CSV file
         let jsonFile = new Blob([JSON.stringify(json, null, '\t')], {type: 'application/json'});
 
         if (document.getElementById('resultDataDownload') === null) {
-            // Download link
             downloadLink = document.createElement('a');
             downloadLink.innerHTML = 'Download Table as CSV';
             downloadLink.id = 'resultDataDownload';
@@ -423,25 +345,12 @@ export class ResultView {
         } else {
             downloadLink = document.getElementById('resultDataDownload') as HTMLAnchorElement;
         }
-        /*
-        let table = document.querySelector(this.divName);
-        table.appendChild(downloadLink);
-        */
 
-        // File name
         downloadLink.download = fileName;
-
-        // Create a link to the file
+        // create a link to the file
         downloadLink.href = window.URL.createObjectURL(jsonFile);
-
-        // Hide download link
         downloadLink.style.display = 'none';
-        downloadLink.style.textAlign = 'center';
-
-        // Add the link to DOM
-        // document.body.appendChild(downloadLink);
-
-        // Click download link
+        // downloadLink.style.textAlign = 'center';
         downloadLink.click();
     }
 

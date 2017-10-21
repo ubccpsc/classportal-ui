@@ -69,12 +69,16 @@ export class AdminController {
 
         UI.showModal('Test results being retrieved. This is a slow query.');
 
-        // configure selects
-        this.resultView.configure();
+        if (typeof delivId === 'undefined') {
+            // configure selects
+            this.resultView.configure();
+            return;
+        }
 
         // /:courseId/admin/grades
         const url = this.app.backendURL + this.courseId + '/admin/grades/results';
-        const payload: object = {allDeliverables: true} // {deliverableNum: 'd1', gradeOnly: true};
+        const payload: object = {allDeliverables: true}; // {deliverableNum: 'd1', gradeOnly: true};
+        // const payload: object = {deliverableNum: delivId, gradeOnly: true}; // {deliverableNum: 'd1', gradeOnly: true};
         Network.handleRemotePost(url, payload, this.resultView, UI.handleError);
     }
 
