@@ -4,6 +4,37 @@
 1. Andrew: Need to handle `REPORT_FAILED` better so fields are right. We can assign `grade: 0` for these, but we should really have the right data to otherwise populate the `ResultRecord` for these executions.
 1. Reid: Sample code needs to be updated to reflect the above (will make things less verbose).
 
+# PROPOSAL:
+
+What if we just had a:
+
+```typescript
+interface StudentResult extends Student {
+    projectUrl: string; // key into a project that exists within ResultPayload.record
+}
+```
+
+We could then change `ResultPayload.record` to instead be an Array of:
+
+```typescript
+    {
+        projectUrl: string;
+        records: ResultRecord[];
+    }
+```
+
+Alternatively, this might be even better for `ResultPayload.record` but I want to make sure this would JSON.stringify well:
+
+```typescript
+{
+    projectUrl1: ResultRecord[],
+    projectUrl2: ResultRecord[],
+    projectUrl3: ResultRecord[],
+    projectUrl4: ResultRecord[]
+    ...
+}
+```
+
 # AutoTest, ClassPortal, and Grades
 
 AutoTest and ClassPortal have been designed to let course staff assign grades as flexibly as possible. To enable this flexibility though, this does require a small amount of work to determine how they want to translate the AutoTest results into grades.
