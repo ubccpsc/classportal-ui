@@ -108,7 +108,7 @@ export interface ResultPayload {
 
     // TODO: remove records
     // TODO: update students to studentresult
-    
+
     // Maps the projects to the result records
     // Enables quick retrieval of ResultRecord from a StudentRecord
     projectMap: { [projectUrl: string]: ResultRecord[] };

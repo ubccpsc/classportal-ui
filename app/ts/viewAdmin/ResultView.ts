@@ -17,7 +17,7 @@ interface StudentResults {
 
 export class ResultView {
     private data: any; // TODO: add types
-    private processedData: GradeRow[]; // TODO: change to new type
+    private dataToDownload: any; // TODO: change to new type
 
     private delivId = 'all';
     private lastOnly = false;
@@ -325,6 +325,7 @@ export class ResultView {
             console.log('Result->Grade conversion complete; # students: ' + data.students.length +
                 '; # records: ' + data.records.length + '. Took: ' + delta + ' ms');
 
+            this.dataToDownload = studentMap;
             // this array can be trivially iterated on to turn into a CSV or any other format
             return studentFinal;
         } catch (err) {
@@ -334,7 +335,7 @@ export class ResultView {
 
     public downloadData() {
         console.log('ResultView::downloadData() - start');
-        this.downloadJSON(this.data, 'TestResults_' + this.delivId + '.json');
+        this.downloadJSON(this.dataToDownload, 'TestResults_' + this.delivId + '.json');
     }
 
     private downloadJSON(json: any, fileName: string) {
