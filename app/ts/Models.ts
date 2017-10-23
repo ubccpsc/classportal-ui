@@ -103,8 +103,19 @@ export interface ResultPayloadContainer {
  * records[]    will contain _all_ executions within the valid time range for that deliverable.
  */
 export interface ResultPayload {
-    students: Student[];
+    students: StudentResult[];
     records: ResultRecord[];
+
+    // TODO: remove records
+    // TODO: update students to studentresult
+    
+    // Maps the projects to the result records
+    // Enables quick retrieval of ResultRecord from a StudentRecord
+    projectMap: { [projectUrl: string]: ResultRecord[] };
+}
+
+export interface StudentResult extends Student {
+    projectUrl: string; // the project for a student (deliverableId captured in ResultRecord itself)
 }
 
 /**
