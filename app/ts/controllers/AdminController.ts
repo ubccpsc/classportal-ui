@@ -64,19 +64,16 @@ export class AdminController {
 
         if (typeof delivId === 'undefined' || delivId === null || delivId === 'null') {
             console.log('AdminController::adminResultsPage - skipped; select deliverable.');
-            return;
-        }
-
-        UI.showModal('Test results being retrieved. This is a slow query.');
-
-        if (typeof delivId === 'undefined') {
             // configure selects
             this.resultView.configure();
             return;
         }
 
+        UI.showModal('Test results being retrieved. This is a slow query.');
+
         // /:courseId/admin/grades
         const url = this.app.backendURL + this.courseId + '/admin/grades/results';
+        console.log('AdminController::adminResultsPage(..) - url: ' + url);
         const payload: object = {allDeliverables: true}; // {deliverableNum: 'd1', gradeOnly: true};
         // const payload: object = {deliverableNum: delivId, gradeOnly: true}; // {deliverableNum: 'd1', gradeOnly: true};
         Network.handleRemotePost(url, payload, this.resultView, UI.handleError);

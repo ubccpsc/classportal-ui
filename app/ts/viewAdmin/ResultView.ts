@@ -3,6 +3,9 @@ import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
 import {GradeRow, ResultPayload, ResultRecord, Student} from "../Models";
+// import flatpickr from "flatpickr";
+// import * as flatpickr from "flatpickr";
+const flatpickr: any = require('flatpickr');
 
 declare var myApp: any;
 
@@ -47,6 +50,14 @@ export class ResultView {
                 option.value = deliv.id;
                 (<any>delivSelect).add(option);
             }
+
+            try {
+                // for some reason this isn't working
+                // flatpickr("#admin-result-date", {});
+            } catch (err) {
+                console.log('flatpickr error: ' + err.message);
+            }
+
         }
     }
 
