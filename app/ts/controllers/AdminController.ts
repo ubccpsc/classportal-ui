@@ -73,9 +73,9 @@ export class AdminController {
 
         // /:courseId/admin/grades
         const url = this.app.backendURL + this.courseId + '/admin/grades/results';
+        let that = this;
         console.log('AdminController::adminResultsPage(..) - url: ' + url);
-        const payload: object = {allDeliverables: true}; // {deliverableNum: 'd1', gradeOnly: true};
-        // const payload: object = {deliverableNum: delivId, gradeOnly: true}; // {deliverableNum: 'd1', gradeOnly: true};
+        const payload: object = {deliverableName: delivId};
         Network.handleRemotePost(url, payload, this.resultView, UI.handleError);
     }
 
