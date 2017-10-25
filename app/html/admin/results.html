@@ -18,11 +18,14 @@
                         <ons-checkbox id="admin-result-last"
                                       style="padding-left: 2em; padding-right: 1em; vertical-align: middle;"></ons-checkbox>
                     </div>
+                    Date filter:
+                    <input id="admin-result-date" class="flatpickr" style="text-align: center; margin-left: 1em; margin-right: 1em;" type="text"
+                           placeholder="Select Date.."></input>
                     <ons-button onclick="myApp.adminController.resultView.update()">Update Results</ons-button>
                     <span>&nbsp;&nbsp;</span>
-
-                    <!-- <input id="admin-result-date" class="flatpickr" type="text" placeholder="Select Date..">&nbsp;</input> -->
-                    <ons-button id='resultDataDownloadButton' style='display: none;' onclick="myApp.adminController.resultView.downloadData()">Download Result Data</ons-button>
+                    <ons-button id='resultDataDownloadButton' style='display: none;'
+                                onclick="myApp.adminController.resultView.downloadData()">Download Result Data
+                    </ons-button>
                 </ons-col>
             </ons-row>
         </ons-list-item>

@@ -19,6 +19,7 @@ interface StudentResults {
 }
 
 export class ResultView {
+    dateFilter: any;
     private data: any; // TODO: add types
     private dataToDownload: any; // TODO: change to new type
 
@@ -53,7 +54,14 @@ export class ResultView {
 
             try {
                 // for some reason this isn't working
-                // flatpickr("#admin-result-date", {});
+                this.dateFilter = flatpickr("#admin-result-date", {
+                    enableTime:  true,
+                    time_24hr:   true,
+                    dateFormat:  "Y/m/d @ H:i",
+                    defaultDate: new Date()
+                });
+
+                console.log('ResultView::configure() - done');
             } catch (err) {
                 console.log('flatpickr error: ' + err.message);
             }
@@ -187,6 +195,8 @@ export class ResultView {
         if (delivSelect !== null && lastCheckbox !== null) {
             let delivId = delivSelect.value;
             let lastOnly: boolean = lastCheckbox.checked;
+            let timeFilter = this.dateFilter.latestSelectedDateObj;
+            console.log('ResultView::update() - deliv: ' + delivId + '; dateFilter: ' + timeFilter);
 
             this.delivId = delivId;
             this.lastOnly = lastOnly;
