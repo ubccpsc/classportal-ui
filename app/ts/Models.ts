@@ -104,7 +104,7 @@ export interface ResultPayloadContainer {
  */
 export interface ResultPayload {
     students: StudentResult[];
-    records: ResultRecord[];
+    // records: ResultRecord[];
 
     // TODO: remove records
     // TODO: update students to studentresult

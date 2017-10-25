@@ -13,7 +13,7 @@ declare var myApp: any;
  * Internal object for tracking students and executions.
  */
 interface StudentResults {
-    userName: string;
+    // userName: string;
     student: Student;
     executions: ResultRecord[];
 }
@@ -115,8 +115,8 @@ export class ResultView {
 
                     let r: TableCell[] = [];
                     r.push({
-                        value: row.userName,
-                        html:  '<a href="' + row.student.userUrl + '">' + row.userName + '</a>'
+                        value: row.student.userName,
+                        html:  '<a href="' + row.student.userUrl + '">' + row.student.userName + '</a>'
                     });
                     r.push({
                         value: row.student.sNum,
@@ -243,6 +243,8 @@ export class ResultView {
             // 4) Choose the execution we care about from the Student record
 
             // map: student.userName -> StudentResults
+            /*
+
             let studentMap: { [userName: string]: StudentResults } = {};
             for (let student of data.students) {
                 const studentResult: StudentResults = {
@@ -252,8 +254,9 @@ export class ResultView {
                 };
                 studentMap[student.userName] = studentResult;
             }
-
+*/
             // map execution.projectUrl -> [StudentResults]
+            /*
             let projectMap: { [projectUrl: string]: StudentResults[] } = {};
             for (let record of data.records) {
                 if (record.delivId === this.delivId) { // HACK: the query should only get the right deliverables
@@ -282,7 +285,9 @@ export class ResultView {
                     // wrong deliverable
                 }
             }
+*/
 
+            /*
             // add all project executions to student
             for (let record of data.records) {
                 if (record.delivId === this.delivId) { // HACK: backend should return only the right deliverable
@@ -303,50 +308,70 @@ export class ResultView {
                     // wrong deliverable
                 }
             }
+*/
+
+            // just for stats
+            let recordCount = 0;
+            for (let project of Object.keys(data.projectMap)) {
+                recordCount += data.projectMap[project].length;
+            }
 
             // now choose the record we want to emit per-student
             let studentFinal: StudentResults[] = [];
-            for (let userName of Object.keys(studentMap)) {
-                const studentResult = studentMap[userName];
-                const executionsToConsider = studentResult.executions;
+            for (let student of data.students) {
 
-                let result: ResultRecord;
-                if (executionsToConsider.length > 0) {
-                    // in this case we're going to take the last execution
-                    // but you can use any of the ResultRecord rows here (branchName, gradeRequested, grade, etc.)
-                    const orderedExecutions = executionsToConsider.sort(function (a: ResultRecord, b: ResultRecord) {
-                        return b.timeStamp - a.timeStamp;
-                    });
-                    result = orderedExecutions[0];
-                } else {
-                    // no execution records for student; put in a fake one that counts as 0
-                    console.log('WARN: no execution records for student: ' + userName);
-                    result = {
-                        userName:       userName,
-                        timeStamp:      -1, // never happened
-                        projectName:    'No Request', // unknown
-                        projectUrl:     '', //
-                        commitUrl:      '',
-                        branchName:     '',
-                        gradeRequested: false,
-                        grade:          '0',
-                        delivId:        this.delivId,
-                        gradeDetails:   []
+                // make sure the student is someone you want to consider (aka exclude TAs & test accounts)
+                if (student.sNum !== '') {
+                    const executionsToConsider = data.projectMap[student.projectUrl];
+
+                    let result: ResultRecord = null;
+                    if (executionsToConsider.length > 0) {
+                        // in this case we're going to take the last execution before the time cutoff
+                        // but you can use any of the ResultRecord rows here (branchName, gradeRequested, grade, etc.)
+                        const orderedExecutions = executionsToConsider.sort(function (a: ResultRecord, b: ResultRecord) {
+                            return a.timeStamp - b.timeStamp;
+                        });
+
+                        const ts = this.dateFilter.latestSelectedDateObj.getTime();
+                        for (let record of orderedExecutions) {
+                            if (record < ts) {
+                                // keep overwriting result until we are past the deadline
+                                result = record;
+                            }
+                        }
                     }
+
+                    if (result === null) {
+                        // no execution records for student; put in a fake one that counts as 0
+                        console.log('WARN: no execution records for student: ' + student.userName);
+                        result = {
+                            userName:       student.userName,
+                            timeStamp:      -1, // never happened (NOTE: if this is outside some kind of time filter this could be a problem)
+                            projectName:    'No Request', // unknown, so give a better message
+                            projectUrl:     student.projectUrl,
+                            commitUrl:      '',
+                            branchName:     '',
+                            gradeRequested: false,
+                            grade:          '0',
+                            delivId:        this.delivId,
+                            gradeDetails:   []
+                        }
+                    }
+                    const finalStudentRecord = {
+                        student:    student,
+                        executions: [result]
+                    };
+                    studentFinal.push(finalStudentRecord);
+                } else {
+                    console.log('Excluded student: ' + student.userName);
                 }
-                const finalStudentRecord = {
-                    userName:   userName,
-                    student:    studentResult.student,
-                    executions: [result]
-                };
-                studentFinal.push(finalStudentRecord);
             }
 
             const delta = new Date().getTime() - start;
             console.log('Result->Grade conversion complete; # students: ' + data.students.length +
-                '; # records: ' + data.records.length + '. Took: ' + delta + ' ms');
+                '; # records: ' + recordCount + '. Took: ' + delta + ' ms');
 
-            this.dataToDownload = studentMap;
+            this.dataToDownload = data; //studentFinal;
             // this array can be trivially iterated on to turn into a CSV or any other format
             return studentFinal;
         } catch (err) {
