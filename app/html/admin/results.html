@@ -19,7 +19,8 @@
                                       style="padding-left: 2em; padding-right: 1em; vertical-align: middle;"></ons-checkbox>
                     </div>
                     Date filter:
-                    <input id="admin-result-date" class="flatpickr" style="text-align: center; margin-left: 1em; margin-right: 1em;" type="text"
+                    <input id="admin-result-date" class="flatpickr" style="text-align: center; margin-left: 1em; margin-right: 1em;"
+                           type="text"
                            placeholder="Select Date.."></input>
                     <ons-button onclick="myApp.adminController.resultView.update()">Update Results</ons-button>
                     <span>&nbsp;&nbsp;</span>
@@ -53,6 +54,9 @@
         <ons-list-header>Results</ons-list-header>
         <ons-list-item>
             <div id="admin-result-table" style="width:100%;">Select deliverable above.</div>
+        </ons-list-item>
+        <ons-list-item>
+            <div id="admin-result-footer"></div>
         </ons-list-item>
     </ons-list>
 </ons-page>

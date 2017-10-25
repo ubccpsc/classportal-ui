@@ -107,6 +107,7 @@ export class ResultView {
 
             let table = new SortableTable(headers, '#admin-result-table');
 
+            let allGrades: number[] = [];
             for (let key of Object.keys(processedData)) {
                 let row = processedData[key] as StudentResults;
                 // HACK: this does not print people who did nothing!
@@ -156,6 +157,7 @@ export class ResultView {
                             html:  row.executions[0].grade
                         });
                     }
+                    allGrades.push(Number(row.executions[0].grade));
                     /**
                      * Should do this for the extraDetails
                      */
@@ -183,6 +185,19 @@ export class ResultView {
 
             }
             table.generate();
+
+
+            const num = allGrades.length;
+            let total = 0;
+            for (let g of allGrades) {
+                total += g;
+            }
+            allGrades = allGrades.sort(); // NOTE: might not be right (check 100s)
+
+            let footer = '<div style="width: 100%; text-align: center;">';
+            footer += '<div><b>Average: </b>' + (total / num).toFixed(1) + '</div>';
+            footer += '<div><b>Median: </b>' + allGrades[Math.ceil(num / 2)].toFixed(1) + '</div>';
+            document.getElementById('admin-result-footer').innerHTML = footer;
         }
         UI.hideModal();
     }
@@ -207,7 +222,15 @@ export class ResultView {
                 return;
             }
 
-            myApp.adminController.adminResultsPage(delivId);
+            if (this.delivId === delivId && typeof this.data !== 'undefined' && this.data !== null) {
+                // refresh w/o query (aka just the timestamp changed)
+                console.log('ResultView::update() - same deliv; updating without query');
+                this.render(this.data);
+            } else {
+                console.log('ResultView::update() - new deliv requested');
+                myApp.adminController.adminResultsPage(delivId);
+            }
+
 
         } else {
             console.log('ResultView::update() - ERROR: element missing');
