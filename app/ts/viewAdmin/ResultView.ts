@@ -249,7 +249,7 @@ export class ResultView {
                     const executionsToConsider = data.projectMap[student.projectUrl];
 
                     let result: ResultRecord = null;
-                    if (executionsToConsider.length > 0) {
+                    if (typeof executionsToConsider !== 'undefined' && executionsToConsider.length > 0) {
                         // in this case we're going to take the last execution before the time cutoff
                         // but you can use any of the ResultRecord rows here (branchName, gradeRequested, grade, etc.)
                         const orderedExecutions = executionsToConsider.sort(function (a: ResultRecord, b: ResultRecord) {

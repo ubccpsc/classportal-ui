@@ -14,7 +14,6 @@ export class DeliverableView {
         document.querySelector('#adminTabsHeader').innerHTML = "Deliverables";
     }
 
-
     public render(data: DeliverablePayloadContainer) {
         console.log('DeliverableView::render(..) - start');
         this.updateTitle();
