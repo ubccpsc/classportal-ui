@@ -290,7 +290,7 @@ export class ResultView {
 
                     if (result === null) {
                         // no execution records for student; put in a fake one that counts as 0
-                        console.log('WARN: no execution records for student: ' + student.userName);
+                        console.log('WARN: no execution records for student: ' + student.userName + ' ' + student.projectUrl);
                         result = {
                             userName:       student.userName,
                             timeStamp:      -1, // never happened (NOTE: if this is outside some kind of time filter this could be a problem)
