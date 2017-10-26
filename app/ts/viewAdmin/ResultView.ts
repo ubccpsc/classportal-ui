@@ -2,7 +2,7 @@ import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
-import {GradeRow, ResultPayload, ResultRecord, Student} from "../Models";
+import {ResultPayload, ResultRecord, Student} from "../Models";
 // import flatpickr from "flatpickr";
 // import * as flatpickr from "flatpickr";
 const flatpickr: any = require('flatpickr');
