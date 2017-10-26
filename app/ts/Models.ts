@@ -12,16 +12,24 @@
  * All of the information ClassPortal knows about a given student.
  */
 export interface Student {
-    userName: string;           // CWL: Primary Key for object
-    userUrl: string;            // full URL to user
+    sId?: string;               // new primary key for object. Cannot be changed. Same as sNum at UBC.
+                                // Use this instead of userName as a key into Student.
 
+    // TODO: role: 'admin' | 'ta' | 'student' | 'test' ?
+
+    // TODO: what if a student is in multiple courses? should there be an orgName here too? (and the key be like sid_orgName)?
+
+    // all other fields are changeable (although not likely for fName, lName)
     fName: string;
     lName: string;
 
     sNum: string;
     csId: string;
-
     labId: string;
+
+    userName: string;           // GitHub (or enterprise GitHub) username. NOTE: could change, stop using as key in other objects
+    userUrl: string;            // URL to this GitHub username.
+
     TA: string[];               // TAs who have tagged team. For future. Just return [] for now.
 }
 
@@ -46,6 +54,8 @@ export interface DeliverablePayload {
     // NOTE: things are definitely missing here.
 }
 
+// TODO: lots of fields missing here
+
 /**
  *
  *
@@ -55,36 +65,6 @@ export interface DeliverablePayload {
  *
  *
  **/
-
-// DEPRECATED: will go away On Oct 20
-export interface GradePayloadContainer {
-    response: GradeRow[];
-}
-
-// DEPRECATED: will go away On Oct 20
-export interface GradeContainer {
-    headers: string[];
-    grades: GradeRow[];
-}
-
-// DEPRECATED: will go away On Oct 20
-export interface GradeRow {
-    userName: string; // cwl
-    userUrl: string;
-    sNum: string; // may be removed in future
-    fName: string; // may be removed in future
-    lName: string; // may be removed in future
-    projectUrl: string; // full URL to project
-    projectName: string; // string name for project (e.g., cpsc310_team22)
-
-    timeStamp: number; // Date.getTime()
-    commitUrl: string; // full URL to commit corresponding to the row
-    delivId: string; // deliverable name
-    gradeKey: string; // deliverable name (e.g., d0last)
-    gradeValue: string; // score for deliverable key (use string rep for flexibility)
-    gradeRequested: boolean; // was the result explicitly requested by the student
-    gradeDetails: GradeDetail[];
-}
 
 /**
  * Datastructure for AutoTest test executions.
@@ -100,17 +80,10 @@ export interface ResultPayloadContainer {
  * Aggregates all students and records for a single deliverable.
  *
  * students[]   will contain _all_ students in the course, whether they invoked AutoTest or not.
- * records[]    will contain _all_ executions within the valid time range for that deliverable.
+ * records[]    will contain _all_ executions for that deliverable.
  */
 export interface ResultPayload {
     students: StudentResult[];
-    // records: ResultRecord[];
-
-    // TODO: remove records
-    // TODO: update students to studentresult
-
-    // Maps the projects to the result records
-    // Enables quick retrieval of ResultRecord from a StudentRecord
     projectMap: { [projectUrl: string]: ResultRecord[] };
 }
 
@@ -122,7 +95,9 @@ export interface StudentResult extends Student {
  * Each ResultRecord corresponds to a single AutoTest execution.
  */
 export interface ResultRecord {
-    userName: string;           // cwl; key back to Student
+    sId?: string;               // USE THIS ID to link back to student (in case they update their userName)
+
+    userName: string;           // GitHub account associated with the change
     timeStamp: number;          // timestamp of the webhoook push event
 
     projectName: string;        // string name for project (e.g., cpsc310_team22)
@@ -157,7 +132,6 @@ export interface ResultDetail {
     key: string;
     value: string;
 }
-
 
 /**
  *
@@ -230,3 +204,27 @@ export interface GradeDetail {
     key: string;
     value: string;
 }
+
+/**
+ *
+ *
+ *
+ * Project / Team Specifications
+ *
+ *
+ *
+ **/
+
+// TODO: I'm assuming we need something here, but what?
+
+/**
+ *
+ *
+ *
+ * Course Data Specifications
+ *
+ *
+ *
+ **/
+
+// TODO: Need to define these too
