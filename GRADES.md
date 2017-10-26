@@ -35,7 +35,7 @@ This can be thought of as four main steps:
 
 * Some `StudentRecord` objects in `ResultPayload.students` will not correspond to real students (aka there will be course staff, test accounts, and TAs). You probably want to ignore these. One easy way to do this is to note that only real students will have a valid value for `StudentRecord.sNum`.
 
-* Some students will exist in `StudentRecord` but will _never_ make an execution that runs to completion and returns a grade. We insert a synthetic record for these students with `grade: 0`.
+* Some students will exist in `StudentRecord` but will _never_ make an execution. In our sample code you can see that we just add a null `grade: 0` record for these students, but you can handle these however you would like.
 
 ## Data Types
 
