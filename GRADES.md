@@ -1,40 +1,3 @@
-# TODO: before we can release
-
-1. Andrew: Backend has to return rows per-deliverable (getting a 500 now when I change `AdminController` to do this).
-1. Andrew: Need to handle `REPORT_FAILED` better so fields are right. We can assign `grade: 0` for these, but we should really have the right data to otherwise populate the `ResultRecord` for these executions.
-1. Reid: Sample code needs to be updated to reflect the above (will make things less verbose).
-
-# PROPOSAL:
-
-What if we just had a:
-
-```typescript
-interface StudentResult extends Student {
-    projectUrl: string; // key into a project that exists within ResultPayload.record
-}
-```
-
-We could then change `ResultPayload.record` to instead be an Array of:
-
-```typescript
-    {
-        projectUrl: string;
-        records: ResultRecord[];
-    }
-```
-
-Alternatively, this might be even better for `ResultPayload.record` but I want to make sure this would JSON.stringify well:
-
-```typescript
-{
-    projectUrl1: ResultRecord[],
-    projectUrl2: ResultRecord[],
-    projectUrl3: ResultRecord[],
-    projectUrl4: ResultRecord[]
-    ...
-}
-```
-
 # AutoTest, ClassPortal, and Grades
 
 AutoTest and ClassPortal have been designed to let course staff assign grades as flexibly as possible. To enable this flexibility though, this does require a small amount of work to determine how they want to translate the AutoTest results into grades.
@@ -49,33 +12,30 @@ The high-level process for this task looks like this:
 
 1. AutoTest executes the student deliverables as they are received. Each of these executions generates a `ResultRecord`.
 
-1. Course staff visit the _Test Results_ tab in ClassPortal, selects a single deliverable, and downloads a JSON file containing the complete AutoTest data for that deliverable (`ResultPayload`).
+1. Course staff visit the _Test Results_ tab in ClassPortal, selects a single deliverable, and downloads a JSON file containing the complete AutoTest data for that deliverable (`ResultPayload`). While there is a time field on that page, it is only used for updating the view not the underlying data structure (aka you will want to filter the results to make sure you only look at the ones before the deadline).
 
 1. Course staff iterate over the test execution results (`ResultRecord`) and apply their own course-specific rubric to determine a grade for the deliverable for each student (`Student`). This can then be uploaded to UBC connect for further editing and sharing with the students. Starting January 2018 these will also be visible in ClassPortal for both displaying to students and editing by course staff.
 
 
 ## Transformation
 
-The transformation process should be relatively straightforward. Our sample implementation of this can be found in [ResultView::convertResultsToGrades](https://github.com/ubccpsc/classportal-ui-next/blob/master/app/ts/viewAdmin/ResultView.ts). While it could be handled in one large loop, we find it easiest to split it into five steps:
+The transformation process should be relatively straightforward. Our sample implementation of this can be found in [ResultView::convertResultsToGrades](https://github.com/ubccpsc/classportal-ui-next/blob/master/app/ts/viewAdmin/ResultView.ts). 
 
-1. Create a map from `userName` to `Student` objects (`studentMap`) by iterating through `ResultPayload.students`. 
+This can be thought of as four main steps:
 
-1. Loop through `ResultPayload.records` to determine which project each student was associated with. This isn't strictly needed for individual projects, but is required for teams. For single projects though it still works fine because they work on a project too so there is no harm in including this step. This creates a `projectMap` that maps `ResultRecord.projectUrl` to a student (e.g.,  by their `userName` or some other internal data structure).
+1. Loop through `ResultPayload.students` to visit each `StudentRecord`.
 
-1. Loop through the `ResultPayload.records` to associate the executions with the students. For each `ResultRecord` we can use `ResultRecord.projectUrl` to index into `projectMap` and add the execution to all students on the team.
+1. Use `StudentRecord.projectUrl` to index into `ResultPayload.projectMap`. This will give you all `ResultRecord`s for that student. 
 
-1. The key part of this process involves iterating through the students in the course and for each student, examining all of the executions their team has made to determine which one corresponds to their final grade. Usually we sort by `ResultRecord.timeStamp` before we proceed. Useful fields in this process include `timeStamp` (e.g., for finding the last execution), `grade` (e.g., for finding the max grade), `branchName` (e.g., for figuring out if the commit was on master or not), and `gradeRequested` (e.g., for determining if the grade was explicitly requested by the student). 
+1. Iterate through these records to determine which one corresponds to their final grade. Usually we sort by `ResultRecord.timeStamp` before we proceed. Useful fields in this process include `timeStamp` (e.g., for finding the last execution), `grade` (e.g., for finding the max grade), `branchName` (e.g., for figuring out if the commit was on master or not), and `gradeRequested` (e.g., for determining if the grade was explicitly requested by the student). 
 
 1. Once this process is complete, the data should be exported in a CSV. This can be any format UBC Connect uses; further detail about the CSV needed to upload the grades back to ClassPortal will be included here once they are known.
 
 #### Things to watch out for:
 
+* Some `StudentRecord` objects in `ResultPayload.students` will not correspond to real students (aka there will be course staff, test accounts, and TAs). You probably want to ignore these. One easy way to do this is to note that only real students will have a valid value for `StudentRecord.sNum`.
 
-* Some `Student` objects in `ResultPayload.students` will not correspond to real students (aka there will be course staff, test accounts, and TAs). You probably want to ignore these. One easy way to do this is to note that only real students will have a valid value for `Student.sNum`.
-
-* When the AutoTest container fails to exit successfully (e.g., returning a `finalGrade`, even if it is 0, the `ResultRecord`s might be corrupted. While we are going to fix this in future, right now the best way to deal with these is to check for `ResultRecord.projectUrl === ''` and drop those records.
-
-* Some students will exist in `Student` but will _never_ make an execution that runs to completion and returns a grade. While you might want to give them 0, if they are working on course project they might technically deserve their team grade. The problem though is because of the point above: we can't associate a student with a project with a student without at least one execution. We are working on fixing this, but it is a rare edge case we need to be aware of for now. (Really the bar is not high here: a student just needs to run AutoTest once successfully. In 310d1 this only came up once across 14,000+ executions).
+* Some students will exist in `StudentRecord` but will _never_ make an execution that runs to completion and returns a grade. We insert a synthetic record for these students with `grade: 0`.
 
 ## Data Types
 
@@ -97,19 +57,30 @@ Simple aggregation type. No surprises here.
  * Aggregates all students and records for a single deliverable.
  *
  * students[]   will contain _all_ students in the course, whether they invoked AutoTest or not.
- * records[]    will contain _all_ executions within the valid time range for that deliverable.
+ * records[]    will contain _all_ executions for that deliverable.
  */
 export interface ResultPayload {
-    students: Student[];
-    records: ResultRecord[];
+    students: StudentResult[];
+    projectMap: { [projectUrl: string]: ResultRecord[] };
+    // projectMap is just a map that looks like this:
+    // {
+    //		projectUrl1: ResultRecord[],
+    //		projectUrl2: ResultRecord[],
+    //		projectUrl3: ResultRecord[],
+    //		projectUrl4: ResultRecord[]
+    // }
 }
 ```
 
-### `Student`
+### `Student` & `StudentResult`
 
 This is likely more information than is needed for grade transformation, but all records are returned to enable courses to reason about the results as flexibly as possible.
 
 ```typescript
+export interface StudentResult extends Student {
+    projectUrl: string; // the project for a student (deliverableId captured in ResultRecord itself)
+}
+
 /**
  * All of the information ClassPortal knows about a given student.
  */
