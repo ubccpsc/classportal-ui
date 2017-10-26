@@ -258,8 +258,9 @@ export class ResultView {
         console.log('ResultsView::convertResultsToGrades(..) - start');
         try {
             const start = new Date().getTime();
+            this.dataToDownload = data; // just for the UI
 
-            // just for stats
+            // for stats
             let recordCount = 0;
             for (let project of Object.keys(data.projectMap)) {
                 recordCount += data.projectMap[project].length;
@@ -269,30 +270,29 @@ export class ResultView {
             let studentFinal: StudentResults[] = [];
             for (let student of data.students) {
 
-                // make sure the student is someone you want to consider (aka exclude TAs & test accounts)
+                // Make sure the student is someone you want to consider (aka exclude TAs & test accounts)
                 if (student.sNum !== '') {
                     const executionsToConsider = data.projectMap[student.projectUrl];
 
+                    // This block is the meat of the procedure
+                    // Here we are choosing (from all executions for a student), which one will be their grade.
                     let result: ResultRecord = null;
                     if (typeof executionsToConsider !== 'undefined' && executionsToConsider.length > 0) {
-                        // in this case we're going to take the last execution before the time cutoff
+                        // In this case we're going to take the last execution before the time cutoff
                         // but you can use any of the ResultRecord rows here (branchName, gradeRequested, grade, etc.)
                         const orderedExecutions = executionsToConsider.sort(function (a: ResultRecord, b: ResultRecord) {
                             return a.timeStamp - b.timeStamp;
                         });
 
+                        // Here we use our own date from the UI; but you probably want to set your own timestamp
                         const ts = this.dateFilter.latestSelectedDateObj.getTime();
                         for (let record of orderedExecutions) {
-                            if (record.timeStamp < ts) {
+                            if (record.timeStamp <= ts) {
                                 // keep overwriting result until we are past the deadline
                                 result = record;
                             }
                         }
-                        if (result !== null && result.projectName === 'team40') {
-                            console.log('debug here');
-                        }
                     }
-
 
                     if (result === null) {
                         // no execution records for student; put in a fake one that counts as 0
@@ -312,7 +312,7 @@ export class ResultView {
                     }
                     const finalStudentRecord = {
                         student:    student,
-                        executions: [result]
+                        executions: [result] // aka just the one record for their grade
                     };
                     studentFinal.push(finalStudentRecord);
                 } else {
@@ -324,7 +324,6 @@ export class ResultView {
             console.log('Result->Grade conversion complete; # students: ' + data.students.length +
                 '; # records: ' + recordCount + '. Took: ' + delta + ' ms');
 
-            this.dataToDownload = data; //studentFinal;
             // this array can be trivially iterated on to turn into a CSV or any other format
             return studentFinal;
         } catch (err) {
