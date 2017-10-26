@@ -24,7 +24,6 @@ export class ResultView {
     private dataToDownload: any; // TODO: change to new type
 
     private delivId = 'all';
-    private lastOnly = false;
 
     private controller: AdminController;
 
@@ -63,7 +62,7 @@ export class ResultView {
 
                 console.log('ResultView::configure() - done');
             } catch (err) {
-                console.log('flatpickr error: ' + err.message);
+                console.error('ResultView::configure() - flatpickr ERROR: ' + err.message);
             }
 
         }
@@ -207,18 +206,13 @@ export class ResultView {
     public update() {
         console.log('ResultView::update() - start');
         const delivSelect = document.getElementById('admin-result-deliverable-select') as OnsSelectElement;
-        const lastCheckbox = document.getElementById('admin-result-last') as OnsCheckboxElement;
 
-        if (delivSelect !== null && lastCheckbox !== null) {
+        if (delivSelect !== null) {
             let delivId = delivSelect.value;
-            let lastOnly: boolean = lastCheckbox.checked;
             let timeFilter = this.dateFilter.latestSelectedDateObj;
             console.log('ResultView::update() - deliv: ' + delivId + '; dateFilter: ' + timeFilter);
 
-            this.delivId = delivId;
-            this.lastOnly = lastOnly;
-
-            if (this.delivId === 'null' || this.delivId === null) {
+            if (delivId === 'null' || delivId === null) {
                 this.delivId = null;
                 UI.showErrorToast("Please select a deliverable.");
                 return;
@@ -233,6 +227,7 @@ export class ResultView {
                 myApp.adminController.adminResultsPage(delivId);
             }
 
+            this.delivId = delivId;
 
         } else {
             console.log('ResultView::update() - ERROR: element missing');
