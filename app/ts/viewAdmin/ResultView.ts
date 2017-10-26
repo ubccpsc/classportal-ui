@@ -2,7 +2,7 @@ import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
-import {ResultPayload, ResultRecord, Student} from "../Models";
+import {ResultPayload, ResultRecord, Student, StudentResult} from "../Models";
 // import flatpickr from "flatpickr";
 // import * as flatpickr from "flatpickr";
 const flatpickr: any = require('flatpickr');
@@ -12,16 +12,15 @@ declare var myApp: any;
 /**
  * Internal object for tracking students and executions.
  */
-interface StudentResults {
-    // userName: string;
+interface StudentGrades {
     student: Student;
-    executions: ResultRecord[];
+    executions: ResultRecord[]; // in future could be extended to multiple deliverables (delivId is encoded in ResultRecord)
 }
 
 export class ResultView {
-    dateFilter: any;
-    private data: any; // TODO: add types
-    private dataToDownload: any; // TODO: change to new type
+    private dateFilter: any;
+    private data: ResultPayload;
+    private dataToDownload: ResultPayload; // TODO: refactor this away (same as data now)
 
     private delivId = 'all';
 
@@ -81,6 +80,7 @@ export class ResultView {
         data = data.response;
 
         // let processedData = this.processResponse(data);
+        this.dataToDownload = data; // just for the UI
         let processedData = this.convertResultsToGrades(data);
 
         if (this.delivId !== 'null' && this.delivId !== null) {
@@ -108,7 +108,7 @@ export class ResultView {
 
             let allGrades: number[] = [];
             for (let key of Object.keys(processedData)) {
-                let row = processedData[key] as StudentResults;
+                let row = processedData[key] as StudentGrades;
                 // HACK: this does not print people who did nothing!
                 if (typeof row !== 'undefined' && typeof row.student.sNum !== 'undefined') {
 
@@ -235,96 +235,6 @@ export class ResultView {
         }
     }
 
-    /**
-     * Analyzes the complete results list for a deliverable (aka all test executions for a user
-     * or team) to create a single result for each student that can be used for a grade.
-     *
-     * This is essentially example code as a sample for course instructors to be used for
-     * analyzing result records. It is not expected that course instructors will emit
-     * StudentResults[] but will instead print a CSV for their own use (aka UBC Connect).
-     *
-     * By January it will also be possible to upload this CSV to ClassPortal to serve as
-     * a Grade record that will be served to the students.
-     *
-     * @param {ResultPayload} data
-     * @returns {StudentResults[]}
-     */
-    private convertResultsToGrades(data: ResultPayload) {
-        console.log('ResultsView::convertResultsToGrades(..) - start');
-        try {
-            const start = new Date().getTime();
-            this.dataToDownload = data; // just for the UI
-
-            // for stats
-            let recordCount = 0;
-            for (let project of Object.keys(data.projectMap)) {
-                recordCount += data.projectMap[project].length;
-            }
-
-            // now choose the record we want to emit per-student
-            let studentFinal: StudentResults[] = [];
-            for (let student of data.students) {
-
-                // Make sure the student is someone you want to consider (aka exclude TAs & test accounts)
-                if (student.sNum !== '') {
-                    const executionsToConsider = data.projectMap[student.projectUrl];
-
-                    // This block is the meat of the procedure
-                    // Here we are choosing (from all executions for a student), which one will be their grade.
-                    let result: ResultRecord = null;
-                    if (typeof executionsToConsider !== 'undefined' && executionsToConsider.length > 0) {
-                        // In this case we're going to take the last execution before the time cutoff
-                        // but you can use any of the ResultRecord rows here (branchName, gradeRequested, grade, etc.)
-                        const orderedExecutions = executionsToConsider.sort(function (a: ResultRecord, b: ResultRecord) {
-                            return a.timeStamp - b.timeStamp;
-                        });
-
-                        // Here we use our own date from the UI; but you probably want to set your own timestamp
-                        const ts = this.dateFilter.latestSelectedDateObj.getTime();
-                        for (let record of orderedExecutions) {
-                            if (record.timeStamp <= ts) {
-                                // keep overwriting result until we are past the deadline
-                                result = record;
-                            }
-                        }
-                    }
-
-                    if (result === null) {
-                        // no execution records for student; put in a fake one that counts as 0
-                        console.log('WARN: no execution records for student: ' + student.userName + ' ' + student.projectUrl);
-                        result = {
-                            userName:       student.userName,
-                            timeStamp:      -1, // never happened (NOTE: if this is outside some kind of time filter this could be a problem)
-                            projectName:    'No Request', // unknown, so give a better message
-                            projectUrl:     student.projectUrl,
-                            commitUrl:      '',
-                            branchName:     '',
-                            gradeRequested: false,
-                            grade:          '0',
-                            delivId:        this.delivId,
-                            gradeDetails:   []
-                        }
-                    }
-                    const finalStudentRecord = {
-                        student:    student,
-                        executions: [result] // aka just the one record for their grade
-                    };
-                    studentFinal.push(finalStudentRecord);
-                } else {
-                    console.log('Excluded student: ' + student.userName);
-                }
-            }
-
-            const delta = new Date().getTime() - start;
-            console.log('Result->Grade conversion complete; # students: ' + data.students.length +
-                '; # records: ' + recordCount + '. Took: ' + delta + ' ms');
-
-            // this array can be trivially iterated on to turn into a CSV or any other format
-            return studentFinal;
-        } catch (err) {
-            console.error('ResultView::convertResultsToGrades(..) - ERROR: ' + err.members, err);
-        }
-    }
 
     public downloadData() {
         console.log('ResultView::downloadData() - start');
@@ -353,4 +263,99 @@ export class ResultView {
         downloadLink.click();
     }
 
+
+    /**
+     * Analyzes the complete results list for a deliverable (aka all test executions for a user
+     * or team) to create a single result for each student that can be used for a grade.
+     *
+     * This is essentially example code as a sample for course instructors to be used for
+     * analyzing result records. It is not expected that course instructors will emit
+     * StudentGrades[] but will instead print a CSV for their own use (aka UBC Connect).
+     *
+     * By January it will also be possible to upload this CSV to ClassPortal to serve as
+     * a Grade record that will be served to the students.
+     *
+     * @param {ResultPayload} data
+     * @returns {StudentGrades[]}
+     */
+    private convertResultsToGrades(data: ResultPayload): StudentGrades[] {
+        console.log('ResultsView::convertResultsToGrades(..) - start');
+        try {
+            const start = new Date().getTime();
+
+            // for stats (get number of records)
+            let recordCount = 0;
+            for (let project of Object.keys(data.projectMap)) {
+                recordCount += data.projectMap[project].length;
+            }
+
+            // now choose the record we want to emit per-student
+            let studentFinal: StudentGrades[] = [];
+            for (let student of data.students) {
+
+                // Make sure the student is someone you want to consider (aka exclude TAs & test accounts)
+                if (student.sNum !== '') {
+                    const executionsToConsider = data.projectMap[student.projectUrl];
+                    // Here we are choosing (from all executions for a student), which one will be their grade.
+                    const result = this.pickExecution(student, executionsToConsider);
+
+                    studentFinal.push({
+                        student:    student,
+                        executions: [result] // aka just the one record for their grade
+                    });
+                } else {
+                    console.log('Excluded student: ' + student.userName);
+                }
+            }
+
+            const delta = new Date().getTime() - start;
+            console.log('Result->Grade conversion complete; # students: ' + data.students.length +
+                '; # records: ' + recordCount + '. Took: ' + delta + ' ms');
+
+            // this array can be trivially iterated on to turn into a CSV or any other format
+            return studentFinal;
+        } catch (err) {
+            console.error('ResultView::convertResultsToGrades(..) - ERROR: ' + err.members, err);
+        }
+        return []; // don't return partial results; if there is a real problem we're going to want to know about it
+    }
+
+    private pickExecution(student: StudentResult, executionsToConsider: ResultRecord[]): ResultRecord {
+        let result: ResultRecord = null;
+        if (typeof executionsToConsider !== 'undefined' && executionsToConsider.length > 0) {
+            // In this case we're going to take the last execution before the time cutoff
+            // but you can use any of the ResultRecord rows here (branchName, gradeRequested, grade, etc.)
+            const orderedExecutions = executionsToConsider.sort(function (a: ResultRecord, b: ResultRecord) {
+                return a.timeStamp - b.timeStamp;
+            });
+
+            // Here we use our own date from the UI; but you probably want to set your own timestamp
+            const ts = this.dateFilter.latestSelectedDateObj.getTime();
+            for (let record of orderedExecutions) {
+                if (record.timeStamp <= ts) {
+                    // keep overwriting result until we are past the deadline
+                    result = record;
+                }
+            }
+        }
+
+        if (result === null) {
+            // no execution records for student; put in a fake one that counts as 0
+            console.log('WARN: no execution records for student: ' + student.userName + ' ' + student.projectUrl);
+            result = {
+                userName:       student.userName,
+                timeStamp:      -1, // never happened (NOTE: if this is outside some kind of time filter this could be a problem)
+                projectName:    'No Request', // unknown, so give a better message
+                projectUrl:     student.projectUrl,
+                commitUrl:      '',
+                branchName:     '',
+                gradeRequested: false,
+                grade:          '0',
+                delivId:        this.delivId,
+                gradeDetails:   []
+            }
+        }
+
+        return result;
+    }
 }
