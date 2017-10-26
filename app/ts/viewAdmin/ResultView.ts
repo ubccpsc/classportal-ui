@@ -192,7 +192,9 @@ export class ResultView {
             for (let g of allGrades) {
                 total += g;
             }
-            allGrades = allGrades.sort(); // NOTE: might not be right (check 100s)
+            allGrades = allGrades.sort(function (a, b) {
+                return Number(a) - Number(b);
+            }); // NOTE: might not be right (check 100s)
 
             let footer = '<div style="width: 100%; text-align: center;">';
             footer += '<div><b>Average: </b>' + (total / num).toFixed(1) + '</div>';
@@ -286,7 +288,11 @@ export class ResultView {
                                 result = record;
                             }
                         }
+                        if (result !== null && result.projectName === 'team40') {
+                            console.log('debug here');
+                        }
                     }
+
 
                     if (result === null) {
                         // no execution records for student; put in a fake one that counts as 0
