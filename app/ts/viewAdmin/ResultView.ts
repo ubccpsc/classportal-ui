@@ -281,7 +281,7 @@ export class ResultView {
 
                         const ts = this.dateFilter.latestSelectedDateObj.getTime();
                         for (let record of orderedExecutions) {
-                            if (record < ts) {
+                            if (record.timeStamp < ts) {
                                 // keep overwriting result until we are past the deadline
                                 result = record;
                             }
