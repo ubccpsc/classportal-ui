@@ -263,6 +263,11 @@ export class ResultView {
         downloadLink.click();
     }
 
+    private getTimeLimit(): number {
+        // note: you probably want to instead return the right timestamp
+        // for the due date of the deliverable you are generating grades for.
+        return this.dateFilter.latestSelectedDateObj.getTime();
+    }
 
     /**
      * Analyzes the complete results list for a deliverable (aka all test executions for a user
@@ -295,14 +300,16 @@ export class ResultView {
 
                 // Make sure the student is someone you want to consider (aka exclude TAs & test accounts)
                 if (student.sNum !== '') {
+
                     const executionsToConsider = data.projectMap[student.projectUrl];
                     // Here we are choosing (from all executions for a student), which one will be their grade.
                     const result = this.pickExecution(student, executionsToConsider);
 
                     studentFinal.push({
                         student:    student,
-                        executions: [result] // aka just the one record for their grade
+                        executions: [result] // aka just the one record corresponding to their grade
                     });
+
                 } else {
                     console.log('Excluded student: ' + student.userName);
                 }
@@ -312,8 +319,7 @@ export class ResultView {
             console.log('Result->Grade conversion complete; # students: ' + data.students.length +
                 '; # records: ' + recordCount + '. Took: ' + delta + ' ms');
 
-            // this array can be trivially iterated on to turn into a CSV or any other format
-            return studentFinal;
+            return studentFinal; // this array can be trivially iterated on to turn into a CSV or any other format
         } catch (err) {
             console.error('ResultView::convertResultsToGrades(..) - ERROR: ' + err.members, err);
         }
@@ -330,7 +336,7 @@ export class ResultView {
             });
 
             // Here we use our own date from the UI; but you probably want to set your own timestamp
-            const ts = this.dateFilter.latestSelectedDateObj.getTime();
+            const ts = this.getTimeLimit();
             for (let record of orderedExecutions) {
                 if (record.timeStamp <= ts) {
                     // keep overwriting result until we are past the deadline
