@@ -37,6 +37,8 @@ This can be thought of as four main steps:
 
 * Some students will exist in `StudentRecord` but will _never_ make an execution. In our sample code you can see that we just add a null `grade: 0` record for these students, but you can handle these however you would like.
 
+* There can be multiple instances of `ResultRecord` for the same SHA. These should only differ by the `gradeRequested` field (e.g., if it was processed before the request but a request was subsequently made, a new record will be made). If the code under test in non-deterministic, the `gradeValue` for the suite may be different between the runs (this is extremely uncommon, but can happen if the students are relying on `setTimeout` for example).
+
 ## Data Types
 
 The current data types are shown here. These should be the same as those found in [Models.ts](https://github.com/ubccpsc/classportal-ui-next/blob/master/app/ts/Models.ts). If they are not, please file an issue.
