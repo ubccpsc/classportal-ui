@@ -103,7 +103,7 @@ export class ResultView {
             headers.push({id: 'lab', text: 'Lab', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'project', text: 'Project', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'grade', text: this.delivId + ' Last Execution', sortable: true, defaultSort: true, sortDown: true});
-            headers.push({id: 'grade310', text: this.delivId + ' Max On Master', sortable: true, defaultSort: false, sortDown: true});
+            headers.push({id: 'grade310', text: this.delivId + ' Max Execution', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'grade210', text: this.delivId + ' Max Requested', sortable: true, defaultSort: false, sortDown: true});
 
             let table = new SortableTable(headers, '#admin-result-table');
@@ -452,18 +452,16 @@ export class ResultView {
         let result: ResultRecord = null;
         if (typeof executionsToConsider !== 'undefined' && executionsToConsider.length > 0) {
 
-            if (executionsToConsider[0].projectName === 'team105') {
-                console.log('Debug this; there are many commits on master but all records look like they are on branches');
-            }
             const ts = this.getTimeLimit();
             // find the list of acceptable requests
             const requestedExecutions = executionsToConsider.filter(function (record: ResultRecord) {
-                // grade must be on master
                 // push must be before timestamp
                 let include = false;
-                if (record.timeStamp < ts && record.branchName === 'refs/heads/master') {
+                if (record.timeStamp < ts) { // } && record.branchName === 'refs/heads/master') { // ignore the branch (see below)
                     include = true;
                 }
+                // sometimes branch names change on GitHub so things look like they are master when they get reported with another name
+                // by choosing max, we don't actually care what branch it was on, so just rolling with it solves this problem
                 return include;
             });
 
