@@ -398,12 +398,12 @@ export class ResultView {
                 // NOTE: this only works for individuals (since it is per-requestor, not per-team)
                 let include = false;
                 if (record.gradeRequested === true) {
-                    if (typeof record.gradeRequestedTimeStamp !== 'undefined') {
+                    if (typeof record.gradeRequestedTimeStamp !== 'undefined' && record.gradeRequestedTimeStamp > 0) {
                         if (record.gradeRequestedTimeStamp < ts && record.userName === student.userName) {
                             include = true;
                         }
                     } else {
-                        console.warn('pickExecution210 - gradeRequested: true, but gradeRequestedTimestamp: undefined; for: ' + record.commitUrl);
+                        console.warn('pickExecution210 - gradeRequested: true, but gradeRequestedTimestamp: undefined / < 0; for: ' + record.commitUrl);
                     }
                 }
                 return include;
