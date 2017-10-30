@@ -103,6 +103,7 @@ export class ResultView {
             headers.push({id: 'lab', text: 'Lab', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'project', text: 'Project', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'grade', text: this.delivId + ' Last Execution', sortable: true, defaultSort: true, sortDown: true});
+            headers.push({id: 'grade310', text: this.delivId + ' Max On Master', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'grade210', text: this.delivId + ' Max Requested', sortable: true, defaultSort: false, sortDown: true});
 
             let table = new SortableTable(headers, '#admin-result-table');
@@ -309,10 +310,11 @@ export class ResultView {
                     // Here we are choosing (from all executions for a student), which one will be their grade.
                     const resultLast = this.pickExecution(student, executionsToConsider);
                     const result210 = this.pickExecution210(student, executionsToConsider);
+                    const result310 = this.pickExecution310(student, executionsToConsider);
 
                     studentFinal.push({
                         student:    student,
-                        executions: [resultLast, result210] // aka just the one record corresponding to their grade
+                        executions: [resultLast, result310, result210]
                     });
 
                 } else {
@@ -385,10 +387,6 @@ export class ResultView {
         let result: ResultRecord = null;
         if (typeof executionsToConsider !== 'undefined' && executionsToConsider.length > 0) {
 
-            if (executionsToConsider.length > 0 && executionsToConsider[0].projectName === 'project1') {
-                console.log('Debug this; the last of these should be true.');
-            }
-
             const ts = this.getTimeLimit();
             // find the list of acceptable requests
             const requestedExecutions = executionsToConsider.filter(function (record: ResultRecord) {
@@ -405,6 +403,66 @@ export class ResultView {
                     } else {
                         console.warn('pickExecution210 - gradeRequested: true, but gradeRequestedTimestamp: undefined / < 0; for: ' + record.commitUrl);
                     }
+                }
+                return include;
+            });
+
+            let maxRecord = null;
+            if (requestedExecutions.length > 0) {
+                maxRecord = requestedExecutions.reduce(function (prev: ResultRecord, current: ResultRecord) {
+                    return (Number(prev.grade) > Number(current.grade)) ? prev : current
+                });
+            }
+
+            if (typeof maxRecord !== 'undefined' && maxRecord !== null) {
+                result = maxRecord;
+            }
+        }
+
+        if (result === null) {
+            // no execution records for student; put in a fake one that counts as 0
+            console.log('WARN: no execution records for student: ' + student.userName + ' ' + student.projectUrl);
+            result = {
+                userName:       student.userName,
+                timeStamp:      -1, // never happened (NOTE: if this is outside some kind of time filter this could be a problem)
+                projectName:    'No Request', // unknown, so give a better message
+                projectUrl:     student.projectUrl,
+                commitUrl:      '',
+                branchName:     '',
+                gradeRequested: false,
+                grade:          '0',
+                delivId:        this.delivId,
+                gradeDetails:   []
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * This is the 310 rubric selection.
+     *
+     * It will choose the MAX record on the master branch.
+     *
+     * @param {StudentResult} student
+     * @param {ResultRecord[]} executionsToConsider
+     * @returns {ResultRecord}
+     */
+    private pickExecution310(student: StudentResult, executionsToConsider: ResultRecord[]): ResultRecord {
+        let result: ResultRecord = null;
+        if (typeof executionsToConsider !== 'undefined' && executionsToConsider.length > 0) {
+
+            if (executionsToConsider[0].projectName === 'team105') {
+                console.log('Debug this; there are many commits on master but all records look like they are on branches');
+            }
+            const ts = this.getTimeLimit();
+            // find the list of acceptable requests
+            const requestedExecutions = executionsToConsider.filter(function (record: ResultRecord) {
+                // grade must be on master
+                // push must be before timestamp
+                let include = false;
+                if (record.timeStamp < ts && record.branchName === 'refs/heads/master') {
+                    include = true;
                 }
                 return include;
             });
