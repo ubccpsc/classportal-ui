@@ -388,7 +388,7 @@ export class ResultView {
         if (typeof executionsToConsider !== 'undefined' && executionsToConsider.length > 0) {
 
             if (executionsToConsider.length > 0 && executionsToConsider[0].projectName === 'project1') {
-                console.log('foo');
+                console.log('Debug this; the last of these should be true.');
             }
 
             const ts = this.getTimeLimit();
