@@ -382,8 +382,6 @@ export class ResultView {
      * @returns {ResultRecord}
      */
     private pickExecution210(student: StudentResult, executionsToConsider: ResultRecord[]): ResultRecord {
-        // max requested execution by the deadline
-
         let result: ResultRecord = null;
         if (typeof executionsToConsider !== 'undefined' && executionsToConsider.length > 0) {
 
@@ -397,7 +395,8 @@ export class ResultView {
                 // grade must be requested &&
                 // request must be before timestamp &&
                 // requestor must be the student (aka not a TA)
-                // NOTE: this will break teams (since it is per-requestor, not per-team)
+                // NOTE: this only works for individuals (since it is per-requestor, not per-team)
+                // TODO: change from record.timeStamp to record.requestTimeStamp once it is deployed
                 return record.gradeRequested === true && record.timeStamp < ts && record.userName === student.userName;
             });
 
