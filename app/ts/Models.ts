@@ -106,6 +106,7 @@ export interface ResultRecord {
     commitUrl: string;          // full URL to commit corresponding to the row
     branchName: string;         // branch name
     gradeRequested: boolean;    // whether the result explicitly requested by the student
+    gradeRequestedTimeStamp?: number;    // ts of the request
 
     delivId: string;            // deliverable name
     grade: string;              // final grade assigned by AutoTest for the execution

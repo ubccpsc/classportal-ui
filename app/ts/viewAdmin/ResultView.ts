@@ -396,8 +396,17 @@ export class ResultView {
                 // request must be before timestamp &&
                 // requestor must be the student (aka not a TA)
                 // NOTE: this only works for individuals (since it is per-requestor, not per-team)
-                // TODO: change from record.timeStamp to record.requestTimeStamp once it is deployed
-                return record.gradeRequested === true && record.timeStamp < ts && record.userName === student.userName;
+                let include = false;
+                if (record.gradeRequested === true) {
+                    if (typeof record.gradeRequestedTimeStamp !== 'undefined') {
+                        if (record.gradeRequestedTimeStamp < ts && record.userName === student.userName) {
+                            include = true;
+                        }
+                    } else {
+                        console.warn('pickExecution210 - gradeRequested: true, but gradeRequestedTimestamp: undefined; for: ' + record.commitUrl);
+                    }
+                }
+                return include;
             });
 
             let maxRecord = null;
