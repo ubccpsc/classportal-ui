@@ -33,6 +33,10 @@ This can be thought of as four main steps:
 
 #### Things to watch out for:
 
+* Every `gradeRequested` and `gradeRequestedTimeStamp` property that matches an AutoTest grade request by a student is queried and updated based on a matching `commit`, `orgName`, `deliverableName`, and `username`. A `commit` is not sufficient to perform a query on its because a common shaw of '0000000' is used on commits where branches are created or deleted. As none of these properties that are used in the query are unique identifiers, we can only update the `gradeRequested` and `gradeRequestedTimeStamp` with a high degree of certainty. A collision would result in all commits with the '0000000' SHA sharing the same `gradeRequested` status and `gradeRequestedTimeStamp` although they are wrong.
+
+It would be possible narrow down the query match per branch if the `commit_comment` webhook contained the branch that the comment on a commit was left on. This, however, is not the case, as the `commit_comment` does not contain the branch.
+
 * Some `StudentRecord` objects in `ResultPayload.students` will not correspond to real students (aka there will be course staff, test accounts, and TAs). You probably want to ignore these. One easy way to do this is to note that only real students will have a valid value for `StudentRecord.sNum`.
 
 * Some students will exist in `StudentRecord` but will _never_ make an execution. In our sample code you can see that we just add a null `grade: 0` record for these students, but you can handle these however you would like.
