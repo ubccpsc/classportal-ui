@@ -33,7 +33,7 @@ This can be thought of as four main steps:
 
 #### Things to watch out for:
 
-* Every `gradeRequested` and `gradeRequestedTimeStamp` property that matches an AutoTest grade request by a student is queried and updated based on a matching `commit`, `orgName`, `deliverableName`, and `username`. A `commit` is not sufficient to perform a query on its because a common shaw of '0000000' is used on commits where branches are created or deleted. As none of these properties that are used in the query are unique identifiers, we can only update the `gradeRequested` and `gradeRequestedTimeStamp` with a high degree of certainty. A collision would result in all commits with the '0000000' SHA sharing the same `gradeRequested` status and `gradeRequestedTimeStamp` although they are wrong.
+* Every `gradeRequested` and `gradeRequestedTimeStamp` property that matches an AutoTest grade request by a student is queried and updated based on a matching `commit`, `orgName`, `deliverableName`, and `username`. A `commit` is not sufficient to perform a query on its because a common SHA of '0000000' is used on commits where branches are created or deleted. As none of these properties that are used in the query are unique identifiers, we can only update the `gradeRequested` and `gradeRequestedTimeStamp` with a high degree of certainty. A collision would result in all commits with the '0000000' SHA sharing the same `gradeRequested` status and `gradeRequestedTimeStamp` although they are wrong.
 
 It would be possible narrow down the query match per branch if the `commit_comment` webhook contained the branch that the comment on a commit was left on. This, however, is not the case, as the `commit_comment` does not contain the branch.
 
