@@ -6,6 +6,10 @@ The core difficulty is that AutoTest is just a test runner. This means that for 
 
 To get an idea of why this is important, the fall 2017 instance of CPSC 310 ran 14,659 AutoTest executions for 322 students during d1. Since the students were working in pairs, these executions needed to be reduced to the 161 test executions that corresponded to real student grades (aka 99% of executions needed to be processed and ignored according to the course rubric). This document describes the process and data structures that enable staff to do this with complete flexibility.
 
+## Timestamps
+
+Dates entered in the UI are converted to a UNIX timestamp, which is consistently used by the back-end application and Github Enterprise.
+
 ## Process
 
 The high-level process for this task looks like this:
