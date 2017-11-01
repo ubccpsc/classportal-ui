@@ -397,7 +397,7 @@ export class ResultView {
                 let include = false;
                 if (record.gradeRequested === true) {
                     if (typeof record.gradeRequestedTimeStamp !== 'undefined' && record.gradeRequestedTimeStamp > 0) {
-                        if (record.gradeRequestedTimeStamp < ts && record.userName === student.userName) {
+                        if (record.gradeRequestedTimeStamp < ts && record.userName.toLowerCase() === student.userName.toLowerCase()) {
                             include = true;
                         }
                     } else {
