@@ -200,9 +200,13 @@ export class ResultView {
                 return Number(a) - Number(b);
             }); // NOTE: might not be right (check 100s)
 
-            let footer = '<div style="width: 100%; text-align: center;">';
-            footer += '<div><b>Average: </b>' + (total / num).toFixed(1) + '</div>';
-            footer += '<div><b>Median: </b>' + allGrades[Math.ceil(num / 2)].toFixed(1) + '</div>';
+            let footer = '<table style="margin-left: auto; margin-right: auto; text-align: center;">';
+            footer += '<tr><th>Column</th><th>Average</th><th>Median</th></tr>';
+            const lastAvg = (total / num).toFixed(1);
+            const lastMed = allGrades[Math.ceil(num / 2)].toFixed(1);
+            footer += '<tr><td><b>Last Execution</b></td><td>' + lastAvg + '</td><td>' + lastMed + '</td></tr>';
+            footer += '</table>';
+
             document.getElementById('admin-result-footer').innerHTML = footer;
         }
         UI.hideModal();
