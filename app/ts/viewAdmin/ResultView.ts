@@ -55,6 +55,7 @@ export class ResultView {
                 this.dateFilter = flatpickr("#admin-result-date", {
                     enableTime:  true,
                     time_24hr:   true,
+                    utc: true,
                     dateFormat:  "Y/m/d @ H:i",
                     defaultDate: new Date()
                 });

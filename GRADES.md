@@ -6,6 +6,10 @@ The core difficulty is that AutoTest is just a test runner. This means that for 
 
 To get an idea of why this is important, the fall 2017 instance of CPSC 310 ran 14,659 AutoTest executions for 322 students during d1. Since the students were working in pairs, these executions needed to be reduced to the 161 test executions that corresponded to real student grades (aka 99% of executions needed to be processed and ignored according to the course rubric). This document describes the process and data structures that enable staff to do this with complete flexibility.
 
+## Timestamps
+
+Dates entered in the UI are converted to a UNIX timestamp, which is consistently used by the back-end application and Github Enterprise.
+
 ## Process
 
 The high-level process for this task looks like this:
@@ -35,7 +39,7 @@ This can be thought of as four main steps:
 
 * If students change their CWL matching up records can be tricky. Just be aware that students who change their CWL may end up filing grading appeals.
 
-* Every `gradeRequested` and `gradeRequestedTimeStamp` property that matches an AutoTest grade request by a student is queried and updated based on a matching `commit`, `orgName`, `deliverableName`, and `username`. A `commit` is not sufficient to perform a query on its because a common SHA of '0000000' is used on commits where branches are created or deleted. As none of these properties that are used in the query are unique identifiers, we can only update the `gradeRequested` and `gradeRequestedTimeStamp` with a high degree of certainty. A collision would result in all commits with the '0000000' SHA sharing the same `gradeRequested` status and `gradeRequestedTimeStamp` although they are wrong.
+* Every `gradeRequested` and `gradeRequestedTimeStamp` property is taken on the basis on the time that a commit comment requesting a grade was made. If a Result Record is found to match a commit comment, then the timestamp from the commit comment is placed in the result record with the updated `gradeRequested` is `true` flag. However, we have limited information to find the corersponding commit comment, as a commit is not necessarily a unique SHA because a common SHA of '0000000' is used on commits where branches are created or deleted. Hence, we are forced to update all '0000000' SHAs within a repo to ensure that the gradeRequested flag is added because it is the closest property that we have to a unique identifier to perform this update.
 
 It would be possible narrow down the query match per branch if the `commit_comment` webhook contained the branch that the comment on a commit was left on. This, however, is not the case, as the `commit_comment` does not contain the branch.
 
