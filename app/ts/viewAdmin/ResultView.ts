@@ -108,7 +108,7 @@ export class ResultView {
 
             let table = new SortableTable(headers, '#admin-result-table');
 
-            let allGrades: number[] = [];
+            let allGrades: number[][] = [];
             for (let key of Object.keys(processedData)) {
                 let row = processedData[key] as StudentGrades;
                 // HACK: this does not print people who did nothing!
@@ -147,6 +147,7 @@ export class ResultView {
                             html:  row.executions[0].projectUrl
                         });
                     }
+                    let i = 0;
                     for (let record of row.executions) {
                         if (record.commitUrl !== '') {
                             r.push({
@@ -159,9 +160,14 @@ export class ResultView {
                                 html:  record.grade
                             });
                         }
+                        if (typeof allGrades[i] === 'undefined') {
+                            allGrades[i] = [];
+                        }
+                        allGrades[i].push(Number(record.grade));
+                        i++;
                     }
 
-                    allGrades.push(Number(row.executions[0].grade));
+
                     /**
                      * Should do this for the extraDetails
                      */
@@ -192,19 +198,40 @@ export class ResultView {
 
 
             const num = allGrades.length;
-            let total = 0;
-            for (let g of allGrades) {
-                total += g;
+            let total: number[] = [];
+            let i = 0;
+            for (let col of allGrades) {
+                for (let g of col) {
+                    if (typeof total[i] === 'undefined') {
+                        total[i] = 0;
+                    }
+                    total[i] = total[i] + g;
+                }
+                i++;
             }
-            allGrades = allGrades.sort(function (a, b) {
-                return Number(a) - Number(b);
-            }); // NOTE: might not be right (check 100s)
+
 
             let footer = '<table style="margin-left: auto; margin-right: auto; text-align: center;">';
-            footer += '<tr><th>Column</th><th>Average</th><th>Median</th></tr>';
-            const lastAvg = (total / num).toFixed(1);
-            const lastMed = allGrades[Math.ceil(num / 2)].toFixed(1);
-            footer += '<tr><td><b>Last Execution</b></td><td>' + lastAvg + '</td><td>' + lastMed + '</td></tr>';
+            footer += '<tr><th></th><th>Average</th><th>Median</th></tr>';
+            let j = 0;
+            for (let gradeList of allGrades) {
+                gradeList = gradeList.sort(function (a, b) {
+                    return Number(a) - Number(b);
+                }); // NOTE: might not be right (check 100s)
+
+                const lastAvg = (total[j] / gradeList.length).toFixed(1);
+                const lastMed = gradeList[Math.ceil(gradeList.length / 2)].toFixed(1);
+                let head = '';
+                if (j === 0) {
+                    head = 'Last Execution';
+                } else if (j === 1) {
+                    head = 'Max Execution';
+                } else if (j === 2) {
+                    head = 'Last Requested';
+                }
+                footer += '<tr><td><b>' + head + '</b></td><td>' + lastAvg + '</td><td>' + lastMed + '</td></tr>';
+                j++;
+            }
             footer += '</table>';
 
             document.getElementById('admin-result-footer').innerHTML = footer;
