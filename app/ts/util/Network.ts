@@ -21,13 +21,11 @@ export class Network {
                     data.json().then(function (data: any) {
                         console.log('Network::detectUnauthenticated( \' + url + \' ) - then; data: ' + JSON.stringify(data));
                         console.log('the data', data);
+                        if (data.response === false) {
+                            localStorage.removeItem('authStatus');
+                            location.reload();
+                        }
                     })
-                    if (data.response === false) {
-                        alert('false indeed');
-                        localStorage.removeItem('authStatus');
-                        alert('You have been logged out due to inactivity. Please sign-in.');
-                        location.reload();
-                    }
                     console.log('Network::handleRemote() 200 return');
                 }
             }).catch((err: Error) => {
