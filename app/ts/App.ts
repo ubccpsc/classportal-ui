@@ -35,6 +35,8 @@ export class App {
             this.frontendURL = this.frontendPROD;
         }
 
+        Network.detectUnauthenticated(this.backendURL);
+
         console.log('App::<init> - backend: ' + this.backendURL);
     }
 
