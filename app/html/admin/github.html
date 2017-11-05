@@ -2,7 +2,12 @@
 
 
     <ons-list id="admin-github-list">
-        <ons-list-header>Actions</ons-list-header>
+
+        <ons-list-header>Course Actions</ons-list-header>
+        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/manageDeliverables.html')">Configure Deliverables</ons-button></ons-list-item>
+        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/manageGrades.html')">Prepare Grades</ons-button></ons-list-item>
+
+        <ons-list-header>GitHub Actions</ons-list-header>
         <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/manageTeams.html')">Provision Teams</ons-button></ons-list-item>
         <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/manageRepos.html')">Provision Repositories</ons-button></ons-list-item>
         <!--
@@ -12,5 +17,5 @@
         <ons-list-item>Some fields</ons-list-item>
         -->
     </ons-list>
-    
+
 </ons-page>
