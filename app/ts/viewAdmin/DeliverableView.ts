@@ -1,6 +1,9 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {DeliverablePayload, DeliverablePayloadContainer} from "../Models";
+import {App} from "../App";
+
+declare var myApp: App;
 
 export class DeliverableView {
     private controller: AdminController;
@@ -33,6 +36,7 @@ export class DeliverableView {
         console.log('DeliverableView::render(..) - setting deliverables: ' + JSON.stringify(deliverables));
         this.controller.deliverables = deliverables; // HACK: global
 
+        const that = this;
         // deliverables
         const deliverableList = document.querySelector('#admin-deliverable-list');
         if (deliverableList !== null) {
@@ -42,8 +46,14 @@ export class DeliverableView {
                     const close = new Date(deliverable.close);
                     const open = new Date(deliverable.open);
                     deliverableList.appendChild(UI.createListHeader(deliverable.id));
-                    deliverableList.appendChild(UI.createListItem("Open: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString()));
-                    deliverableList.appendChild(UI.createListItem("Close: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString()));
+                    let text = "Open: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString() + "; Close: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString();
+                    let subtext = 'Subtext';
+                    let elem = UI.createListItem(text, subtext, true);
+                    elem.onclick = function () {
+                        that.editDeliverable(deliverable);
+                    };
+                    deliverableList.appendChild(elem);
+                    // deliverableList.appendChild(UI.createListItem("Close: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString()));
                 }
             } else {
                 deliverableList.appendChild(UI.createListItem("No deliverable data returned from server."));
@@ -52,6 +62,11 @@ export class DeliverableView {
             console.log('DeliverableView::render() - element is null');
         }
         UI.hideModal();
+    }
+
+    private editDeliverable(deliverable: DeliverablePayload) {
+        console.log('DeliverableView::editDeliverable( ' + deliverable.id + ' ) - start');
+        myApp.pushPage('html/admin/editDeliverable.html', {deliverable: deliverable});
     }
 
 }

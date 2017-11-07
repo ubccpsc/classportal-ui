@@ -171,3 +171,8 @@ export interface ResultDetail {
 
 
 
+## Grades design ideas
+
+* On the deliverables page you can specify the grade fields.
+* `grade: number` will be required and will come from `ResultRecord.grade`
+* `finalGrade: number` will be required and

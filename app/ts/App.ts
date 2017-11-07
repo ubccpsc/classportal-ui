@@ -138,16 +138,20 @@ export class App {
         document.addEventListener('show', function (event) {
             const page = event.target as OnsPageElement;
             const pageName = page.id;
+            let options = (<any>page).pushedOptions;
+            if (typeof options === 'undefined') {
+                options = {};
+            }
             console.log('App::init()::show - page: ' + pageName);
 
             if (that.studentController !== null) {
                 if (typeof that.studentController[pageName] === 'function') {
-                    that.studentController[pageName]();
+                    that.studentController[pageName](options);
                 }
             }
             if (that.adminController !== null) {
                 if (typeof that.adminController[pageName] === 'function') {
-                    that.adminController[pageName]();
+                    that.adminController[pageName](options);
                 }
             }
         });
