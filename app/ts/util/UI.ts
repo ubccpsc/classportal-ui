@@ -27,6 +27,15 @@ export class UI {
         }
     }
 
+    public static popPage() {
+        const nav = document.querySelector('#myNavigator') as any;// as ons.OnsNavigatorElement;
+        if (nav !== null) {
+            nav.popPage();
+        } else {
+            console.log('UI::popPage(..) - WARN: nav is null');
+        }
+    }
+
     public static handleError(err: Error) {
         if (err instanceof Error) {
             ons.notification.alert(err.message);
@@ -39,7 +48,13 @@ export class UI {
         ons.notification.toast({message: text, timeout: 2000});
     }
 
-    public static createListItem(text: string, subtext?: string): HTMLElement {
+    public static createListItem(text: string, subtext?: string, tappable?: boolean): HTMLElement {
+
+        let prefix = '<ons-list-item style="display: table;">';
+        if (typeof tappable !== 'undefined' && tappable === true) { // right now only if subtext
+            prefix = '<ons-list-item style="display: table;" modifier="chevron" tappable>';
+        }
+
         if (typeof subtext === 'undefined') {
             // simple list item
             var taskItem = ons.createElement(
@@ -50,7 +65,7 @@ export class UI {
         } else {
             // compound list item
             var taskItem = ons.createElement(
-                '<ons-list-item style="display:table;">' +
+                prefix +
                 '<span class="list-item__title">' + text + '</span><span class="list-item__subtitle">' + subtext + '</span>' +
                 '</ons-list-item>') as HTMLElement;
             return taskItem;

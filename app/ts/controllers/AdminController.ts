@@ -11,8 +11,10 @@ import {ResultView} from "../viewAdmin/ResultView";
 import {AuthHelper} from "../util/AuthHelper";
 import {GitHubView} from "../viewAdmin/GitHubView";
 import {App} from "../App";
+import {EditDeliverableView} from '../viewAdmin/EditDeliverableView';
 
 export class AdminController {
+
 
     private courseId: string;
 
@@ -23,6 +25,7 @@ export class AdminController {
     private dashboardView = new DashboardView(this);
     private authHelper: AuthHelper;
     private readonly REQ_USERROLE = 'admin';
+    private editDeliverableView: EditDeliverableView;
 
     public deliverables: any = null;
 
@@ -141,6 +144,22 @@ export class AdminController {
         this.githubView.render({});
     }
 
+    public adminManageDeliverablesPage() {
+        console.log('AdminController::adminManageDeliverablesPage - start');
+        // this.githubView.updateTitle();
+        // this.githubView.render({});
+
+        const url = this.app.backendURL + this.courseId + '/deliverables';
+        Network.handleRemote(url, this.deliverableView, UI.handleError);
+    }
+
+    public adminEditDeliverablePage(opts: any) {
+        console.log('AdminController::adminEditDeliverablePage - start; options: ' + JSON.stringify(opts));
+        // this.githubView.updateTitle();
+        // this.githubView.render({});
+        this.editDeliverableView = new EditDeliverableView(opts);
+        this.editDeliverableView.render();
+    }
 
 }
 
