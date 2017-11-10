@@ -8,6 +8,7 @@ import {DashboardView} from "../viewAdmin/DashboardView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
 import {TeamView} from "../viewAdmin/TeamView";
 import {ResultView} from "../viewAdmin/ResultView";
+import {AuthHelper} from "../util/AuthHelper";
 import {GitHubView} from "../viewAdmin/GitHubView";
 import {App} from "../App";
 
@@ -20,6 +21,8 @@ export class AdminController {
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
     private dashboardView = new DashboardView(this);
+    private authHelper: AuthHelper;
+    private readonly REQ_USERROLE = 'admin';
 
     public deliverables: any = null;
 
@@ -31,15 +34,20 @@ export class AdminController {
     constructor(app: App, courseId: string) {
         console.log("AdminController::<init>");
         this.app = app;
+        this.authHelper = new AuthHelper(app.backendURL);
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
+
         this.courseId = courseId;
     }
 
     public adminTabsPage(page: any) {
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminTabsPage - start (no-op)');
         // called when the tabs container inits
     }
 
     public adminDeliverablesPage() {
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminDeliverablesPage - start');
         this.deliverableView.updateTitle();
 
@@ -50,6 +58,7 @@ export class AdminController {
     }
 
     public adminTeamsPage() {
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminTeamsPage - start');
         this.teamView.updateTitle();
 
@@ -59,6 +68,7 @@ export class AdminController {
     }
 
     public adminResultsPage(delivId?: string) {
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminResultsPage( ' + delivId + ' ) - start');
         this.resultView.updateTitle();
 

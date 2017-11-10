@@ -4,6 +4,7 @@
 
 import {AdminController} from "./controllers/AdminController";
 import {StudentController} from "./controllers/StudentController";
+import {AuthHelper} from "./util/AuthHelper";
 import {UI} from "./util/UI";
 import 'whatwg-fetch';
 import {OnsButtonElement, OnsPageElement} from "onsenui";
@@ -22,6 +23,7 @@ export class App {
     private backendPROD = 'https://portal.cs.ubc.ca:5000/';
     private frontendDEV = 'https://localhost:3000/';
     private frontendPROD = 'https://portal.cs.ubc.ca/';
+    private authHelper: AuthHelper;
     public readonly backendURL = this.backendDEV;
     public readonly frontendURL = this.frontendDEV;
 
@@ -35,7 +37,8 @@ export class App {
             this.frontendURL = this.frontendPROD;
         }
 
-        Network.detectUnauthenticated(this.backendURL);
+        this.authHelper = new AuthHelper(this.backendURL);
+        this.authHelper.updateAuthStatus();
 
         console.log('App::<init> - backend: ' + this.backendURL);
     }
