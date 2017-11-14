@@ -52,7 +52,8 @@ export class Network {
                     throw new Error('Network::handleRemote() - API ERROR: ' + data.status);
                 } else if (data.status !== 200 && data.status === 405 || data.status === 401) {
                     console.error('Network::handleRemotePost() Permission denied for your userrole.');
-                    alert('You are not authorized to access this endpoint');
+                    alert('You are not authorized to access this endpoint. Please re-login.');
+                    location.reload();
                 } else {
                     console.log('Network::handleRemote() 200 return');
                     data.json().then(function (json: any) {
@@ -92,7 +93,7 @@ export class Network {
                     throw new Error('Network::handleRemote() - API ERROR: ' + data.status);
                 } else if (data.status !== 200 && data.status === 405 || data.status === 401) {
                     console.error('Network::handleRemotePost() Permission denied for your userrole.');
-                    alert('You are not authorized to access this endpoint');
+                    alert('You are not authorized to access this endpoint. Please re-login.');
                     location.reload();
                 } else {
                     console.log('Network::handleRemote() 200 return');

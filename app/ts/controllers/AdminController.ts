@@ -75,7 +75,7 @@ export class AdminController {
         console.log('AdminController::adminResultsPage( ' + delivId + ' ) - start');
         this.resultView.updateTitle();
 
-        if (typeof delivId === 'undefined' || delivId === null || delivId === 'null') {
+        if (typeof delivId === 'undefined' || delivId === null || delivId === 'null' || Object.keys(delivId).length === 0 ) {
             console.log('AdminController::adminResultsPage - skipped; select deliverable.');
             // configure selects
             this.resultView.configure();
