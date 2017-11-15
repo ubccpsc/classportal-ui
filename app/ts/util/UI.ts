@@ -31,7 +31,9 @@ export class UI {
 
     public static getCurrentPage(): any {
         const nav = document.querySelector('#myNavigator') as any;
-        return nav.getCurrentPage();
+        if (nav !== null) {
+            return nav.getCurrentPage();
+        }
     }
 
     public static popPage() {
@@ -79,11 +81,32 @@ export class UI {
         }
     }
 
-    public static createEditHeader(text: string): HTMLElement {
-        var editHeader = ons.createElement(
-            '<ons-input type="text">bla</ons-input>'
-            ) as HTMLElement;
-        return editHeader;
+    public static createEditableDeliverable(_obj: object): HTMLElement {
+        let children = '';
+
+        Object.keys(_obj).forEach((key) => {
+            let value = _obj[key];
+            let onsenListBegin = '<ons-list-item style="display: table;">';
+            let onsenListEnd = '</ons-list-item>';
+            let label = '<p><label for="' + key + '">' + key + '</label></p>'
+
+            let element = '';
+
+            // hide the _id field
+            if (key === "_id") {
+                element = '<input name="' + key + '" input-id="' + key + '" type="hidden" value="' + value + '"></input>';
+            } else if (key === "open" || key === "close") {
+                let spanDateTime = '<span>' + new Date(_obj[key]) + '</span>';
+                let inputDate = '<p><input name="' + key + 'Date" id="' + key + '" type="date" value="' + value + '"></input>';
+                let inputTime = '<p><input name="' + key + 'Time" id="' + key + '" type="time" value="' + value + '"></input></p>';
+                element = spanDateTime + inputDate + inputTime;
+            } else {
+                element = '<input name="' + key + '" id="' + key + '" type="text" value="' + value + '"></input>';
+            }
+
+            children = String (onsenListBegin) + String(element) + String(children) + String(onsenListEnd);
+        });
+        return ons.createElement(children) as HTMLElement;
     }
 
     public static createListHeader(text: string): HTMLElement {
@@ -112,7 +135,6 @@ export class UI {
             console.log('UI::showModal(..) - Modal is null');
         }
     }
-
 
     public static hideModal() {
         const modal = document.querySelector('ons-modal') as OnsModalElement;

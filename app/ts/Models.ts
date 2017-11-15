@@ -51,6 +51,7 @@ export interface DeliverablePayload {
     id: string;
     open: number; // timestamp
     close: number; // timestamp
+    name: string;
     // NOTE: things are definitely missing here.
 }
 

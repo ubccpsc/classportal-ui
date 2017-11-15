@@ -67,13 +67,19 @@ export class DeliverableView {
     private editDeliverable(deliverable: DeliverablePayload) {
         console.log('DeliverableView::editDeliverable( ' + deliverable.id + ' ) - start');
         UI.showModal();
-        UI.pushPage('html/admin/editDeliverable.html', {deliverable: deliverable})
-            .then((item: any) => {
-                console.log(item);
+        UI.pushPage('html/admin/editDeliverable.html', {data: deliverable})
+            .then((page: any) => {
+                console.log(page);
                 let editableDeliv = document.querySelector('#editable-deliverable');
-                editableDeliv.innerHTML = 'BLA!';
+
+                let header = UI.createListHeader('Deliverable ' + deliverable.name);
+                let elements = UI.createEditableDeliverable(deliverable)
+
+                editableDeliv.appendChild(header);
+                editableDeliv.appendChild(elements);
+
                 UI.hideModal();
-            })
+            });
     }
 
 }
