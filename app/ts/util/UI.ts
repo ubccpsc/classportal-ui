@@ -82,30 +82,35 @@ export class UI {
     }
 
     public static createEditableDeliverable(_obj: object): HTMLElement {
-        let children = '';
+        let children = '<div>';
 
         Object.keys(_obj).forEach((key) => {
             let value = _obj[key];
-            let onsenListBegin = '<ons-list-item style="display: table;">';
-            let onsenListEnd = '</ons-list-item>';
-            let label = '<p><label for="' + key + '">' + key + '</label></p>'
-
+            let onsListHeader = '';
             let element = '';
+
+            // add item-header only if non-hidden field
+            if (key !== "_id") {
+                onsListHeader = '<on-list-header>' + key + '</on-list-header>';
+            }
 
             // hide the _id field
             if (key === "_id") {
-                element = '<input name="' + key + '" input-id="' + key + '" type="hidden" value="' + value + '"></input>';
+                element = '<input name="' + key + '" id="' + key + '" type="hidden" value="' + value + '"/>';
             } else if (key === "open" || key === "close") {
-                let spanDateTime = '<span>' + new Date(_obj[key]) + '</span>';
-                let inputDate = '<p><input name="' + key + 'Date" id="' + key + '" type="date" value="' + value + '"></input>';
-                let inputTime = '<p><input name="' + key + 'Time" id="' + key + '" type="time" value="' + value + '"></input></p>';
+                let spanDateTime = '<ons-list-item><span> Current Date/Time: ' + new Date(_obj[key]) + '</span></ons-list-item>';
+                let inputDate = '<ons-list-item><input name="' + key + 'Date" id="' + key + '" type="date" value="' + value + '"/></ons-list-item>';
+                let inputTime = '<ons-list-item><input name="' + key + 'Time" id="' + key + '" type="time" value="' + value + '"/></ons-list-item>';
                 element = spanDateTime + inputDate + inputTime;
             } else {
-                element = '<input name="' + key + '" id="' + key + '" type="text" value="' + value + '"></input>';
+                element = '<ons-list-item><input name="' + key + '" id="' + key + '" type="text" value="' + value + '"/></ons-list-item>';
             }
 
-            children = String (onsenListBegin) + String(element) + String(children) + String(onsenListEnd);
+            children = children + onsListHeader + element;
         });
+
+        children = children + '</div>';
+
         return ons.createElement(children) as HTMLElement;
     }
 
