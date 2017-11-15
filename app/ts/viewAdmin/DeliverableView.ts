@@ -66,7 +66,14 @@ export class DeliverableView {
 
     private editDeliverable(deliverable: DeliverablePayload) {
         console.log('DeliverableView::editDeliverable( ' + deliverable.id + ' ) - start');
-        myApp.pushPage('html/admin/editDeliverable.html', {deliverable: deliverable});
+        UI.showModal();
+        UI.pushPage('html/admin/editDeliverable.html', {deliverable: deliverable})
+            .then((item: any) => {
+                console.log(item);
+                let editableDeliv = document.querySelector('#editable-deliverable');
+                editableDeliv.innerHTML = 'BLA!';
+                UI.hideModal();
+            })
     }
 
 }

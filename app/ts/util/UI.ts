@@ -12,7 +12,7 @@ export class UI {
     /**
      * Onsen convenience functions
      */
-    public static pushPage(pageId: string, options?: any) {
+    public static pushPage(pageId: string, options?: any): any {
 
         if (typeof options === 'undefined') {
             options = {};
@@ -21,10 +21,17 @@ export class UI {
 
         const nav = document.querySelector('#myNavigator') as any;// as ons.OnsNavigatorElement;
         if (nav !== null) {
-            nav.pushPage(pageId, options);
+            return nav.pushPage(pageId, options);
         } else {
             console.log('UI::pushPage(..) - WARN: nav is null');
+            return nav.pushPage(pageId, options);
         }
+
+    }
+
+    public static getCurrentPage(): any {
+        const nav = document.querySelector('#myNavigator') as any;
+        return nav.getCurrentPage();
     }
 
     public static popPage() {
@@ -70,6 +77,13 @@ export class UI {
                 '</ons-list-item>') as HTMLElement;
             return taskItem;
         }
+    }
+
+    public static createEditHeader(text: string): HTMLElement {
+        var editHeader = ons.createElement(
+            '<ons-input type="text">bla</ons-input>'
+            ) as HTMLElement;
+        return editHeader;
     }
 
     public static createListHeader(text: string): HTMLElement {
