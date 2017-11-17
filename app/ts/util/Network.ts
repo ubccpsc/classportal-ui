@@ -6,6 +6,79 @@ import 'whatwg-fetch';
 
 export class Network {
 
+    public static detectUnauthenticated(url: string) {
+        console.log('Network::delectUnauthenticated( ' + url + 'isAuthenticated ) - start');
+        const USE_REAL = true;
+        if (USE_REAL === true) {
+            const OPTIONS_HTTP_GET: object = {credentials: 'include'};
+            const AUTHORIZED_STATUS: string = 'authorized';
+            let authStatus = String(localStorage.getItem('authStatus'));
+
+            fetch(url + 'currentUser', OPTIONS_HTTP_GET).then((data: any) => {
+                if (data.status !== 200) {
+                    throw new Error('Network::detectUnauthenticated( ' + url + ' ) - start');
+                } else {
+                    data.json().then(function (data: any) {
+                        console.log('Network::detectUnauthenticated( \' + url + \' ) - then; data: ' + JSON.stringify(data));
+                        console.log('the data', data);
+                        if (data.response === false) {
+                            localStorage.removeItem('authStatus');
+                            location.reload();
+                        }
+                    })
+                    console.log('Network::handleRemote() 200 return');
+                }
+            }).catch((err: Error) => {
+                console.error('Network::handleRemote( ' + url + ' ) - ERROR ' + err, err);
+                localStorage.removeItem('authStatus');
+                // onError(err.message);
+            });
+            console.log('Network::delectUnauthenticated( ' + url + 'isAuthenticated ) - end')
+        }
+    }
+
+    public static handleRemotePost(url: string, payload: object, view: any, onError: any) {
+        const USE_REAL = true;
+        console.log('Network::handleRemote( ' + url + ' ) - start');
+
+        if (USE_REAL === true) {
+            const OPTIONS_HTTP_POST: object = {credentials: 'include', method: 'post', cors: 'enabled',
+                body: JSON.stringify(payload), headers: {'Content-Type': 'application/json'} };
+            const AUTHORIZED_STATUS: string = 'authorized';
+
+            fetch(url, OPTIONS_HTTP_POST).then((data: any) => {
+                if (data.status !== 200 && data.status !== 405 && data.status !== 401 ) {
+                    console.log('Network::handleRemote() WARNING: Repsonse status: ' + data.status);
+                    throw new Error('Network::handleRemote() - API ERROR: ' + data.status);
+                } else if (data.status !== 200 && data.status === 405 || data.status === 401) {
+                    console.error('Network::handleRemotePost() Permission denied for your userrole.');
+                    alert('You are not authorized to access this endpoint. Please re-login.');
+                    location.reload();
+                } else {
+                    console.log('Network::handleRemote() 200 return');
+                    data.json().then(function (json: any) {
+                        view.render(json); // calls render instead of the function
+                    });
+                }
+            }).catch((err: Error) => {
+                console.error('Network::handleRemote( ' + url + ' ) - ERROR ' + err, err);
+                // onError(err.message);
+            });
+
+        } else {
+            // if you want to use fake data
+            // probably won't work once we start hooking up real data since the formats will be different
+            Network.getData(url).then(function (data: any) {
+                console.log('Network::handleRemote( \' + url + \' ) - then; data: ' + JSON.stringify(data));
+                view.render(data);
+            }).catch(function (err: Error) {
+
+                console.log('Network::handleRemote( \' + url + \' ) - catch; ERROR: ' + err);
+                onError(err);
+            });
+        }
+    }
+
     public static handleRemote(url: string, view: any, onError: any) {
         const USE_REAL = true;
         console.log('Network::handleRemote( ' + url + ' ) - start');
@@ -15,9 +88,13 @@ export class Network {
             const AUTHORIZED_STATUS: string = 'authorized';
 
             fetch(url, OPTIONS_HTTP_GET).then((data: any) => {
-                if (data.status !== 200) {
+                if (data.status !== 200 && data.status !== 405 && data.status !== 401 ) {
                     console.log('Network::handleRemote() WARNING: Repsonse status: ' + data.status);
                     throw new Error('Network::handleRemote() - API ERROR: ' + data.status);
+                } else if (data.status !== 200 && data.status === 405 || data.status === 401) {
+                    console.error('Network::handleRemotePost() Permission denied for your userrole.');
+                    alert('You are not authorized to access this endpoint. Please re-login.');
+                    location.reload();
                 } else {
                     console.log('Network::handleRemote() 200 return');
                     data.json().then(function (json: any) {

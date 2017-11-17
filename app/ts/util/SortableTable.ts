@@ -1,35 +1,136 @@
+/**
+ * These correspond to the columns in the table.
+ */
 export interface TableHeader {
-    id: string;
-    text: string;
-    sortable: boolean;
-    defaultSort: true; // should only be true for one row
-    sortDown: boolean; // probably true on init
+    id: string; // The name of the column, used when sorting.
+    text: string; // The displayed text for the column.
+    sortable: boolean; // Whether the column is sortable (sometimes sorting does not make sense).
+    defaultSort: boolean; // Whether the column is the default sort for the table. should only be true for one column.
+    sortDown: boolean; // Whether the column should initially sort descending or ascending.
 }
 
+export interface TableCell {
+    value: any; // The value used while sorting.
+    html: string; // The HTML that should be rendered in the cell. Simple strings are fine too.
+}
+
+/**
+ * Sorted table widget.
+ */
 export class SortableTable {
 
+    /**
+     * This is the div name that will have its innerHTML set to the table.
+     */
+    private divName: string;
     private headers: TableHeader[] = [];
-    private rows: any[] = [];
+    private rows: TableCell[][] = [];
+    /**
+     * The current sortHeader
+     * @type {TableHeader | null}
+     */
+    private sortHeader: TableHeader | null = null;
 
-    private sortCol: string = null;
-
-    constructor(headers: TableHeader[]) {
+    constructor(headers: TableHeader[], divName: string) {
         this.headers = headers;
+        this.divName = divName;
 
         for (let col of headers) {
             if (col.defaultSort) {
-                this.sortCol = col.id;
+                this.sortHeader = col;
+                // the first encountered default sort will be used
+                return;
             }
         }
     }
 
+    /**
+     * Adds a row to the existing rows.
+     *
+     * @param {TableCell[]} row
+     */
+    public addRow(row: TableCell[]) {
+        this.rows.push(row);
+    }
+
+    /**
+     * Replaces all of the current rows.
+     *
+     * @param {TableCell[][]} rows
+     */
+    public addRows(rows: TableCell[][]) {
+        this.rows = rows;
+    }
+
+    /**
+     * Sorts by the provided column id (TableHeader.id) and renders the table.
+     *
+     * @param {string} colId
+     */
+    public sort(colId: string) {
+
+        for (let c of this.headers) {
+            if (c.id === colId) {
+                if (c.sortable === true) {
+                    this.sortHeader = c;
+                } else {
+                    this.sortHeader = null;
+                }
+
+            }
+        }
+        this.generate();
+    }
+
+    public generate() {
+        console.log('SortableTable::generate() - start');
+
+        const that = this;
+        this.performSort();
+
+        let table = '';
+        table += this.startTable();
+        let isOdd = false;
+        for (let row of this.rows) {
+            table += this.generateRow(row, isOdd);
+            isOdd = !isOdd;
+        }
+        table += this.endTable();
+
+        var div = document.querySelector(this.divName);
+        if (div !== null) {
+            div.innerHTML = '';
+            div.innerHTML = table;
+            const ths = div.getElementsByTagName('th');
+            const thsArray = Array.prototype.slice.call(ths, 0);
+            for (let th of thsArray) {
+                th.onclick = function () {
+                    const colName = this.getAttribute('col');
+                    that.sort(colName);
+                };
+            }
+        } else {
+            console.log('SortableTable::generate() - ' + this.divName + ' is null');
+        }
+
+        this.attachDownload();
+    }
+
     private startTable() {
-        let tablePrefix = '<table>';
+        let tablePrefix = '<table style="margin-left: auto; margin-right: auto; border-collapse: collapse;">'; // width: 100%;
         tablePrefix += '<tr>';
+
         for (let header of this.headers) {
             // decorate this.sorCol appropriately
-
-            tablePrefix += '<th>' + header.text + '</th>';
+            if (this.sortHeader !== null && header.id === this.sortHeader.id) {
+                if (this.sortHeader.sortDown) {
+                    tablePrefix += '<th class="sortableHeader" col="' + header.id + '"><b>' + header.text + ' ▲</b></th>';
+                } else {
+                    tablePrefix += '<th class="sortableHeader"  col="' + header.id + '"><b>' + header.text + ' ▼</b></th>';
+                }
+            } else {
+                tablePrefix += '<th class="sortableHeader" col="' + header.id + '">' + header.text + '</th>';
+            }
         }
         tablePrefix += '</tr>';
 
@@ -38,28 +139,38 @@ export class SortableTable {
 
     private endTable() {
         let tableSuffix = '</table>';
+
+
         return tableSuffix;
     }
 
-    public addRow(row: any[]) {
-        this.rows.push(row);
-    }
 
-    private generateRow(cols: any[]) {
-        let row = '<tr>';
-        for (let col of row) {
-            row += '<td>' + col + '</td>';
+    private generateRow(cols: any[], isOdd: boolean) {
+        let row = '';
+
+        if (isOdd) {
+            row = '<tr class="sortableRow" style="color: black; background: white">';
+        } else {
+            row = '<tr class="sortableRow" style="color: black; background: lightgrey">';
+        }
+
+        for (let col of cols) {
+            row += '<td class="sortableCell" style="color: black;">' + (<any>col).html + '</td>';
         }
         row += '</tr>';
         return row;
     }
 
-    private sort() {
-
+    private performSort() {
         let sortHead = null;
         let sortIndex = 0;
+
+        if (this.sortHeader === null) {
+            // do nothing (happens when there is no default sort or an unsortable column has been selected)
+            return;
+        }
         for (let head of this.headers) {
-            if (head.id === this.sortCol) {
+            if (head.id === this.sortHeader.id) {
                 if (head.sortable === false) {
                     console.log('SortableTable::sort() - no sort required; unsortable column: ' + head.id);
                     return;
@@ -67,20 +178,37 @@ export class SortableTable {
                     sortHead = head;
                 }
             }
-            sortIndex++;
+
+            if (sortHead === null) {
+                sortIndex++;
+            }
         }
 
         sortHead.sortDown = !sortHead.sortDown;
-        let mult = 1;
+        let mult = -1;
         if (sortHead.sortDown) {
-            mult = -1;
+            mult = 1;
         }
         console.log('SortableTable::sort() - col: ' + sortHead.id + '; down: ' + sortHead.sortDown + '; mult: ' + mult + '; index: ' + sortIndex);
 
         this.rows = this.rows.sort(function (a, b) {
 
-            let aVal = a[sortIndex];
-            let bVal = b[sortIndex];
+            let aVal = a[sortIndex].value;
+            let bVal = b[sortIndex].value;
+
+            // handle mismatches
+            // mainly happens when one cell is empty
+            if (typeof aVal !== typeof bVal) {
+                // console.log('comparing: ' + aVal + ' to: ' + bVal);
+                if (aVal === '') {
+                    // console.log('bad aval');
+                    return -1 * mult;
+                } else if (bVal === '') {
+                    // console.log('bad bval');
+                    return 1 * mult;
+                }
+            }
+
 
             if (Array.isArray(aVal)) {
                 // an array
@@ -99,17 +227,59 @@ export class SortableTable {
         });
     }
 
-    generate(): string {
-        let table = '';
-        table += this.startTable();
+    // not used yet
+    // code from: https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
+    private downloadCSV(csv: string, fileName: string) {
+        var csvFile;
+        var downloadLink;
 
-        this.sort();
+        // CSV file
+        csvFile = new Blob([csv], {type: 'text/csv'});
 
-        for (let row of this.rows) {
-            this.generateRow(row);
-        }
-        table += this.endTable();
-        return table;
+        // Download link
+        downloadLink = document.createElement('a');
+        downloadLink.innerHTML = 'Download Table as CSV';
+
+        let table = document.querySelector(this.divName);
+        table.appendChild(downloadLink);
+
+        // File name
+        downloadLink.download = fileName;
+
+        // Create a link to the file
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+
+        // Hide download link
+        downloadLink.style.display = 'block';
+        downloadLink.style.textAlign = 'center';
+
+        // Add the link to DOM
+        // document.body.appendChild(downloadLink);
+
+        // Click download link
+        // downloadLink.click();
     }
 
+    private exportTableToCSV(fileName: string) {
+        let csv = [];
+        let root = document.querySelector(this.divName);
+        //var rows = document.querySelectorAll("table tr");
+        let rows = root.querySelectorAll('table tr');
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll('td, th');
+
+            for (var j = 0; j < cols.length; j++)
+                row.push((<HTMLTableCellElement>cols[j]).innerText);
+
+            csv.push(row.join(','));
+        }
+
+        // Download CSV file
+        this.downloadCSV(csv.join('\n'), fileName);
+    }
+
+    private attachDownload() {
+        this.exportTableToCSV('classPortal.csv');
+    }
 }

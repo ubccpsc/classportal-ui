@@ -1,0 +1,57 @@
+<ons-page id="adminResultsPage">
+
+    <ons-list id="admin-result-list">
+        <ons-list-header>Configure Result View:</ons-list-header>
+        <ons-list-item style="text-align: center;">
+            <ons-row>
+                <ons-col style="display: flex; justify-content: center; align-items: center;">
+                    Deliverable:
+                    <ons-select id="admin-result-deliverable-select" style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
+                        <option value="null">Deliv</option>
+                        <option value="d0">D0</option>
+                        <option value="d1">D1</option>
+                        <option value="d2">D2</option>
+                        <option value="d3">D3</option>
+                    </ons-select>
+                    Date filter:
+                    <input id="admin-result-date" class="flatpickr" style="text-align: center; margin-left: 1em; margin-right: 1em;"
+                           type="text"
+                           placeholder="Select Date.."></input>
+                    <ons-button onclick="myApp.adminController.resultView.update()">Update Results</ons-button>
+                    <span>&nbsp;&nbsp;</span>
+                    <ons-button id='resultDataDownloadButton' style='display: none;'
+                                onclick="myApp.adminController.resultView.downloadData()">Download Result Data
+                    </ons-button>
+                </ons-col>
+            </ons-row>
+        </ons-list-item>
+    </ons-list>
+
+    <!-- not wired in, this is a mock -->
+    <!--
+    <ons-list>
+        <ons-list-header>Download results for deliverable:</ons-list-header>
+        <ons-list-item>
+            <ons-row>
+                <ons-select>
+                    <option>D1</option>
+                    <option>D2</option>
+                    <option>D3</option>
+                </ons-select>
+                <ons-button>Download</ons-button>
+            </ons-row>
+        </ons-list-item>
+    </ons-list>
+    -->
+
+
+    <ons-list id="admin-result-list">
+        <ons-list-header>Results</ons-list-header>
+        <ons-list-item>
+            <div id="admin-result-table" style="width:100%;">Select deliverable above.</div>
+        </ons-list-item>
+        <ons-list-item>
+            <div style="width: 100%; text-align: center" id="admin-result-footer"></div>
+        </ons-list-item>
+    </ons-list>
+</ons-page>

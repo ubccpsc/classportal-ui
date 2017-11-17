@@ -7,19 +7,25 @@ import {Network} from '../util/Network';
 import {DashboardView} from "../viewAdmin/DashboardView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
 import {TeamView} from "../viewAdmin/TeamView";
-import {GradeView} from "../viewAdmin/GradeView";
+import {ResultView} from "../viewAdmin/ResultView";
+import {AuthHelper} from "../util/AuthHelper";
 import {GitHubView} from "../viewAdmin/GitHubView";
 import {App} from "../App";
+import {EditDeliverableView} from '../viewAdmin/EditDeliverableView';
 
 export class AdminController {
+
 
     private courseId: string;
 
     private deliverableView = new DeliverableView(this);
     private teamView = new TeamView(this);
-    private gradeView = new GradeView(this);
+    private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
     private dashboardView = new DashboardView(this);
+    private authHelper: AuthHelper;
+    private readonly REQ_USERROLE = 'admin';
+    private editDeliverableView: EditDeliverableView;
 
     public deliverables: any = null;
 
@@ -31,15 +37,20 @@ export class AdminController {
     constructor(app: App, courseId: string) {
         console.log("AdminController::<init>");
         this.app = app;
+        this.authHelper = new AuthHelper(app.backendURL);
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
+
         this.courseId = courseId;
     }
 
     public adminTabsPage(page: any) {
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminTabsPage - start (no-op)');
         // called when the tabs container inits
     }
 
     public adminDeliverablesPage() {
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminDeliverablesPage - start');
         this.deliverableView.updateTitle();
 
@@ -50,21 +61,35 @@ export class AdminController {
     }
 
     public adminTeamsPage() {
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminTeamsPage - start');
         this.teamView.updateTitle();
 
         // /:courseId/admin/teams
-        const url = this.app.backendURL + this.courseId + '/admin/teams';
+        const url = this.app.backendURL + this.courseId + '/admin/teams/byBatch';
         Network.handleRemote(url, this.teamView, UI.handleError);
     }
 
-    public adminGradesPage() {
-        console.log('AdminController::adminGradesPage - start');
-        this.gradeView.updateTitle();
+    public adminResultsPage(delivId?: string) {
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
+        console.log('AdminController::adminResultsPage( ' + delivId + ' ) - start');
+        this.resultView.updateTitle();
+
+        if (typeof delivId === 'undefined' || delivId === null || delivId === 'null' || Object.keys(delivId).length === 0 ) {
+            console.log('AdminController::adminResultsPage - skipped; select deliverable.');
+            // configure selects
+            this.resultView.configure();
+            return;
+        }
+
+        UI.showModal('Test results being retrieved. This is a slow query.');
 
         // /:courseId/admin/grades
-        const url = this.app.backendURL + this.courseId + '/admin/grades';
-        Network.handleRemote(url, this.gradeView, UI.handleError);
+        const url = this.app.backendURL + this.courseId + '/admin/grades/results';
+        let that = this;
+        console.log('AdminController::adminResultsPage(..) - url: ' + url);
+        const payload: object = {deliverableName: delivId};
+        Network.handleRemotePost(url, payload, this.resultView, UI.handleError);
     }
 
     public adminDashboardPage(delivId?: string, teamId?: string | null) {
@@ -108,7 +133,7 @@ export class AdminController {
         const url = this.app.backendURL + this.courseId + '/admin/dashboard/' + params.orgName + '/' + params.delivId + post;
 
         // going to be slow; show a modal
-        UI.showModal('Dashboard being retrieved. This may be slow.');
+        UI.showModal('Dashboard being retrieved. This should take < 10 seconds.');
         Network.handleRemote(url, this.dashboardView, UI.handleError);
     }
 
@@ -119,6 +144,22 @@ export class AdminController {
         this.githubView.render({});
     }
 
+    public adminManageDeliverablesPage() {
+        console.log('AdminController::adminManageDeliverablesPage - start');
+        // this.githubView.updateTitle();
+        // this.githubView.render({});
+
+        const url = this.app.backendURL + this.courseId + '/deliverables';
+        Network.handleRemote(url, this.deliverableView, UI.handleError);
+    }
+
+    public adminEditDeliverablePage(opts: any) {
+        console.log('AdminController::adminEditDeliverablePage - start; options: ' + JSON.stringify(opts));
+        // this.githubView.updateTitle();
+        // this.githubView.render({});
+        this.editDeliverableView = new EditDeliverableView(opts);
+        this.editDeliverableView.render();
+    }
 
 }
 

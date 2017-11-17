@@ -4,6 +4,7 @@
 
 import {AdminController} from "./controllers/AdminController";
 import {StudentController} from "./controllers/StudentController";
+import {AuthHelper} from "./util/AuthHelper";
 import {UI} from "./util/UI";
 import 'whatwg-fetch';
 import {OnsButtonElement, OnsPageElement} from "onsenui";
@@ -21,19 +22,23 @@ export class App {
     private backendDEV = 'https://localhost:5000/';
     private backendPROD = 'https://portal.cs.ubc.ca:5000/';
     private frontendDEV = 'https://localhost:3000/';
-    private frontendPROD = 'https://portal.cs.ubc.ca';
+    private frontendPROD = 'https://portal.cs.ubc.ca/';
+    private authHelper: AuthHelper;
     public readonly backendURL = this.backendDEV;
     public readonly frontendURL = this.frontendDEV;
 
     constructor() {
         console.log('App::<init>');
-        if (window.location.href.indexOf('localhost') > 0) {
+        if (window.location.href.indexOf('://localhost') > 0) {
             this.backendURL = this.backendDEV;
             this.frontendURL = this.frontendDEV;
         } else {
             this.backendURL = this.backendPROD;
             this.frontendURL = this.frontendPROD;
         }
+
+        this.authHelper = new AuthHelper(this.backendURL);
+        this.authHelper.updateAuthStatus();
 
         console.log('App::<init> - backend: ' + this.backendURL);
     }
@@ -66,6 +71,9 @@ export class App {
                 that.studentController = new StudentController(that, courseId);
             }
 
+            /*
+            // DO NOT DO THIS HERE; DO IT ON SHOW BELOW!
+
             // Each page calls its own initialization controller.
             if (that.studentController !== null) {
                 if (typeof that.studentController[pageName] === 'function') {
@@ -79,6 +87,7 @@ export class App {
                     that.adminController[pageName]();//(page);
                 }
             }
+            */
 
             if (pageName === 'main') {
                 const AUTHORIZED_STATUS: string = 'authorized';
@@ -91,8 +100,8 @@ export class App {
                 let OPTIONS_HTTP_GET: RequestInit = {credentials: 'include'};
                 fetch(URL, OPTIONS_HTTP_GET).then((data: any) => {
                     if (data.status !== 200) {
-                        console.log('App::main()::authCheck WARNING: Response status: ' + data.status);
-                        throw 'App::main()::authCheck - API ERROR' + data.status;
+                        console.log('App::main()::authCheck - WARNING: Response status: ' + data.status);
+                        throw new Error('App::main()::authCheck - API ERROR: ' + data.status);
                     }
                     return data.json();
                 }).then((response: any) => {
@@ -103,7 +112,7 @@ export class App {
                     localStorage.setItem('fname', user.fname);
                     that.toggleLoginButton();
                 }).catch((err: any) => {
-                    console.log('App:main()::authCheck ERROR ' + err);
+                    console.log('App:main()::authCheck - ERROR: ' + err.message);
                 });
             }
 
@@ -132,19 +141,22 @@ export class App {
         document.addEventListener('show', function (event) {
             const page = event.target as OnsPageElement;
             const pageName = page.id;
+            let options = (<any>page).pushedOptions;
+            if (typeof options === 'undefined') {
+                options = {};
+            }
             console.log('App::init()::show - page: ' + pageName);
 
             if (that.studentController !== null) {
                 if (typeof that.studentController[pageName] === 'function') {
-                    that.studentController[pageName]();//(page);
+                    that.studentController[pageName](options);
                 }
             }
             if (that.adminController !== null) {
                 if (typeof that.adminController[pageName] === 'function') {
-                    that.adminController[pageName]()//(page);
+                    that.adminController[pageName](options);
                 }
             }
-
         });
     }
 
@@ -193,21 +205,28 @@ export class App {
         console.log("App::logout() - start");
         let url = this.backendURL + '/logout';
         let OPTIONS_HTTP_GET: RequestInit = {credentials: 'include'};
+        const that = this;
         fetch(url, OPTIONS_HTTP_GET).then((data: any) => {
             if (data.status !== 200) {
-                console.log('App::main()::authCheck WARNING: Response status: ' + data.status);
-                throw 'App::main()::authCheck - API ERROR' + data.status;
+                console.log('App::logout() - authCheck WARNING: Response status: ' + data.status);
+                throw new Error('App::logout() - authCheck - API ERROR' + data.status);
             }
             return data.json();
         }).then((result: any) => {
             const LOGOUT_SUCCESS = 'Successfully logged out.';
-            console.log('App::main()::logout() Logging out... ');
+            console.log('App::logout() Logging out... ');
             let logoutResponse = String(result.response);
             if (logoutResponse === LOGOUT_SUCCESS) {
                 localStorage.clear();
-                console.log('App::main()::logout() Successfully logged out');
-                window.location.replace(this.frontendURL);
+                console.log('App::logout() Successfully logged out');
+                window.location.replace(that.frontendURL);
             }
+        }).catch((err: Error) => {
+            // just force the logout if we run into a problem
+            console.log('App::logout() - ERROR: ' + err.message);
+            console.log('App::logout() - Clearing localstorage and refreshing');
+            localStorage.clear();
+            window.location.replace(that.frontendURL);
         });
     }
 
