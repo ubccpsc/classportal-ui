@@ -89,7 +89,7 @@ export class AdminController {
         let that = this;
         console.log('AdminController::adminResultsPage(..) - url: ' + url);
         const payload: object = {deliverableName: delivId};
-        Network.handleRemotePost(url, payload, this.resultView, UI.handleError);
+        Network.getRemotePost(url, payload, this.resultView, UI.handleError);
     }
 
     public adminDashboardPage(delivId?: string, teamId?: string | null) {
@@ -153,11 +153,16 @@ export class AdminController {
         Network.handleRemote(url, this.deliverableView, UI.handleError);
     }
 
+    // public adminManageDeliverablesPage(opts: any) {
+    //     this.editDeliverableView = new EditDeliverableView(opts, this.app);
+    //     this.editDeliverableView.render();
+    // }
+
     public adminEditDeliverablePage(opts: any) {
         console.log('AdminController::adminEditDeliverablePage - start; options: ' + JSON.stringify(opts));
         // this.githubView.updateTitle();
         // this.githubView.render({});
-        this.editDeliverableView = new EditDeliverableView(opts);
+        this.editDeliverableView = new EditDeliverableView(opts, this.app);
         this.editDeliverableView.render();
     }
 

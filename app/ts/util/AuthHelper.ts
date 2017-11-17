@@ -63,7 +63,7 @@ export class AuthHelper {
     })
     .catch((err: Error) => {
       console.error('AuthHelper::getCurrentUser( ' + url + ') - ERROR ' + err, err);
-    })
+    });
   }
 
   private removeAuthStatus() {

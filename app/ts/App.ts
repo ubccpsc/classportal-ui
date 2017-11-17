@@ -24,6 +24,7 @@ export class App {
     private frontendDEV = 'https://localhost:3000/';
     private frontendPROD = 'https://portal.cs.ubc.ca/';
     private authHelper: AuthHelper;
+    public currentCourseId: number;
     public readonly backendURL = this.backendDEV;
     public readonly frontendURL = this.frontendDEV;
 
@@ -56,6 +57,7 @@ export class App {
 
             if (typeof (<any>page).pushedOptions !== 'undefined' && typeof (<any>page).pushedOptions.courseId !== 'undefined') {
                 courseId = (<any>page).pushedOptions.courseId;
+                that.currentCourseId = (<any>page).pushedOptions.courseId;
             }
 
             console.log('App::init()::init - page: ' + pageName);
