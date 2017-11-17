@@ -2,6 +2,7 @@ import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {DeliverablePayload, DeliverablePayloadContainer} from "../Models";
 import {App} from "../App";
+const flatpickr: any = require('flatpickr');
 
 declare var myApp: App;
 
@@ -38,7 +39,7 @@ export class DeliverableView {
 
         const that = this;
         // deliverables
-        const deliverableList = document.querySelector('#admin-deliverable-list');
+        const deliverableList = document.querySelector('#admin-config-deliv-list');
         if (deliverableList !== null) {
             deliverableList.innerHTML = '';
             if (deliverables.length > 0) {
@@ -68,15 +69,30 @@ export class DeliverableView {
         console.log('DeliverableView::editDeliverable( ' + deliverable.id + ' ) - start');
         UI.showModal();
         UI.pushPage('html/admin/editDeliverable.html', {data: deliverable})
-            .then((page: any) => {
-                console.log(page);
-                let editableDeliv = document.querySelector('#editable-deliverable');
+            .then(() => {
+                let editableDeliv = document.querySelector('#admin-editable-deliverable') || document.querySelector('#admin-manage-deliverables');
+                editableDeliv.innerHTML = '';
 
-                let header = UI.createListHeader('Deliverable ' + deliverable.name);
-                let elements = UI.createEditableDeliverable(deliverable)
+                let header = UI.createListHeader('Deliverable ' + deliverable.id);
+                let elements = UI.createEditableDeliverable(deliverable);
 
                 editableDeliv.appendChild(header);
                 editableDeliv.appendChild(elements);
+
+                try {
+                    // for some reason this isn't working
+                    let dateFilter = flatpickr(".dateTime-picker", {
+                        enableTime:  true,
+                        time_24hr:   true,
+                        utc: true,
+                        dateFormat:  "Y/m/d @ H:i",
+                        defaultDate: new Date()
+                    });
+
+                    console.log('ResultView::configure() - done');
+                } catch (err) {
+                    console.error('ResultView::configure() - flatpickr ERROR: ' + err.message);
+                }
 
                 UI.hideModal();
             });

@@ -26,7 +26,6 @@ export class UI {
             console.log('UI::pushPage(..) - WARN: nav is null');
             return nav.pushPage(pageId, options);
         }
-
     }
 
     public static getCurrentPage(): any {
@@ -82,7 +81,7 @@ export class UI {
     }
 
     public static createEditableDeliverable(_obj: object): HTMLElement {
-        let children = '<div>';
+        let children = '<ons-list>';
 
         Object.keys(_obj).forEach((key) => {
             let value = _obj[key];
@@ -99,9 +98,8 @@ export class UI {
                 element = '<input name="' + key + '" id="' + key + '" type="hidden" value="' + value + '"/>';
             } else if (key === "open" || key === "close") {
                 let spanDateTime = '<ons-list-item><span> Current Date/Time: ' + new Date(_obj[key]) + '</span></ons-list-item>';
-                let inputDate = '<ons-list-item><input name="' + key + 'Date" id="' + key + '" type="date" value="' + value + '"/></ons-list-item>';
-                let inputTime = '<ons-list-item><input name="' + key + 'Time" id="' + key + '" type="time" value="' + value + '"/></ons-list-item>';
-                element = spanDateTime + inputDate + inputTime;
+                let inputDateTime = '<ons-list-item><input class="dateTime-picker" name="' + key + 'DateTime" id="' + key + 'DateTime" type="text" value="' + value + '"/></ons-list-item>';
+                element = spanDateTime + inputDateTime
             } else {
                 element = '<ons-list-item><input name="' + key + '" id="' + key + '" type="text" value="' + value + '"/></ons-list-item>';
             }
@@ -109,7 +107,7 @@ export class UI {
             children = children + onsListHeader + element;
         });
 
-        children = children + '</div>';
+        children = children + '</ons-list>';
 
         return ons.createElement(children) as HTMLElement;
     }

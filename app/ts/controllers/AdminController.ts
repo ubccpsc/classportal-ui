@@ -144,7 +144,7 @@ export class AdminController {
         this.githubView.render({});
     }
 
-    public adminManageDeliverablesPage() {
+    public adminManageDeliverablesPage(opts: any) {
         console.log('AdminController::adminManageDeliverablesPage - start');
         // this.githubView.updateTitle();
         // this.githubView.render({});
