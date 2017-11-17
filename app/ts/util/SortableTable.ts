@@ -76,7 +76,7 @@ export class SortableTable {
             mult = -1;
         }
         console.log('SortableTable::sort() - col: ' + sortHead.id + '; down: ' + sortHead.sortDown + '; mult: ' + mult + '; index: ' + sortIndex);
-        
+
         this.rows = this.rows.sort(function (a, b) {
 
             let aVal = a[sortIndex];
