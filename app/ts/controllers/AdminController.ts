@@ -6,6 +6,7 @@ import {UI} from '../util/UI';
 import {Network} from '../util/Network';
 import {DashboardView} from "../viewAdmin/DashboardView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
+import {ProvisionTeamsView} from "../viewAdmin/ProvisionTeamsView";
 import {TeamView} from "../viewAdmin/TeamView";
 import {ResultView} from "../viewAdmin/ResultView";
 import {AuthHelper} from "../util/AuthHelper";
@@ -19,6 +20,7 @@ export class AdminController {
     private courseId: string;
 
     private deliverableView = new DeliverableView(this);
+    private provisionTeamsView = new ProvisionTeamsView(this);
     private teamView = new TeamView(this);
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
@@ -144,7 +146,7 @@ export class AdminController {
         this.githubView.render({});
     }
 
-    public adminManageDeliverablesPage(opts: any) {
+    public adminConfigDeliverablesPage(opts: any) {
         console.log('AdminController::adminManageDeliverablesPage - start');
         // this.githubView.updateTitle();
         // this.githubView.render({});
@@ -152,11 +154,6 @@ export class AdminController {
         const url = this.app.backendURL + this.courseId + '/deliverables';
         Network.handleRemote(url, this.deliverableView, UI.handleError);
     }
-
-    // public adminManageDeliverablesPage(opts: any) {
-    //     this.editDeliverableView = new EditDeliverableView(opts, this.app);
-    //     this.editDeliverableView.render();
-    // }
 
     public adminEditDeliverablePage(opts: any) {
         console.log('AdminController::adminEditDeliverablePage - start; options: ' + JSON.stringify(opts));
@@ -166,5 +163,16 @@ export class AdminController {
         this.editDeliverableView.render();
     }
 
+    public adminProvisionTeamsPage(opts: any) {
+        console.log('AdminController::adminProvisionTeamsPage - start; options: ' + JSON.stringify(opts));
+
+        const url = this.app.backendURL + this.courseId + '/deliverables';
+        Network.handleRemote(url, this.provisionTeamsView, UI.handleError);
+    }
+
+    public adminProvisionReposPage(opts: any) {
+        console.log('AdminController::adminProvisionReposPage - start; options: ' + JSON.stringify(opts));
+
+    }
 }
 

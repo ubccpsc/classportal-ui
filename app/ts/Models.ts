@@ -57,6 +57,22 @@ export interface DeliverablePayload {
 
 // TODO: lots of fields missing here
 
+
+export interface RawTeamPayloadContainer {
+    response: RawTeamPayload;
+}
+
+export interface RawTeamPayload {
+    _id: string;
+    courseId: object;
+    deliverableId?: object;
+    members: object[];
+    githubState: object;
+    name: string;
+    TAs: object[];
+    deliverableIds?: object[];
+}
+
 /**
  *
  *

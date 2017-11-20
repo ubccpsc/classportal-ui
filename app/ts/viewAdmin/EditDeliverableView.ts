@@ -40,10 +40,10 @@ export class EditDeliverableView {
             }
         }
 
-        console.log('payload', payload);
         Network.updateRemotePost(url, payload, UI.handleError);
         // save it
 
         UI.popPage();
+        console.log('EditDeliverableView::save() - end');
     }
 }
