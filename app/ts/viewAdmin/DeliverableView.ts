@@ -3,6 +3,8 @@ import {AdminController} from "../controllers/AdminController";
 import {DeliverablePayload, DeliverablePayloadContainer} from "../Models";
 import {App} from "../App";
 const flatpickr: any = require('flatpickr');
+const OPEN_DELIV_KEY = 'open';
+const CLOSE_DELIV_KEY = 'close';
 
 declare var myApp: App;
 
@@ -79,20 +81,37 @@ export class DeliverableView {
                 editableDeliv.appendChild(header);
                 editableDeliv.appendChild(elements);
 
+                let closeDefault = document.getElementById('close') as HTMLInputElement;
+                let openDefault = document.getElementById('open') as HTMLInputElement;
+
                 try {
-                    // for some reason this isn't working
-                    let dateFilter = flatpickr(".dateTime-picker", {
+                    let dateFilter = flatpickr("#close", {
                         enableTime:  true,
                         time_24hr:   true,
                         utc: true,
                         dateFormat:  "Y/m/d @ H:i",
-                        defaultDate: new Date()
+                        defaultDate: new Date(parseInt(closeDefault.value))
                     });
 
                     console.log('ResultView::configure() - done');
                 } catch (err) {
                     console.error('ResultView::configure() - flatpickr ERROR: ' + err.message);
                 }
+
+                try {
+                    let dateFilter = flatpickr("#open", {
+                        enableTime:  true,
+                        time_24hr:   true,
+                        utc: true,
+                        dateFormat:  "Y/m/d @ H:i",
+                        defaultDate: new Date(parseInt(openDefault.value))
+                    });
+
+                    console.log('ResultView::configure() - done');
+                } catch (err) {
+                    console.error('ResultView::configure() - flatpickr ERROR: ' + err.message);
+                }
+
 
                 UI.hideModal();
             });

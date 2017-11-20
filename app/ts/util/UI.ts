@@ -98,7 +98,7 @@ export class UI {
                 element = '<input name="' + key + '" id="' + key + '" type="hidden" value="' + value + '"/>';
             } else if (key === "open" || key === "close") {
                 let spanDateTime = '<ons-list-item><span> Current Date/Time: ' + new Date(_obj[key]) + '</span></ons-list-item>';
-                let inputDateTime = '<ons-list-item><input class="dateTime-picker" name="' + key + 'DateTime" id="' + key + '" type="text" value="' + value + '"/></ons-list-item>';
+                let inputDateTime = '<ons-list-item><input name="' + key + 'DateTime" id="' + key + '" type="text" value="' + value + '"/></ons-list-item>';
                 element = spanDateTime + inputDateTime
             } else {
                 element = '<ons-list-item><input name="' + key + '" id="' + key + '" type="text" value="' + value + '"/></ons-list-item>';

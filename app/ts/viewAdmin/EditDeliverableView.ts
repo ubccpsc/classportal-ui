@@ -2,6 +2,9 @@ import {App} from "../App";
 import {UI} from "../util/UI";
 import {Network} from "../util/Network";
 
+const OPEN_DELIV_KEY = 'open';
+const CLOSE_DELIV_KEY = 'close';
+
 export class EditDeliverableView {
     private opts: any;
     private app: App;
@@ -31,6 +34,10 @@ export class EditDeliverableView {
         for (let key in this.opts.data) {
             let item = document.getElementById(key) as HTMLInputElement;
             payload.deliverable[key] = item.value;
+
+            if (key === CLOSE_DELIV_KEY || key === OPEN_DELIV_KEY) {
+                payload.deliverable[key] = new Date(item.value).getTime();
+            }
         }
 
         console.log('payload', payload);
