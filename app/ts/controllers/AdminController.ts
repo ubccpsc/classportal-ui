@@ -6,7 +6,7 @@ import {UI} from '../util/UI';
 import {Network} from '../util/Network';
 import {DashboardView} from "../viewAdmin/DashboardView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
-import {ProvisionTeamsView} from "../viewAdmin/ProvisionTeamsView";
+import {ProvisionTeamsDeliverableView} from "../viewAdmin/ProvisionTeamsDeliverableView";
 import {TeamView} from "../viewAdmin/TeamView";
 import {ResultView} from "../viewAdmin/ResultView";
 import {AuthHelper} from "../util/AuthHelper";
@@ -20,7 +20,7 @@ export class AdminController {
     private courseId: string;
 
     private deliverableView = new DeliverableView(this);
-    private provisionTeamsView = new ProvisionTeamsView(this);
+    private ProvisionTeamsDeliverableView = new ProvisionTeamsDeliverableView(this);
     private teamView = new TeamView(this);
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
@@ -167,7 +167,7 @@ export class AdminController {
         console.log('AdminController::adminProvisionTeamsPage - start; options: ' + JSON.stringify(opts));
 
         const url = this.app.backendURL + this.courseId + '/deliverables';
-        Network.handleRemote(url, this.provisionTeamsView, UI.handleError);
+        Network.handleRemote(url, this.ProvisionTeamsDeliverableView, UI.handleError);
     }
 
     public adminProvisionReposPage(opts: any) {

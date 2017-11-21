@@ -59,7 +59,7 @@ export interface DeliverablePayload {
 
 
 export interface RawTeamPayloadContainer {
-    response: RawTeamPayload;
+    response: RawTeamPayload[];
 }
 
 export interface RawTeamPayload {
@@ -67,6 +67,7 @@ export interface RawTeamPayload {
     courseId: object;
     deliverableId?: object;
     members: object[];
+    disbanded: boolean;
     githubState: object;
     name: string;
     TAs: object[];
