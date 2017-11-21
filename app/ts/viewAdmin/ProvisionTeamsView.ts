@@ -19,43 +19,33 @@ export class ProvisionTeamsView {
 
     public updateTitle() {
         // document.querySelector('#adminTabsHeader').innerHTML = data.course;
-        document.querySelector('#adminProvisionTeamsHeader').innerHTML = "Deliverable Provisions";
+        document.querySelector('#adminProvisionTeamsHeader').innerHTML = "Team Provisions by Deliverable";
     }
 
     public render(data: DeliverablePayloadContainer) {
         console.log('DeliverableView::render(..) - start');
         this.updateTitle();
+        let that = this;
 
         let uiHTMLList = document.querySelector(UI_HTML_INTERFACE_ID);
         console.log(uiHTMLList);
-
-        console.log(data);
         
         for (let deliverable of data.response) {
-          let delivRow = UI.createListItem(deliverable.name, String(myApp.currentCourseId), TAPPABLE_INTERFACE);
+          let delivRow = UI.createListItem(deliverable.name, String(myApp.currentCourseId) + ' Deliverable', TAPPABLE_INTERFACE);
+          delivRow.onclick = function() {
+            that.viewDeliverableProvision(deliverable.name);
+          }
           uiHTMLList.appendChild(delivRow);
         }
 
         UI.hideModal();
     }
 
-    private editDeliverable(deliverable: DeliverablePayload) {
-        console.log('DeliverableView::editDeliverable( ' + deliverable.id + ' ) - start');
+    private viewDeliverableProvision(delivName: string) {
+        console.log('DeliverableView::editDeliverable( ' + delivName + ' ) - start');
         UI.showModal();
-        UI.pushPage('html/admin/editDeliverable.html', {data: deliverable})
+        UI.pushPage('html/admin/provisionTeamDetails.html', {data: delivName})
             .then(() => {
-                let editableDeliv = document.querySelector('#admin-editable-deliverable') || document.querySelector('#admin-manage-deliverables');
-                editableDeliv.innerHTML = '';
-
-                let header = UI.createListHeader('Deliverable ' + deliverable.id);
-                let elements = UI.createEditableDeliverable(deliverable);
-
-                editableDeliv.appendChild(header);
-                editableDeliv.appendChild(elements);
-
-                let closeDefault = document.getElementById('close') as HTMLInputElement;
-                let openDefault = document.getElementById('open') as HTMLInputElement;
-
                 UI.hideModal();
             });
     }

@@ -112,7 +112,6 @@ export class DeliverableView {
                     console.error('ResultView::configure() - flatpickr ERROR: ' + err.message);
                 }
 
-
                 UI.hideModal();
             });
     }
