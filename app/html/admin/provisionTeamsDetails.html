@@ -6,8 +6,62 @@
 
     <h2 style="text-align:center;" id='adminProvisionTeamsDetailsHeader'></h2>
 
-    <ons-list id='admin-provision-details'>
-        
+    <ons-list id='admin-prov-details'>
+
+    	<section id="admin-prov-details__repo-stats">
+			<ons-list-header id="admin-prov-details__repo-stats-header">Repo Status</ons-list-header>
+		    <ons-list-item id="admin-prov-details__repo-item">sds</ons-list-item>
+		    <ons-list-item id="admin-prov-details__repo-item">asdasdsa</ons-list-item>
+		</section>
+
+	    <ons-list-header>Tappable / Ripple</ons-list-header>
+	    <ons-list-item tappable>Tap me</ons-list-item>
+
+	    <ons-list-header>Chevron</ons-list-header>
+	    <ons-list-item modifier="chevron" tappable>Chevron</ons-list-item>
+
+	    <ons-list-header>Thumbnails and titles</ons-list-header>
+	    <ons-list-item>
+	      <div class="left">
+	        <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
+	      </div>
+	      <div class="center">
+	        <span class="list-item__title">Cutest kitty</span><span class="list-item__subtitle">On the Internet</span>
+	      </div>
+	    </ons-list-item>
+
+	    <ons-list-header>Icons</ons-list-header>
+	    <ons-list-item>
+	      <div class="left">
+	        <ons-icon icon="md-face" class="list-item__icon"></ons-icon>
+	      </div>
+	      <div class="center">
+	        Icon
+	      </div>
+	    </ons-list-item>
+
+	    <ons-list-header>Switch</ons-list-header>
+	    <ons-list-item>
+	      <div class="center">
+	        Turn it on
+	      </div>
+	      <div class="right">
+	        <ons-switch></ons-switch>
+	      </div>
+	    </ons-list-item>
+
+	    <ons-list-header>Switch and icon</ons-list-header>
+	    <ons-list-item>
+	      <div class="left">
+	        <ons-icon icon="md-face" class="list-item__icon"></ons-icon>
+	      </div>
+	      <div class="center">
+	        Icon and switch
+	      </div>
+	      <div class="right">
+	        <ons-switch></ons-switch>
+	      </div>
+
     </ons-list>
 
 </ons-page>

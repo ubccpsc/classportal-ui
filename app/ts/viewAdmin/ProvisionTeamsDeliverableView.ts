@@ -38,7 +38,7 @@ export class ProvisionTeamsDeliverableView {
         for (let deliverable of data.response) {
           let delivRow = UI.createListItem(deliverable.name, String(myApp.currentCourseId) + ' Deliverable', TAPPABLE_INTERFACE);
           delivRow.onclick = function() {
-            that.provisionTeamsDetailsView = new ProvisionTeamsDetailsView(that.controller, deliverable.name);
+            that.provisionTeamsDetailsView = new ProvisionTeamsDetailsView(that.controller, deliverable);
             that.viewDeliverableProvision(deliverable.name);
           }
           uiHTMLList.appendChild(delivRow);

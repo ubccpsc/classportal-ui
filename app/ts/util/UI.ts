@@ -3,6 +3,11 @@
  */
 import {OnsModalElement} from "onsenui";
 
+const OPEN_DELIV_KEY = 'open';
+const CLOSE_DELIV_KEY = 'close';
+const MAX_TEAM_DELIV_KEY = 'maxTeamSize';
+const MIN_TEAM_DELIV_KEY = 'minTeamSize';
+const MONGO_DB_ID_KEY = '_id';
 
 // import * as ons from 'onsenui'; // for dev
 declare var ons: any; // for release (or webpack bundling gets huge)
@@ -81,7 +86,7 @@ export class UI {
     }
 
     public static createEditableDeliverable(_obj: object): HTMLElement {
-        let children = '<ons-list>';
+        let children = '<div>';
 
         Object.keys(_obj).forEach((key) => {
             let value = _obj[key];
@@ -89,17 +94,19 @@ export class UI {
             let element = '';
 
             // add item-header only if non-hidden field
-            if (key !== "_id") {
+            if (key !== MONGO_DB_ID_KEY) {
                 onsListHeader = '<on-list-header>' + key + '</on-list-header>';
             }
 
             // hide the _id field
-            if (key === "_id") {
+            if (key === MONGO_DB_ID_KEY) {
                 element = '<input name="' + key + '" id="' + key + '" type="hidden" value="' + value + '"/>';
-            } else if (key === "open" || key === "close") {
-                let spanDateTime = '<ons-list-item><span> Current Date/Time: ' + new Date(_obj[key]) + '</span></ons-list-item>';
+            } else if (key === OPEN_DELIV_KEY || key === CLOSE_DELIV_KEY) {
+                let currentDateTime = '<ons-list-item>Current Date/Time: ' + new Date(_obj[key]) + '</ons-list-item>';
                 let inputDateTime = '<ons-list-item><input name="' + key + 'DateTime" id="' + key + '" type="text" value="' + value + '"/></ons-list-item>';
-                element = spanDateTime + inputDateTime
+                element = currentDateTime + inputDateTime
+            } else if (key === MAX_TEAM_DELIV_KEY || key === MIN_TEAM_DELIV_KEY) {
+                element = '<ons-list-item><input name="' + key + '" id="' + key + '" type="number" value="' + value + '"/></ons-list-item>';
             } else {
                 element = '<ons-list-item><input name="' + key + '" id="' + key + '" type="text" value="' + value + '"/></ons-list-item>';
             }
@@ -107,7 +114,7 @@ export class UI {
             children = children + onsListHeader + element;
         });
 
-        children = children + '</ons-list>';
+        children = children + '</div>';
 
         return ons.createElement(children) as HTMLElement;
     }

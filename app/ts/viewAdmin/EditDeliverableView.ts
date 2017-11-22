@@ -27,7 +27,7 @@ export class EditDeliverableView {
         console.log('EditDeliverableView::save() - start');
         let url = this.app.backendURL + this.app.currentCourseId + '/admin/deliverable';
 
-        let deliverable = document.getElementById('admin-editable-deliverable');
+        let deliverable = document.getElementById('admin-editable-deliverable-form');
 
         let payload: any = {deliverable: {}}
 

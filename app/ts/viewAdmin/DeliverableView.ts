@@ -72,7 +72,7 @@ export class DeliverableView {
         UI.showModal();
         UI.pushPage('html/admin/editDeliverable.html', {data: deliverable})
             .then(() => {
-                let editableDeliv = document.querySelector('#admin-editable-deliverable') || document.querySelector('#admin-manage-deliverables');
+                let editableDeliv = document.querySelector('#admin-editable-deliverable-list') || document.querySelector('#admin-manage-deliverables');
                 editableDeliv.innerHTML = '';
 
                 let header = UI.createListHeader('Deliverable ' + deliverable.id);

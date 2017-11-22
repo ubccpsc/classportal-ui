@@ -52,6 +52,10 @@ export interface DeliverablePayload {
     open: number; // timestamp
     close: number; // timestamp
     name: string;
+    teamsInSameLab: boolean;
+    teamsAllowed: boolean;
+    maxTeamSize: number;
+    minTeamSize: number;
     // NOTE: things are definitely missing here.
 }
 
