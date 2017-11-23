@@ -106,8 +106,8 @@ export class App {
                         throw new Error('App::main()::authCheck - API ERROR: ' + data.status);
                     }
                     return data.json();
-                }).then((response: any) => {
-                    let user = response.user;
+                }).then((data: any) => {
+                    let user = data.response.user;
                     localStorage.setItem('userrole', user.userrole);
                     localStorage.setItem('username', user.username);
                     localStorage.setItem('authStatus', AUTHORIZED_STATUS);
