@@ -20,14 +20,18 @@ export class AuthHelper {
   * @param userrole that the current user should match
   **/
   public checkUserrole(userrole: string) {
+    console.log('AuthHelper::checkUserRole() - start');
     this.getCurrentUser()
       .then((data: any) => {
-        if (data.user.userrole === userrole) {
+        if (data.response.user.userrole === userrole) {
           console.log('AuthHelper::checkUserrole() Valid userrole confirmed: ' + userrole + '.');
         } else {
           this.updateAuthStatus();
         }
       })
+      .catch((err: any) => {
+        console.log('AuthHelper::checkUserrole() - end');
+      });
   }
 
   public updateAuthStatus() {
