@@ -1,12 +1,17 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {DeliverablePayload, DeliverablePayloadContainer} from "../Models";
-import {RawTeamPayload, RawTeamPayloadContainer} from "../Models";
+import {ProvisionHealthCheckContainer} from "../Models";
 import {Network} from "../util/Network";
 import {App} from "../App";
 
-const PROVISION_DETAILS_HEADER_ID = '#adminProvisionTeamsDetailsHeader';
-const PROVISION_DETAILS_BODY_ID = '#admin-provision-details';
+const PROVISION_DETAILS_HEADER = '#adminProvisionTeamsDetailsHeader';
+const CLASS_SIZE = '#admin-prov-details__class-size-body';
+const STUDENTS_ON_TEAM = '#admin-prov-details__students-on-team-body';
+const STUDENTS_WITHOUT_TEAM = '#admin-prov-details__students-without-team-body';
+const NUM_OF_TEAMS = '#admin-prov-details__students-num-of-teams-body';
+const NUM_OF_TEAMS_WITH_REPO = '#admin-prov-details__students-num-of-teams-with-repo-body';
+const NUM_OF_TEAMS_WITHOUT_REPO = '#admin-prov-details__students-num-of-teams-without-repo-body';
 
 declare var myApp: App;
 
@@ -23,46 +28,40 @@ export class ProvisionTeamsDetailsView {
 
     public updateTitle() {
         // document.querySelector('#adminTabsHeader').innerHTML = data.course;
-        document.querySelector(PROVISION_DETAILS_HEADER_ID).innerHTML = "Team Provisions by Deliverable";
+        document.querySelector(PROVISION_DETAILS_HEADER).innerHTML = "Team Provisions: " + this.deliverable.name;
     }
 
-    public render(data: RawTeamPayloadContainer) {
-        console.log('ProvisionTeamsDetailsView::render(..) - start');
+    public render(data: ProvisionHealthCheckContainer) {
+        console.log('ProvisionTeamsDetailsView::render(..) - start - data: ' + JSON.stringify(data));
         UI.showModal();
         let that = this;
         let teamCount = 0;
 
-        for (let provisionedTeam of data.response) {
 
-            // If statements checks for both possibiltiies of mark by batch or single deliv logic
-            if (provisionedTeam.disbanded !== true && provisionedTeam.deliverableIds.length > 0) {
-                let match = false;
-
-                provisionedTeam.deliverableIds.map((deliv: any) => {
-                    if (deliv.name === this.deliverable.name) {
-                        match = true;
-                    }
-                });
-
-                if (match) {
-                    teamCount++;
-                }
-            }
-
-            if (provisionedTeam.disbanded !== true && typeof provisionedTeam.deliverableId === 'undefined') {
-                teamCount++;
-            }
           // let delivRow = UI.createListItem(deliverable.name, String(myApp.currentCourseId) + ' Deliverable', TAPPABLE_INTERFACE);
           // delivRow.onclick = function() {
           //   that.viewDeliverableProvision(deliverable.name);
-          console.log(provisionedTeam);
-          // }
-          // uiHTMLList.appendChild(delivRow);
-        }
+          console.log(data);
+   
 
         UI.pushPage('html/admin/provisionTeamsDetails.html', {data: null})
             .then(() => {
                 that.updateTitle();
+
+                let classSize = data.response.classSize.toString();
+                let numStudentsWithTeam = data.response.studentTeamStatus.studentsWithTeam.length.toString();
+                let numStudentsWithoutTeam = data.response.studentTeamStatus.studentsWithoutTeam.length.toString();
+                let numOfTeams = data.response.numOfTeams.toString();
+                let numOfTeamsWithRepo = data.response.numOfTeamsWithRepo.length.toString();
+                let numOfTeamsWithoutRepo = data.response.numOfTeamsWithoutRepo.length.toString();
+
+                (document.querySelector(CLASS_SIZE).firstChild as HTMLElement).innerHTML = classSize;
+                (document.querySelector(STUDENTS_ON_TEAM).firstChild as HTMLElement).innerHTML = numStudentsWithTeam;
+                (document.querySelector(STUDENTS_WITHOUT_TEAM).firstChild as HTMLElement).innerHTML = numStudentsWithoutTeam;
+                (document.querySelector(NUM_OF_TEAMS).firstChild as HTMLElement).innerHTML = numOfTeams;
+                (document.querySelector(NUM_OF_TEAMS_WITH_REPO).firstChild as HTMLElement).innerHTML = numOfTeamsWithRepo;
+                (document.querySelector(NUM_OF_TEAMS_WITHOUT_REPO).firstChild as HTMLElement).innerHTML = numOfTeamsWithoutRepo;
+
                 UI.hideModal();
         });
 

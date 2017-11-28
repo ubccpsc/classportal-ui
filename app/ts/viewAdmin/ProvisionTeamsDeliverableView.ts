@@ -28,7 +28,7 @@ export class ProvisionTeamsDeliverableView {
     }
 
     public render(data: DeliverablePayloadContainer) {
-        console.log('ProvisionTeamsDeliverableView::render(..) - start');
+        console.log('ProvisionTeamsDeliverableView::render(..) - start - data: ' + JSON.stringify(data));
         this.updateTitle();
         let that = this;
 
@@ -43,13 +43,12 @@ export class ProvisionTeamsDeliverableView {
           }
           uiHTMLList.appendChild(delivRow);
         }
-
         UI.hideModal();
     }
 
     private getTeamProvisions() {
       let that = this;
-      let url = myApp.backendURL + myApp.currentCourseId + '/admin/teams';
+      let url = myApp.backendURL + myApp.currentCourseId + '/admin/teams/d1/overview';
       Network.handleRemote(url, that.provisionTeamsDetailsView, UI.handleError);
     }
 

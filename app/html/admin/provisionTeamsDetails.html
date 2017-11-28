@@ -8,25 +8,27 @@
 
     <ons-list id='admin-prov-details'>
 
-    	<section id="admin-prov-details__repo-stats">
-			<ons-list-header id="admin-prov-details__repo-stats-header">Repo Status</ons-list-header>
-		    <ons-list-item id="admin-prov-details__repo-item">sds</ons-list-item>
-		    <ons-list-item id="admin-prov-details__repo-item">asdasdsa</ons-list-item>
-		</section>
+    	<section class="admin-prov-details__repo-stats">
+			<ons-list-header class="admin-prov-details__class-size-header">Class Size</ons-list-header>
+		    <ons-list-item id="admin-prov-details__class-size-body"></ons-list-item>
+		    <ons-list-header class="admin-prov-details__students-on-team-header">Students on Team</ons-list-header>
+		    <ons-list-item id="admin-prov-details__students-on-team-body" tappable></ons-list-item>
+		    <ons-list-header class="admin-prov-details__students-without-team-header">Students not on Team</ons-list-header>
+		    <ons-list-item id="admin-prov-details__students-without-team-body" modifier="chevron" tappable></ons-list-item>
+	    	<ons-list-header class="admin-prov-details__num-of-teams-header">Teams</ons-list-header>
+		    <ons-list-item id="admin-prov-details__students-num-of-teams-body" modifier="chevron" tappable></ons-list-item>
+		    <ons-list-header class="admin-prov-details__num-of-teams-with-repo-header">Teams with Repo</ons-list-header>
+		    <ons-list-item id="admin-prov-details__students-num-of-teams-with-repo-body" modifier="chevron" tappable></ons-list-item>
+		    <ons-list-header class="admin-prov-details__num-of-teams-without-repo-header">Teams without Repo</ons-list-header>
+		    <ons-list-item id="admin-prov-details__students-num-of-teams-without-repo-body" modifier="chevron" tappable></ons-list-item>
+	    </section>
 
-	    <ons-list-header>Tappable / Ripple</ons-list-header>
-	    <ons-list-item tappable>Tap me</ons-list-item>
-
-	    <ons-list-header>Chevron</ons-list-header>
-	    <ons-list-item modifier="chevron" tappable>Chevron</ons-list-item>
-
-	    <ons-list-header>Thumbnails and titles</ons-list-header>
 	    <ons-list-item>
 	      <div class="left">
 	        <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
 	      </div>
 	      <div class="center">
-	        <span class="list-item__title">Cutest kitty</span><span class="list-item__subtitle">On the Internet</span>
+	        <span class="list-item__title">Repos</span><span class="list-item__subtitle">On the Internet</span>
 	      </div>
 	    </ons-list-item>
 

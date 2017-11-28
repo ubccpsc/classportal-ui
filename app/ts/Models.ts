@@ -78,6 +78,68 @@ export interface RawTeamPayload {
     deliverableIds?: object[];
 }
 
+export interface ProvisionHealthCheckContainer {
+    response: ProvisionHealthCheck;
+}
+
+export interface ProvisionHealthCheck {
+    classSize: number;
+    teamsAllowed: boolean;
+    numOfTeams: number;
+    numOfTeamsWithRepo: object[];
+    numOfTeamsWithoutRepo: object[];
+    studentTeamStatus: StudentTeamStatusContainer;
+    teams: Team;
+}
+
+export interface StudentTeamStatusContainer {
+    studentsWithTeam: object[];
+    studentsWithoutTeam: object[];
+}
+
+export interface Student {
+    _id: string;
+    csid: string;
+    snum: string;
+    lname: string;
+    fname: string;
+    courses: string[];
+    profileUrl: string;
+    userrole: string;
+    username: string;
+}
+
+export interface Team {
+    _id: string;
+    courseId: string;
+    name: string;
+    githubState: GithubState;
+    TAs: string[];
+    members: string[];
+    deliverableIds: string[];
+    disbanded: boolean;
+    githubOrg: string;
+}
+
+export interface GithubState {
+    team: GithubTeam;
+    repo: GithubRepo;
+}
+
+export interface GithubTeam {
+    id: number;
+    // we can potentially put more info here if needed
+    // but needs implementation on the back-end as well
+}
+
+export interface GithubRepo {
+    webhookUrl: string;
+    webhookId: number;
+    name: string;
+    id: number;
+    url: string;
+}
+
 /**
  *
  *
