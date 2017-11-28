@@ -20,7 +20,7 @@ export class AdminController {
     private courseId: string;
 
     private deliverableView = new DeliverableView(this);
-    private ProvisionTeamsDeliverableView = new ProvisionTeamsDeliverableView(this);
+    private provisionTeamsDeliverableView = new ProvisionTeamsDeliverableView(this);
     private teamView = new TeamView(this);
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
@@ -167,7 +167,7 @@ export class AdminController {
         console.log('AdminController::adminProvisionTeamsPage - start; options: ' + JSON.stringify(opts));
 
         const url = this.app.backendURL + this.courseId + '/deliverables';
-        Network.handleRemote(url, this.ProvisionTeamsDeliverableView, UI.handleError);
+        Network.handleRemote(url, this.provisionTeamsDeliverableView, UI.handleError);
     }
 
     public adminProvisionReposPage(opts: any) {

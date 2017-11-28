@@ -89,7 +89,7 @@ export interface ProvisionHealthCheck {
     numOfTeamsWithRepo: object[];
     numOfTeamsWithoutRepo: object[];
     studentTeamStatus: StudentTeamStatusContainer;
-    teams: Team;
+    teams: Team[];
 }
 
 export interface StudentTeamStatusContainer {

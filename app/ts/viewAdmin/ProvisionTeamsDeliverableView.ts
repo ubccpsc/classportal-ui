@@ -16,7 +16,7 @@ declare var myApp: App;
 
 export class ProvisionTeamsDeliverableView {
     private controller: AdminController;
-    private provisionTeamsDetailsView: ProvisionTeamsDetailsView;
+    public provisionTeamsDetailsView: ProvisionTeamsDetailsView;
 
     constructor(controller: AdminController) {
         this.controller = controller;
