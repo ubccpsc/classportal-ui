@@ -14,6 +14,7 @@ const TEAMS = '#admin-prov-details__students-num-of-teams-body';
 const TEAMS_WITH_REPO = '#admin-prov-details__students-num-of-teams-with-repo-body';
 const TEAMS_WITHOUT_REPO = '#admin-prov-details__students-num-of-teams-without-repo-body';
 const HTML_CONTAINER = '#admin-prov-teams__details-container';
+const PROJECT_URL_PATH = 'githubState.repo.url';
 
 declare var myApp: App;
 
@@ -58,23 +59,23 @@ export class ProvisionTeamsDetailsView {
                 let teamsWithRepo = data.response.numOfTeamsWithRepo;
                 let teamsWithoutRepo = data.response.numOfTeamsWithoutRepo;
 
-                (document.querySelector(STUDENTS_WITH_TEAM)).addEventListener('click', function() {
+                (document.querySelector(STUDENTS_WITH_TEAM)).addEventListener('click', () => {
                     that.loadDetails(studentsWithTeam);
                 });
 
-                (document.querySelector(STUDENTS_WITHOUT_TEAM)).addEventListener('click', function() {
+                (document.querySelector(STUDENTS_WITHOUT_TEAM)).addEventListener('click', () => {
                     that.loadDetails(studentsWithoutTeam);
                 });
 
-                (document.querySelector(TEAMS)).addEventListener('click', function() {
+                (document.querySelector(TEAMS)).addEventListener('click', () => {
                     that.loadDetails(teams);
                 });
 
-                (document.querySelector(TEAMS_WITH_REPO)).addEventListener('click', function() {
+                (document.querySelector(TEAMS_WITH_REPO)).addEventListener('click', () => {
                     that.loadDetails(teamsWithRepo);
                 });
 
-                (document.querySelector(TEAMS_WITHOUT_REPO)).addEventListener('click', function() {
+                (document.querySelector(TEAMS_WITHOUT_REPO)).addEventListener('click', () => {
                     that.loadDetails(teamsWithoutRepo);
                 });
 
@@ -130,8 +131,13 @@ export class ProvisionTeamsDetailsView {
                                 ' (snum: ' + element[key][key_override].snum + ' / csid: ' + element[key][key_override].csid + ' / username: ' 
                                 + element[key][key_override].username + ')';
                         });
-                    } else if (key === 'disbanded') {
-
+                    } else if (key === 'githubState') {
+                        altElemText = JSON.stringify(element[key]);
+                        // also append project URL if available
+                        if (typeof element[key].repo !== 'undefined' && typeof element[key].repo.url !== 'undefined') {
+                            child = UI.createListItem(PROJECT_URL_PATH, element[key].repo.url, false);
+                            htmlContainer.appendChild(child);
+                        }
                     }
 
                     child = UI.createListItem(key, altElemText || element[key], false);

@@ -46,16 +46,16 @@ export class ProvisionTeamsDeliverableView {
         UI.hideModal();
     }
 
-    private getTeamProvisions() {
+    private getTeamProvisions(delivName: string) {
       let that = this;
-      let url = myApp.backendURL + myApp.currentCourseId + '/admin/teams/d1/overview';
+      let url = myApp.backendURL + myApp.currentCourseId + '/admin/teams/' + delivName +'/overview';
       Network.handleRemote(url, that.provisionTeamsDetailsView, UI.handleError);
     }
 
     private viewDeliverableProvision(delivName: string) {
         console.log('ProvisionTeamsDeliverableView::viewDeliverableProvision( ' + delivName + ' ) - start');
         UI.showModal();
-        this.getTeamProvisions();
+        this.getTeamProvisions(delivName);
     }
 
 }
