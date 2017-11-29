@@ -103,16 +103,42 @@ export class ProvisionTeamsDetailsView {
                 let htmlContainer = document.querySelector('#admin-prov-teams__details-container');
 
                 data.map((element: any) => {
+
                 let header = UI.createListHeader(element.lname + ' ' + element.fname);
+
+                // overrides for header for odd-ball object parsing
+                if (typeof element.fname === 'undefined' && element.githubState !== 'undefined') {
+                    header = UI.createListHeader(element.name)    ;
+                }
                 htmlContainer.appendChild(header);
 
                 Object.keys(element).forEach((key) => {
+
                     let child = UI.createListItem(key, element[key], false);
+                    let altElemText = '';
+
+                    // overrides in case a populated field or more advance object needs text parsing
+                    if (key === 'deliverableIds') {
+                        Object.keys(element[key]).forEach((key_override) => {
+                            altElemText+= element[key][key_override].name + ' ';
+                        });
+                    } else if (key === 'courseId') {
+                        altElemText+= element[key].courseId + ' ';
+                    } else if (key === 'members') {
+                        Object.keys(element[key]).forEach((key_override) => {
+                            altElemText+= '<p/>' + element[key][key_override].fname + ' ' + element[key][key_override].lname + 
+                                ' (snum: ' + element[key][key_override].snum + ' / csid: ' + element[key][key_override].csid + ' / username: ' 
+                                + element[key][key_override].username + ')';
+                        });
+                    } else if (key === 'disbanded') {
+
+                    }
+
+                    child = UI.createListItem(key, altElemText || element[key], false);
                     htmlContainer.appendChild(child);
                     });
                 });
 
-                
                 that.updateTitle();
             });
 
