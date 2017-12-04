@@ -4,13 +4,15 @@
         <div class="center">Manage Teams</div>
     </ons-toolbar>
 
-    <h2 style="text-align:center;" id='adminProvisionTeamsDetailsHeader'></h2>
 
     <ons-list id='admin-prov-details'>
+    	<h2 style="text-align:center;" id='adminProvisionTeamsDetailsHeader'></h2>
 
     	<section class="admin-prov-details__repo-stats">
 			<ons-list-header class="admin-prov-details__class-size-header">Class Size</ons-list-header>
 		    <ons-list-item id="admin-prov-details__class-size-body"></ons-list-item>
+		    <ons-list-header class="admin-prov-details__teams-allowed-header">Teams Allowed</ons-list-header>
+		    <ons-list-item id="admin-prov-details__teams-allowed-body" tappable></ons-list-item>
 		    <ons-list-header class="admin-prov-details__students-on-team-header">Students with Team</ons-list-header>
 		    <ons-list-item id="admin-prov-details__students-on-team-body" tappable></ons-list-item>
 		    <ons-list-header class="admin-prov-details__students-without-team-header">Students without Team</ons-list-header>
@@ -22,6 +24,12 @@
 		    <ons-list-header class="admin-prov-details__num-of-teams-without-repo-header">Teams without Repo</ons-list-header>
 		    <ons-list-item id="admin-prov-details__students-num-of-teams-without-repo-body" modifier="chevron" tappable></ons-list-item>
 	    </section>
+
+    	<h3 style="text-align:center;">Team Deliverable Actions</h3>
+
+        <section style={{margin: '16px'}}>
+            <ons-button modifier="large" style={{margin: '6px'}} modifier='cta'>Randomly Generate Teams</ons-button>
+        </section>
 
 	    <ons-list-item>
 	      <div class="left">

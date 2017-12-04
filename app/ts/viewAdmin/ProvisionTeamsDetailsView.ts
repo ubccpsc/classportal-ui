@@ -9,6 +9,7 @@ import {App} from "../App";
 const PROVISION_DETAILS_HEADER = '#adminProvisionTeamsDetailsHeader';
 const CLASS_SIZE = '#admin-prov-details__class-size-body';
 const STUDENTS_WITH_TEAM = '#admin-prov-details__students-on-team-body';
+const TEAMS_ALLOWED = '#admin-prov-details__teams-allowed-body';
 const STUDENTS_WITHOUT_TEAM = '#admin-prov-details__students-without-team-body';
 const TEAMS = '#admin-prov-details__students-num-of-teams-body';
 const TEAMS_WITH_REPO = '#admin-prov-details__students-num-of-teams-with-repo-body';
@@ -40,7 +41,6 @@ export class ProvisionTeamsDetailsView {
         let that = this;
         let teamCount = 0;
 
-
           // let delivRow = UI.createListItem(deliverable.name, String(myApp.currentCourseId) + ' Deliverable', TAPPABLE_INTERFACE);
           // delivRow.onclick = function() {
           // that.viewDeliverableProvision(deliverable.name);
@@ -53,6 +53,7 @@ export class ProvisionTeamsDetailsView {
 
                 let classSize = data.response.classSize;
                 let studentsWithTeam = data.response.studentTeamStatus.studentsWithTeam;
+                let teamsAllowed = data.response.teamsAllowed;
                 let studentsWithoutTeam = data.response.studentTeamStatus.studentsWithoutTeam;
                 let teams = data.response.teams;
                 let numOfTeams = data.response.numOfTeams;
@@ -79,6 +80,7 @@ export class ProvisionTeamsDetailsView {
                     that.loadDetails(teamsWithoutRepo);
                 });
 
+                (document.querySelector(TEAMS_ALLOWED).firstChild as HTMLElement).innerHTML = teamsAllowed === true ? 'Yes' : 'No';
                 (document.querySelector(CLASS_SIZE).firstChild as HTMLElement).innerHTML = classSize.toString();
                 (document.querySelector(STUDENTS_WITH_TEAM).firstChild as HTMLElement).innerHTML = studentsWithTeam.length.toString();
                 (document.querySelector(STUDENTS_WITHOUT_TEAM).firstChild as HTMLElement).innerHTML = studentsWithoutTeam.length.toString();
@@ -147,9 +149,6 @@ export class ProvisionTeamsDetailsView {
 
                 that.updateTitle();
             });
-
-        console.log(data);
-
 
         UI.hideModal();
 
