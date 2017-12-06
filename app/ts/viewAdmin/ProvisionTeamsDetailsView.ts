@@ -1,6 +1,6 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
-import {DeliverablePayload, DeliverablePayloadContainer} from "../Models";
+import {DeliverablePayload, DeliverablePayloadContainer, TeamGenerationPayload} from "../Models";
 import {ProvisionHealthCheckContainer} from "../Models";
 import {Network} from "../util/Network";
 import {OnsModalElement} from "onsenui";
@@ -15,7 +15,10 @@ const TEAMS = '#admin-prov-details__students-num-of-teams-body';
 const TEAMS_WITH_REPO = '#admin-prov-details__students-num-of-teams-with-repo-body';
 const TEAMS_WITHOUT_REPO = '#admin-prov-details__students-num-of-teams-without-repo-body';
 const HTML_CONTAINER = '#admin-prov-teams__details-container';
+const GENERATE_TEAMS_ACTION = '#admin-prov-details__generate-teams';
 const PROJECT_URL_PATH = 'githubState.repo.url';
+const MIN_TEAM_SIZE_INPUT = '#admin-prov-details__min-team-size-input';
+const MAX_TEAM_SIZE_INPUT = '#admin-prov-details__max-team-size-input';
 
 declare var myApp: App;
 
@@ -32,7 +35,7 @@ export class ProvisionTeamsDetailsView {
 
     public updateTitle() {
         // document.querySelector('#adminTabsHeader').innerHTML = data.course;
-        document.querySelector(PROVISION_DETAILS_HEADER).innerHTML = "Team Provisions: " + this.deliverable.name;
+        document.querySelector(PROVISION_DETAILS_HEADER).innerHTML = "Teams Overview: " + String(this.deliverable.name).toUpperCase();
     }
 
     public render(data: ProvisionHealthCheckContainer) {
@@ -80,6 +83,10 @@ export class ProvisionTeamsDetailsView {
                     that.loadDetails(teamsWithoutRepo);
                 });
 
+                (document.querySelector(GENERATE_TEAMS_ACTION)).addEventListener('click', () => {
+                    that.generateTeams();
+                });
+
                 (document.querySelector(TEAMS_ALLOWED).firstChild as HTMLElement).innerHTML = teamsAllowed === true ? 'Yes' : 'No';
                 (document.querySelector(CLASS_SIZE).firstChild as HTMLElement).innerHTML = classSize.toString();
                 (document.querySelector(STUDENTS_WITH_TEAM).firstChild as HTMLElement).innerHTML = studentsWithTeam.length.toString();
@@ -93,6 +100,33 @@ export class ProvisionTeamsDetailsView {
 
         // let uiHTMLList = document.querySelector(PROVISION_DETAILS_BODY_ID);
         // uiHTMLList.innerHTML = '';
+    }
+
+    public generateTeams() {
+        console.log('ProvisionTeamsDetailsView::generateTeams(..) - start');
+
+        let that = this;
+
+        // NOTE: 
+        // #1a min Team size unimplemented 
+        // #1b currently assumes min team size is always 1
+        // #2 max Team size IMPLEMENTED
+
+        let minTeamSize = (document.querySelector(MIN_TEAM_SIZE_INPUT) as HTMLInputElement).value;
+        let maxTeamSize = (document.querySelector(MAX_TEAM_SIZE_INPUT) as HTMLInputElement).value;
+        let data: TeamGenerationPayload = {teamSize: parseInt(maxTeamSize), deliverableName: that.deliverable.name, courseId: String(myApp.currentCourseId)}
+        let createTeamUrl = myApp.backendURL + myApp.currentCourseId + '/admin/teamGeneration';
+
+        Network.remotePost(createTeamUrl, data, UI.handleError)
+            .then((response: object) => {
+                console.log('remote post reponse inside', response);
+            });
+
+        let teamOverviewUrl = myApp.backendURL + myApp.currentCourseId + '/admin/teams/' + that.deliverable.name +'/overview';
+
+        Network.handleRemote(teamOverviewUrl, that, UI.handleError);
+
+        console.log('ProvisionTeamsDetailsView::generateTeams(..) - end');
     }
 
     public loadDetails(data: object[]) {

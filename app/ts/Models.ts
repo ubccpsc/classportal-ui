@@ -33,6 +33,16 @@ export interface Student {
     TA: string[];               // TAs who have tagged team. For future. Just return [] for now.
 }
 
+export interface TeamGenerationPayloadContainer {
+    response: TeamGenerationPayload;
+}
+
+export interface TeamGenerationPayload {
+    deliverableName: string; // ie. 'd1', 'p1'.
+    courseId: string; // ie. 310, 210
+    teamSize: number;
+}
+
 /**
  *
  *

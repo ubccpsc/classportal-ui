@@ -40,7 +40,7 @@ export class EditDeliverableView {
             }
         }
 
-        Network.updateRemotePost(url, payload, UI.handleError);
+        Network.remotePost(url, payload, UI.handleError);
         // save it
 
         UI.popPage();
