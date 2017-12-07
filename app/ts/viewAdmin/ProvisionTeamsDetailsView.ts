@@ -1,6 +1,7 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
-import {DeliverablePayload, DeliverablePayloadContainer, TeamGenerationPayload} from "../Models";
+import {DeliverablePayload, DeliverablePayloadContainer, TeamGenerationPayload, 
+    TeamGenerationResponseContainer, TeamGenerationResponse} from "../Models";
 import {ProvisionHealthCheckContainer} from "../Models";
 import {Network} from "../util/Network";
 import {OnsModalElement} from "onsenui";
@@ -118,13 +119,14 @@ export class ProvisionTeamsDetailsView {
         let createTeamUrl = myApp.backendURL + myApp.currentCourseId + '/admin/teamGeneration';
 
         Network.remotePost(createTeamUrl, data, UI.handleError)
-            .then((response: object) => {
-                console.log('remote post reponse inside', response);
+            .then((data: TeamGenerationResponseContainer) => {
+                UI.notification(data.response.result.n + ' Teams Successfully Created');
+                UI.popPage();
             });
 
         let teamOverviewUrl = myApp.backendURL + myApp.currentCourseId + '/admin/teams/' + that.deliverable.name +'/overview';
 
-        Network.handleRemote(teamOverviewUrl, that, UI.handleError);
+        Network.handleRemote(teamOverviewUrl, that, UI.handleError)
 
         console.log('ProvisionTeamsDetailsView::generateTeams(..) - end');
     }

@@ -191,7 +191,7 @@ export class App {
     }
 
     /*
-    * @Return Booelan - True if user is authenticated
+    * @Return Boolean - True if user is authenticated
     */
     public isLoggedIn() {
         let that = this;

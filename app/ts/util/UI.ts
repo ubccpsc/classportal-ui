@@ -49,6 +49,10 @@ export class UI {
         }
     }
 
+    public static notification(note: string) {
+        ons.notification.alert(note);
+    }
+
     public static handleError(err: Error) {
         if (err instanceof Error) {
             ons.notification.alert(err.message);

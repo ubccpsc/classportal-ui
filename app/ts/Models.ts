@@ -43,6 +43,20 @@ export interface TeamGenerationPayload {
     teamSize: number;
 }
 
+export interface TeamGenerationResponseContainer {
+    response: TeamGenerationResponse;
+}
+
+export interface TeamGenerationResponse {
+    result: MongoInsertResponse;
+    ops: Team;
+}
+
+export interface MongoInsertResponse {
+    ok: number; // 1 if successfully inserted
+    n: number; // number of items inserted into database
+}
+
 /**
  *
  *
