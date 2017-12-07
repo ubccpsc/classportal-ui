@@ -122,11 +122,9 @@ export class ProvisionTeamsDetailsView {
             .then((data: TeamGenerationResponseContainer) => {
                 UI.notification(data.response.result.n + ' Teams Successfully Created');
                 UI.popPage();
-            });
+            })
 
         let teamOverviewUrl = myApp.backendURL + myApp.currentCourseId + '/admin/teams/' + that.deliverable.name +'/overview';
-
-        Network.handleRemote(teamOverviewUrl, that, UI.handleError)
 
         console.log('ProvisionTeamsDetailsView::generateTeams(..) - end');
     }
