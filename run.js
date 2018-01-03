@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use('/', express.static(path.resolve(__dirname, './app')));
+app.use('/static/', express.static('/var/www/classportal-ui-next/app/html/staticHtml'));
 app.use('/public/', express.static(path.resolve(__dirname, './build/public')));
 app.use('/html/', express.static(path.resolve(__dirname, './app/html')));
 app.use('/dist/', express.static(path.resolve(__dirname, './app/build/dist')));
@@ -27,6 +27,8 @@ app.use('/lib/', express.static(path.resolve(__dirname, './app/lib')));
 app.get('/', function (req, res) {
     res.sendFile(path.resolve(__dirname, './app/index.html'));
 });
+app.use('/', express.static(path.resolve(__dirname, './app')));
+
 
 let sslCert = fs.readFileSync(config.sslCertPath, 'utf8');
 let sslKey = fs.readFileSync(config.sslKeyPath, 'utf8');

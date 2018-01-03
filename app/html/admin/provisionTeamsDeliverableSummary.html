@@ -25,12 +25,22 @@
 		    <ons-list-item id="admin-prov-details__students-num-of-teams-without-repo-body" modifier="chevron" tappable></ons-list-item>
 	    </section>
 
-    	<h3 id="admin-prov-details__team-actions" style="text-align:center;">Team Creator</h3>
+    	<h3 id="admin-prov-details__team-actions" style="text-align: center;">Team Creator</h3>
 
-        <section style='text-align: center;'>
-        	<ons-input placeholder="Min Team Size" id="admin-prov-details__min-team-size-input" type="number" modifier="underbar"></ons-input>
-      		<ons-input placeholder="Max Team Size" id="admin-prov-details__max-team-size-input" type="number" modifier="underbar" placeholder="maxTeamSize" float></ons-input>
-            <ons-button id="admin-prov-details__generate-teams" modifier="large" modifier='cta'>Generate Teams</ons-button>
+        <section>
+        	<div id="admin-prov-details__team-size-container" style="margin: 10px;">
+        		<ons-input style='width: 48%; float: left;' placeholder="Min Team Size" id="admin-prov-details__min-team-size-input" type="number" modifier="underbar"></ons-input>
+      			<ons-input style='width: 48%; float: right;' placeholder="Max Team Size" id="admin-prov-details__max-team-size-input" type="number" modifier="underbar" placeholder="maxTeamSize" float></ons-input>
+      		</div>
+		    <ons-list-item>
+		      <div class="center">
+		        Teams in Same Lab
+		      </div>
+		      <div id="admin-prov-details__team-in-same-lab" class="right">
+		        <ons-switch></ons-switch>
+		      </div>
+		    </ons-list-item>
+		    <ons-button id="admin-prov-details__generate-teams" modifier="large" modifier='cta'>Generate Teams</ons-button>
         </section>
 
 	    <ons-list-item>
@@ -52,15 +62,7 @@
 	      </div>
 	    </ons-list-item>
 
-	    <ons-list-header>Switch</ons-list-header>
-	    <ons-list-item>
-	      <div class="center">
-	        Turn it on
-	      </div>
-	      <div class="right">
-	        <ons-switch></ons-switch>
-	      </div>
-	    </ons-list-item>
+
 
 	    <ons-list-header>Switch and icon</ons-list-header>
 	    <ons-list-item>

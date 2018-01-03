@@ -20,6 +20,7 @@ const GENERATE_TEAMS_ACTION = '#admin-prov-details__generate-teams';
 const PROJECT_URL_PATH = 'githubState.repo.url';
 const MIN_TEAM_SIZE_INPUT = '#admin-prov-details__min-team-size-input';
 const MAX_TEAM_SIZE_INPUT = '#admin-prov-details__max-team-size-input';
+const TEAMS_IN_SAME_LAB_INPUT = '#admin-prov-details__team-in-same-lab';
 
 declare var myApp: App;
 
