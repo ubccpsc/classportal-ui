@@ -112,9 +112,9 @@ export class AdminController {
 
         let orgName = '';
         if (this.courseId === '310') {
-            orgName = 'CPSC310-2017W-T1'; // HACK should come from server
+            orgName = 'CPSC310-2017W-T2'; // HACK should come from server
         } else if (this.courseId === '210') {
-            orgName = 'CPSC210-2017W-T1'; // HACK should come from server
+            orgName = 'CPSC210-2017W-T2'; // HACK should come from server
         }
 
         console.log('AdminController::adminDashboardPage - orgName: ' + orgName + '; delivId: ' + delivId + ' - start');
