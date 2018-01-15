@@ -115,7 +115,7 @@ export class DashboardView {
                     });
                     r.push({
                         value: row.user,
-                        html:  '<a href="https://github.ubc.ca/' + row.user + '">' + row.user + '</a>'
+                        html:  '<a href="https://github.ugrad.cs.ubc.ca/' + row.user + '">' + row.user + '</a>'
                     });
                     r.push({
                         value: row.scoreOverall + '',
