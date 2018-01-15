@@ -55,7 +55,7 @@ export class ResultView {
                 this.dateFilter = flatpickr("#admin-result-date", {
                     enableTime:  true,
                     time_24hr:   true,
-                    utc: true,
+                    utc:         true,
                     dateFormat:  "Y/m/d @ H:i",
                     defaultDate: new Date()
                 });
@@ -215,23 +215,25 @@ export class ResultView {
             let footer = '<table style="margin-left: auto; margin-right: auto; text-align: center;">';
             footer += '<tr><th></th><th>Average</th><th>Median</th></tr>';
             let j = 0;
-            for (let gradeList of allGrades) {
-                gradeList = gradeList.sort(function (a, b) {
-                    return Number(a) - Number(b);
-                }); // NOTE: might not be right (check 100s)
+            if (allGrades.length > 1) {
+                for (let myGrades of allGrades) {
+                    myGrades = myGrades.sort(function (a, b) {
+                        return Number(a) - Number(b);
+                    }); // NOTE: might not be right (check 100s)
 
-                const lastAvg = (total[j] / gradeList.length).toFixed(1);
-                const lastMed = gradeList[Math.ceil(gradeList.length / 2)].toFixed(1);
-                let head = '';
-                if (j === 0) {
-                    head = 'Last Execution';
-                } else if (j === 1) {
-                    head = 'Max Execution';
-                } else if (j === 2) {
-                    head = 'Last Requested';
+                    let head = '';
+                    if (j === 0) {
+                        head = 'Last Execution';
+                    } else if (j === 1) {
+                        head = 'Max Execution';
+                    } else if (j === 2) {
+                        head = 'Last Requested';
+                    }
+                    const lastAvg = (total[j] / myGrades.length).toFixed(1);
+                    const lastMed = myGrades[Math.floor(myGrades.length / 2)].toFixed(1); // floor was ceil
+                    footer += '<tr><td><b>' + head + '</b></td><td>' + lastAvg + '</td><td>' + lastMed + '</td></tr>';
+                    j++;
                 }
-                footer += '<tr><td><b>' + head + '</b></td><td>' + lastAvg + '</td><td>' + lastMed + '</td></tr>';
-                j++;
             }
             footer += '</table>';
 
