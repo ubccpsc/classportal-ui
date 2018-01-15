@@ -223,9 +223,13 @@ export class DashboardView {
             return a - b;
         });
 
-        str += '<div><b>Median:</b> ' + (scores[Math.ceil(scores.length / 2)]).toFixed(2) + '</div>';
-        str += '<div><b>Average:</b> ' + (totalScore / totalProjects).toFixed(2) + '</div>';
-        str += '<div><b># Rows:</b> ' + totalProjects + '</div>';
+        if (scores.length > 0) {
+            str += '<div><b>Median:</b> ' + (scores[Math.ceil(scores.length / 2)]).toFixed(2) + '</div>';
+            str += '<div><b>Average:</b> ' + (totalScore / totalProjects).toFixed(2) + '</div>';
+            str += '<div><b># Rows:</b> ' + totalProjects + '</div>';
+        } else {
+            str += '<div><b>No rows returned</b></div>';
+        }
 
         str += '<div style="padding-top: 1em"><b>Histogram:</b></div>';
         str += '<table style="margin-left: auto; margin-right: auto;">'; // <tr><th>Bucket</th><th>Count</th></tr>
