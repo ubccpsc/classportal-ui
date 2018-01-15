@@ -507,7 +507,7 @@ export class ResultView {
     }
 
     private buildFooter(allGrades: number[][], total: number[]): string {
-        let footer = '<div><h4>Statistics (excluding "no request")></h4>';
+        let footer = '<div><h4>Statistics (excluding "no request")</h4>';
         footer += '<table style="margin-left: auto; margin-right: auto; text-align: center;">';
         footer += '<tr><th></th><th>Average</th><th>Median</th></tr>';
         let j = 0;
