@@ -55,7 +55,7 @@ export class ResultView {
                 this.dateFilter = flatpickr("#admin-result-date", {
                     enableTime:  true,
                     time_24hr:   true,
-                    utc: true,
+                    utc:         true,
                     dateFormat:  "Y/m/d @ H:i",
                     defaultDate: new Date()
                 });
@@ -114,8 +114,6 @@ export class ResultView {
                 let row = processedData[key] as StudentGrades;
                 // HACK: this does not print people who did nothing!
                 if (typeof row !== 'undefined' && typeof row.student.sNum !== 'undefined') {
-
-
                     let r: TableCell[] = [];
                     r.push({
                         value: row.student.userName,
@@ -197,7 +195,6 @@ export class ResultView {
             }
             table.generate();
 
-
             const num = allGrades.length;
             let total: number[] = [];
             let i = 0;
@@ -206,34 +203,14 @@ export class ResultView {
                     if (typeof total[i] === 'undefined') {
                         total[i] = 0;
                     }
-                    total[i] = total[i] + g;
+                    if (g >= 0) { // exclude -1 (no request) rows
+                        total[i] = total[i] + g;
+                    }
                 }
                 i++;
             }
 
-
-            let footer = '<table style="margin-left: auto; margin-right: auto; text-align: center;">';
-            footer += '<tr><th></th><th>Average</th><th>Median</th></tr>';
-            let j = 0;
-            for (let gradeList of allGrades) {
-                gradeList = gradeList.sort(function (a, b) {
-                    return Number(a) - Number(b);
-                }); // NOTE: might not be right (check 100s)
-
-                const lastAvg = (total[j] / gradeList.length).toFixed(1);
-                const lastMed = gradeList[Math.ceil(gradeList.length / 2)].toFixed(1);
-                let head = '';
-                if (j === 0) {
-                    head = 'Last Execution';
-                } else if (j === 1) {
-                    head = 'Max Execution';
-                } else if (j === 2) {
-                    head = 'Last Requested';
-                }
-                footer += '<tr><td><b>' + head + '</b></td><td>' + lastAvg + '</td><td>' + lastMed + '</td></tr>';
-                j++;
-            }
-            footer += '</table>';
+            const footer = this.buildFooter(allGrades, total);
 
             document.getElementById('admin-result-footer').innerHTML = footer;
         }
@@ -395,7 +372,7 @@ export class ResultView {
                 commitUrl:      '',
                 branchName:     '',
                 gradeRequested: false,
-                grade:          '0',
+                grade:          '-1',
                 delivId:        this.delivId,
                 gradeDetails:   []
             }
@@ -429,7 +406,7 @@ export class ResultView {
                 let include = false;
                 if (record.gradeRequested === true) {
                     if (typeof record.gradeRequestedTimeStamp !== 'undefined' && record.gradeRequestedTimeStamp > 0) {
-                        if (record.gradeRequestedTimeStamp < ts && record.userName.toLowerCase() === student.userName.toLowerCase()) {
+                        if (record.gradeRequestedTimeStamp < ts && record.userName !== null && record.userName.toLowerCase() === student.userName.toLowerCase()) {
                             include = true;
                         }
                     } else {
@@ -462,7 +439,7 @@ export class ResultView {
                 commitUrl:      '',
                 branchName:     '',
                 gradeRequested: false,
-                grade:          '0',
+                grade:          '-1',
                 delivId:        this.delivId,
                 gradeDetails:   []
             }
@@ -520,12 +497,45 @@ export class ResultView {
                 commitUrl:      '',
                 branchName:     '',
                 gradeRequested: false,
-                grade:          '0',
+                grade:          '-1',
                 delivId:        this.delivId,
                 gradeDetails:   []
             }
         }
 
         return result;
+    }
+
+    private buildFooter(allGrades: number[][], total: number[]): string {
+        let footer = '<div><h4>Statistics (excluding "no request")</h4>';
+        footer += '<table style="margin-left: auto; margin-right: auto; text-align: center;">';
+        footer += '<tr><th></th><th>Average</th><th>Median</th></tr>';
+        let j = 0;
+        if (allGrades.length > 1) {
+            for (let myGrades of allGrades) {
+                myGrades = myGrades.sort(function (a, b) {
+                    return Number(a) - Number(b);
+                }); // NOTE: might not be right (check 100s)
+
+                myGrades = myGrades.filter(function (val) {
+                    return val >= 0; // exclude -1 values (no request rows)
+                });
+
+                let head = '';
+                if (j === 0) {
+                    head = 'Last Execution';
+                } else if (j === 1) {
+                    head = 'Max Execution';
+                } else if (j === 2) {
+                    head = 'Last Requested';
+                }
+                const lastAvg = (total[j] / myGrades.length).toFixed(1);
+                const lastMed = myGrades[Math.floor(myGrades.length / 2)].toFixed(1); // floor was ceil
+                footer += '<tr><td><b>' + head + '</b></td><td>' + lastAvg + '</td><td>' + lastMed + '</td></tr>';
+                j++;
+            }
+        }
+        footer += '</table></div>';
+        return footer;
     }
 }
