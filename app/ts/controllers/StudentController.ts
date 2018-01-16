@@ -15,7 +15,6 @@ export class StudentController {
 
     private courseId: string;
     private data: any;
-
     private summaryView = new SummaryView();
     private gradeView = new GradeView();
     private teamView = new TeamView();
@@ -60,18 +59,10 @@ export class StudentController {
         }
     }
 
-    public studentTeamPage() {
-        console.log('StudentController::studentTeamPage - start');
-
-        if (this.courseId === 'cpsc210') {
-            const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.teamView, UI.handleError);
-        } else if (this.courseId === 'cpsc310') {
-            const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.teamView, UI.handleError);
-        } else {
-            console.log('StudentController::studentTeamPage - unknown course: ' + this.courseId);
-        }
+    public studentTeamsPage() {
+        console.log('StudentController::studentTeamsPage - start');
+        const url = this.app.backendURL + this.courseId + '/myTeams';
+        Network.handleRemote(url, this.teamView, UI.handleError);
     }
 
     public studentGradePage() {

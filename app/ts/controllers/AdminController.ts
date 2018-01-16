@@ -18,7 +18,6 @@ export class AdminController {
 
 
     private courseId: string;
-
     private deliverableView = new DeliverableView(this);
     private provisionTeamsDeliverableView = new ProvisionTeamsDeliverableView(this);
     private teamView = new TeamView(this);

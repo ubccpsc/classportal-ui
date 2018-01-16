@@ -10,7 +10,6 @@ import {DeliverableView} from "../viewStudent/DeliverableView";
 import {TeamView} from "../viewStudent/TeamView";
 import {App} from "../App";
 
-
 export class StudentController {
 
     private courseId: string;

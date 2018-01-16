@@ -2,6 +2,7 @@
  * Created by rtholmes on 2017-10-04.
  */
 import {OnsModalElement} from "onsenui";
+import {Team} from '../interfaces/Teams.Interfaces';
 
 const OPEN_DELIV_KEY = 'open';
 const CLOSE_DELIV_KEY = 'close';
@@ -13,6 +14,8 @@ const MONGO_DB_ID_KEY = '_id';
 declare var ons: any; // for release (or webpack bundling gets huge)
 
 export class UI {
+
+    public static ons = ons;
 
     /**
      * Onsen convenience functions
@@ -149,6 +152,42 @@ export class UI {
             console.log('UI::showModal(..) - Modal is null');
         }
     }
+
+    // Returns the HTML object that maps from a StudentView Team
+    public static createTeam(team: Team): string {
+        let teamHTMLText = '<ons-list-header>' + team.deliverableIds[0].name + '</ons-list-header>';
+        teamHTMLText+= '<ons-list-item>' + team.name + '</ons-list-item>';
+        return teamHTMLText;
+    }
+
+// <ons-page id="studentTeamsPage">
+//     <ons-list id="student-team-list">
+//         <section style="margin-top: 50px;" class="studentTeamPage-header">
+//             <h2 style="text-align: center;">You are currently not on any teams</h2>
+//         </section>
+
+//         <section class="studentTeamPage-add-team-cta" style="padding: 30px;">
+//             <div class="studentTeamPage-add-team-cta__container" style="width: 100%; margin: auto; text-align: center;">
+//                 <ons-button class="studentTeamPage-add-team-cta__button" modifier="medium">Add a Team</ons-button>
+//             </div>
+//           </section>
+
+//         <ons-list-header>Tappable / Ripple</ons-list-header>
+//         <ons-list-item tappable>Tap me</ons-list-item>
+
+//         <ons-list-header>Chevron</ons-list-header>
+//         <ons-list-item modifier="chevron" tappable>Chevron</ons-list-item>
+
+//         <ons-list-header>Thumbnails and titles</ons-list-header>
+//         <ons-list-item>
+//           <div class="left">
+//             <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
+//           </div>
+//           <div class="center">
+//             <span class="list-item__title">Cutest kitty</span><span class="list-item__subtitle">On the Internet</span>
+//           </div>
+//     </ons-list>
+// </ons-page>
 
     public static hideModal() {
         const modal = document.querySelector('ons-modal') as OnsModalElement;
