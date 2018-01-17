@@ -3,12 +3,13 @@
 
 import {GithubState} from './Github.Interfaces';
 import {Deliverable} from './Deliverables.Interfaces';
+import {Student} from './Student.Interfaces';
 
 export interface Team {
   name: string;
   githubState: object;
   TAs: object[];
-  members: object[];
+  members: Student[];
   deliverableIds: Deliverable[]; // IDeliverableDocument
   disbanded: boolean;
   githubOrg: string;

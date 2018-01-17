@@ -155,8 +155,13 @@ export class UI {
 
     // Returns the HTML object that maps from a StudentView Team
     public static createTeam(team: Team): string {
-        let teamHTMLText = '<ons-list-header>' + team.deliverableIds[0].name + '</ons-list-header>';
-        teamHTMLText+= '<ons-list-item>' + team.name + '</ons-list-item>';
+        let teamHTMLText = '<h2 style="text-align: center;">' + String(team.deliverableIds[0].name).toUpperCase() + ' Teams</h2>';
+        teamHTMLText += '<ons-list-header>' + team.name + '</ons-list-header>';
+
+        for (let member of team.members) {
+            teamHTMLText+= '<ons-list-item>' + member.username + ': ' + member.lname + ', ' + member.fname + '</ons-list-item>';
+        }
+
         return teamHTMLText;
     }
 

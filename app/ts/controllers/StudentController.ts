@@ -17,13 +17,14 @@ export class StudentController {
     private data: any;
     private summaryView = new SummaryView();
     private gradeView = new GradeView();
-    private teamView = new TeamView();
+    private teamView: TeamView;
     private deliverableView = new DeliverableView();
     private app: App;
 
     constructor(app: App, courseId: string) {
         console.log('StudentController::<init> - courseId: ' + courseId);
         this.app = app;
+        this.teamView = new TeamView(app, courseId);
         this.courseId = courseId;
     }
 

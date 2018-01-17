@@ -5,5 +5,10 @@ export interface Deliverable {
   open: number;
   close: number;
   name: string;
+  studentsMakeTeam: boolean;
   gradesReleased: boolean;
+}
+
+export interface DeliverableContainer {
+  response: Deliverable[];
 }

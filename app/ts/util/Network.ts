@@ -108,6 +108,25 @@ export class Network {
         }
     }
 
+    public static async httpGet(url: string): Promise<object> {
+        console.log('Network::httpGet( ' + url + ' ) - start');
+        const OPTIONS_HTTP_GET: object = {credentials: 'include'};
+
+        return fetch(url, OPTIONS_HTTP_GET).then((data: any) => {
+            if (data.status === 200) {
+                return data.json().then((jsonData: object) => {
+                    console.log(jsonData);
+                    return jsonData;
+                });
+            } else {
+                throw 'Could not fetch data from ' + url;
+            }
+        })
+        .catch((err) => {
+            console.log('Network::httpGet() ERROR ' + err);
+        });
+    }
+
     public static handleRemote(url: string, view: any, onError: any) {
         const USE_REAL = true;
         console.log('Network::handleRemote( ' + url + ' ) - start');
