@@ -74,10 +74,10 @@ export class TeamView {
 
                 // can only select a deliv when addANewTeam.html loads, so we do it here.
                 let selectedDeliv = that.getCurrentlySelectedDeliv();
+                let deliv: Deliverable = that.getDelivByName(selectedDeliv);
 
                 usernameInputButton.addEventListener('click', (e) => {
 
-                    let deliv: Deliverable = that.getDelivByName(selectedDeliv);
 
                     that.validateUsername()
                         .then((inSameLabData: InSameLabData) => {
@@ -102,6 +102,10 @@ export class TeamView {
                     let createTeamPayload: CreateTeamPayload = {deliverableName: selectedDeliv, members: usernames};
                     let url: string = this.app.backendURL + this.courseId + '/students/customTeam';
                     console.log('TeamView:: Preparing to send payload to ' + url, createTeamPayload);
+
+                    let isTooBig: boolean = this.isTeamTooBig(deliv);
+
+                    if (!isTooBig) {
                     Network.httpPut(url, createTeamPayload)
                         .then((data: any) => {
                             console.log('TeamView:: Network.createTeam() Response: ', data);
@@ -111,7 +115,11 @@ export class TeamView {
                             } else {
                                 that.failedTeamCreationMsg();
                             }
-                        });
+                        });                    
+                    } else {
+                        UI.notification('Your team is too big. The max size is ' + deliv.maxTeamSize + '.');
+                    }
+
                     // Network.httpPost(usernames, selectedDeliv, that.courseId);
                 });
 
