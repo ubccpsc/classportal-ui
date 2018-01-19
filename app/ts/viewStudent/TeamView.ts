@@ -55,20 +55,58 @@ export class TeamView {
                 that.addDelivsToDropdown(data);
                 let usernameInputButton = document.querySelector(USERNAME_INPUT_BUTTON);
                 usernameInputButton.addEventListener('click', (e) => {
+
+                    // can only select a deliv when addANewTeam.html loads, so we do it here.
+                    let selectedDeliv = that.getCurrentlySelectedDeliv();
+                    let deliv: Deliverable = that.getDelivByName(selectedDeliv);
+
                     that.validateUsername()
                         .then((inSameLabData: InSameLabData) => {
-                            if (inSameLabData.inSameLab) {
+
+                            if (that.isTeamTooBig(deliv)) {
+                                that.rejectTeamSizeNumber(deliv);
+                            } else if (inSameLabData.inSameLab) {
                                 that.addUserToTeamList(inSameLabData.username);
                             } else {
                                 that.rejectInvalidUser(inSameLabData.username);
                             }
+                        })
+                        .catch((err) => {
+                            console.log('TeamView:: loadNewTeamView() ERROR ' + err);
                         });
                 });
             })
             .catch((err: any) => {
                 console.log('TeamView:: loadNewTeamView(addTeamData) ERROR ' + err);
             });
+    }
 
+    private getCurrentTeamSize(): number {
+        return document.getElementsByClassName(TEAMMATES_LIST_ITEM_CLASS).length;
+    }
+
+    private isTeamTooBig(deliverableObj: Deliverable): boolean {
+        let currentTeamSize: number = this.getCurrentTeamSize();
+        if (currentTeamSize > deliverableObj.maxTeamSize)  {
+            return true;
+        }
+        return false;
+    }
+
+    private isTeamTooSmall(deliverableObj: Deliverable): boolean {
+        let currentTeamSize: number = this.getCurrentTeamSize();
+        if (currentTeamSize < deliverableObj.minTeamSize) {
+            return true;
+        }
+        return false;
+    }
+
+    private getMaxTeamSize(deliverableObj: Deliverable): number {
+        return deliverableObj.maxTeamSize;
+    }
+
+    private getMinTeamSize(deliverableObj: Deliverable): number {
+        return deliverableObj.minTeamSize;
     }
 
     private isTeammateInTableList(username: string): boolean {
@@ -88,6 +126,29 @@ export class TeamView {
     private removeHtmlItem(parentNode: Node, childElement: HTMLElement) {
         console.log('TeamView:: removeHtmlItem() Removing item');
         parentNode.removeChild(childElement);
+    }
+
+    private getDelivByName(delivName: string): Deliverable {
+        // try-catch since Deliverables should be loaded, but possibly not loaded due to async
+        try {
+            for (let i = 0; i < this.deliverables.length; i++) {
+                if (this.deliverables[i].name === delivName) {
+                    return this.deliverables[i];
+                }
+            }
+        } catch (err) {
+            console.log('TeamView:: getDelivByName() ERROR ' + err);
+        }
+    }
+
+    private getCurrentlySelectedDeliv(): string {
+        let selectedDeliv: string = null;
+        try {
+            selectedDeliv = (document.getElementsByClassName('select-input')[0] as HTMLSelectElement).value;
+        } catch (err) {
+            console.log('TeamView:: getCurrentlySelectedDeliv() ERROR ' + err);
+        }
+        return selectedDeliv;
     }
 
     private addUserToTeamList(username: string) {
@@ -115,9 +176,21 @@ export class TeamView {
         }
     }
 
+    private rejectTeamSizeNumber(deliverableObj: Deliverable) {
+        console.log('TeamView::rejectTooManyTeammembers() - start');
+        let maxTeamSize: number = this.getMaxTeamSize(deliverableObj);
+        let minTeamSize: number = this.getMinTeamSize(deliverableObj);
+        UI.notification('Your team size must be between ' + minTeamSize + ' and ' + maxTeamSize + ' members.');
+    }
+
     private rejectInvalidUser(username: string) {
         console.log('TeamView::rejectInvalidUser() - start');
-        UI.notification('The user ' + username + ' is not registered in the same lab');
+        if (typeof username === 'undefined' || username.length === 0) {
+            UI.notification('You have to enter a valid username.');
+        } else {
+            UI.notification('The user ' + username + ' is not registered in the same lab.');
+        }
+        
     }
 
     private addDelivsToDropdown(addTeamData: AddTeamData) {
@@ -159,6 +232,7 @@ export class TeamView {
         let deliverablesList: DeliverableContainer = await this.getDeliverables(this.courseId);
         let addTeamButton = document.querySelector(ADD_A_TEAM_CONTAINER) as HTMLElement;
             addTeamButton.addEventListener('click', () => {
+                this.deliverables = deliverablesList.response;
                 that.loadNewTeamView({courseDelivList: deliverablesList.response, studentTeamList: data.response});
             });
         let delivStudentTeamCount: number;
@@ -204,6 +278,7 @@ export class TeamView {
         const usernameSearchField = document.querySelector(USERNAME_SEARCH_FIELD) as HTMLInputElement;
         let username: string = usernameSearchField.value;
         console.log(username);
+
         return Network.httpPost(url, {username: username})
             .then((data: any) => {
                 return data.response;

@@ -6,6 +6,8 @@ export interface Deliverable {
   close: number;
   name: string;
   studentsMakeTeams: boolean;
+  minTeamSize: number;
+  maxTeamSize: number;
   gradesReleased: boolean;
 }
 
