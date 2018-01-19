@@ -11,6 +11,10 @@ const DELIV_DROPDOWN_CONTAINER = '#addANewTeamPage-deliverableList-selector';
 const USERNAME_INPUT_CONTAINER = '#addANewTeamPage-deliverableList-username-input';
 const USERNAME_INPUT_BUTTON = '#addANewTeamPage-deliverableList-username-input-button';
 const USERNAME_SEARCH_FIELD = '#addANewTeamPage-deliverableList-username-input';
+const TEAMMATES_LIST = '#addANewTeamPage-teammates-list';
+const TEAMMATES_LIST_HEADER = '#addANewTeamPage-teammates-list-header';
+const TEAMMATES_LIST_ITEM_CLASS = 'addANewTeamPage-teammates-list-item';
+const TEAMMATES_LIST_PLACEHOLDER = '#addANewTeamPage-teammates-list-placeholder';
 
 interface AddTeamData {
     courseDelivList: Deliverable[];
@@ -51,15 +55,69 @@ export class TeamView {
                 that.addDelivsToDropdown(data);
                 let usernameInputButton = document.querySelector(USERNAME_INPUT_BUTTON);
                 usernameInputButton.addEventListener('click', (e) => {
-                    that.validateUsername();
-                    console.log(e);
-
+                    that.validateUsername()
+                        .then((inSameLabData: InSameLabData) => {
+                            if (inSameLabData.inSameLab) {
+                                that.addUserToTeamList(inSameLabData.username);
+                            } else {
+                                that.rejectInvalidUser(inSameLabData.username);
+                            }
+                        });
                 });
             })
             .catch((err: any) => {
                 console.log('TeamView:: loadNewTeamView(addTeamData) ERROR ' + err);
             });
 
+    }
+
+    private isTeammateInTableList(username: string): boolean {
+        let teammatesHtmlList = document.getElementsByClassName(TEAMMATES_LIST_ITEM_CLASS);
+        let isInTableList: boolean = false;
+        console.log(teammatesHtmlList);
+        for (let i = 0; i < teammatesHtmlList.length; i++) {
+            let teammate = teammatesHtmlList[i] as HTMLElement;
+            console.log(teammate.dataset.username);
+            if (teammate.dataset.username === username) {
+                isInTableList = true;
+            }
+        }
+        return isInTableList;
+    }
+
+    private removeHtmlItem(parentNode: Node, childElement: HTMLElement) {
+        console.log('TeamView:: removeHtmlItem() Removing item');
+        parentNode.removeChild(childElement);
+    }
+
+    private addUserToTeamList(username: string) {
+        console.log('TeamView::addUserToTeamList() - start');
+        let teamList = document.querySelector(TEAMMATES_LIST);
+        let teammate: string = '<ons-list-item class="addANewTeamPage-teammates-list-item" data-username="' + username + '">' + username + 
+          '<div class="right"><ons-icon icon="ion-close-round" class="list-item__icon"></div></ons-list-item>';
+        let teammateHtml = UI.ons.createElement(teammate) as HTMLElement;
+        teammateHtml.lastChild.addEventListener('click', () => {
+            this.removeHtmlItem(teammateHtml.parentNode, teammateHtml);
+        })
+
+        let alreadyOnTeam: boolean = this.isTeammateInTableList(username);
+
+        if (!alreadyOnTeam) {
+
+            // clean table from default placeholder
+            let teammatesHtmlPlaceholder = document.querySelector(TEAMMATES_LIST_PLACEHOLDER) as HTMLElement;
+                console.log(teammatesHtmlPlaceholder);
+                if (teammatesHtmlPlaceholder) {
+                    this.removeHtmlItem(teammatesHtmlPlaceholder.parentNode, teammatesHtmlPlaceholder);
+                }
+
+            teamList.appendChild(teammateHtml);
+        }
+    }
+
+    private rejectInvalidUser(username: string) {
+        console.log('TeamView::rejectInvalidUser() - start');
+        UI.notification('The user ' + username + ' is not registered in the same lab');
     }
 
     private addDelivsToDropdown(addTeamData: AddTeamData) {
@@ -140,21 +198,16 @@ export class TeamView {
         UI.hideModal();
     }
 
-    public async validateUsername(): Promise<boolean> {
+    public async validateUsername(): Promise<InSameLabData> {
         console.log('validateUsername() clicked');
         let url = this.app.backendURL + this.courseId + '/students/isInSameLab';
         const usernameSearchField = document.querySelector(USERNAME_SEARCH_FIELD) as HTMLInputElement;
         let username: string = usernameSearchField.value;
         console.log(username);
-        Network.httpPost(url, {username: username})
-            .then((result: any) => {
-                let inSameLabData: InSameLabData = result.response;
-                if (inSameLabData.inSameLab) {
-                    console.log('TeamView:: validateUsername() In same lab with ' + inSameLabData.username);
-                }
-                console.log('validateusername result', result);
-            })
-            return true;    
+        return Network.httpPost(url, {username: username})
+            .then((data: any) => {
+                return data.response;
+            });
     }
 
     public createTeam(team: Team): string {
