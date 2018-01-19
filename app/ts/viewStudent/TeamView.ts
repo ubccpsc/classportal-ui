@@ -1,5 +1,6 @@
 import {UI} from "../util/UI";
 import {Team} from '../interfaces/Teams.Interfaces';
+import {Student} from '../interfaces/Student.Interfaces';
 import {Deliverable, DeliverableContainer} from '../interfaces/Deliverables.Interfaces';
 import {Network} from '../util/Network';
 import {App} from "../App";
@@ -16,6 +17,7 @@ const TEAMMATES_LIST_HEADER = '#addANewTeamPage-teammates-list-header';
 const TEAMMATES_LIST_ITEM_CLASS = 'addANewTeamPage-teammates-list-item';
 const TEAMMATES_LIST_PLACEHOLDER = '#addANewTeamPage-teammates-list-placeholder';
 const CREATE_TEAM_BUTTON = '#addANewTeamPage-deliverableList-container-create-button';
+const LOCAL_STORAGE_USERNAME = 'username';
 
 interface AddTeamData {
     courseDelivList: Deliverable[];
@@ -48,6 +50,14 @@ export class TeamView {
         return Network.httpGet(url)
             .then((data: DeliverableContainer) => {
                 return data;
+            });
+    }
+
+    private async getCurrentUser(user: Student) {
+        let url: string = this.app.backendURL + this.courseId + '/currentUser';
+        Network.httpGet(url)
+            .then((data: any) => {
+                return data.response.user as Student;
             });
     }
 
@@ -93,10 +103,15 @@ export class TeamView {
                     let url: string = this.app.backendURL + this.courseId + '/students/customTeam';
                     console.log('TeamView:: Preparing to send payload to ' + url, createTeamPayload);
                     Network.httpPut(url, createTeamPayload)
-                        .then((response: object) => {
-                            console.log('TeamView:: Network.createTeam() Response: ', response);
+                        .then((data: any) => {
+                            console.log('TeamView:: Network.createTeam() Response: ', data);
+                            if (typeof data !== 'undefined' && data.response.insertedCount === 1) {
+                                that.successTeamCreationMsg();
+                                UI.popPage();
+                            } else {
+                                that.failedTeamCreationMsg();
+                            }
                         });
-
                     // Network.httpPost(usernames, selectedDeliv, that.courseId);
                 });
 
@@ -179,25 +194,40 @@ export class TeamView {
     private addUserToTeamList(username: string) {
         console.log('TeamView::addUserToTeamList() - start');
         let teamList = document.querySelector(TEAMMATES_LIST);
+        let myUsername: string = window.localStorage.getItem(LOCAL_STORAGE_USERNAME);
+        let myself: string = '<ons-list-item class="addANewTeamPage-teammates-list-item" data-username="' + myUsername + '">' + myUsername + 
+          '<div class="right"><ons-icon icon="ion-person" class="list-item__icon"></div></ons-list-item>';
         let teammate: string = '<ons-list-item class="addANewTeamPage-teammates-list-item" data-username="' + username + '">' + username + 
           '<div class="right"><ons-icon icon="ion-close-round" class="list-item__icon"></div></ons-list-item>';
         let teammateHtml = UI.ons.createElement(teammate) as HTMLElement;
+        let myselfHtml = UI.ons.createElement(myself) as HTMLElement;
         teammateHtml.lastChild.addEventListener('click', () => {
             this.removeHtmlItem(teammateHtml.parentNode, teammateHtml);
         })
-
         let alreadyOnTeam: boolean = this.isTeammateInTableList(username);
+        let iNeedToBeAddedToTeam: boolean = !this.isTeammateInTableList(myUsername);
 
         if (!alreadyOnTeam) {
 
             // clean table from default placeholder
             let teammatesHtmlPlaceholder = document.querySelector(TEAMMATES_LIST_PLACEHOLDER) as HTMLElement;
-                console.log(teammatesHtmlPlaceholder);
-                if (teammatesHtmlPlaceholder) {
-                    this.removeHtmlItem(teammatesHtmlPlaceholder.parentNode, teammatesHtmlPlaceholder);
-                }
+            console.log(teammatesHtmlPlaceholder);
+            if (teammatesHtmlPlaceholder) {
+                this.removeHtmlItem(teammatesHtmlPlaceholder.parentNode, teammatesHtmlPlaceholder);
+            }
+            if (iNeedToBeAddedToTeam && username !== myUsername) {
+                teamList.appendChild(myselfHtml);
+            }
 
-            teamList.appendChild(teammateHtml);
+            // if it is your own username being added, then it has to stay there permanently because you
+            // do not want to be able to form teams that you are not on.
+            if (username === myUsername) {
+                teamList.appendChild(myselfHtml);
+            } else {
+                teamList.appendChild(teammateHtml);
+            }
+
+            this.clearSearchInput();
         }
     }
 
@@ -215,6 +245,15 @@ export class TeamView {
         } else {
             UI.notification('The user ' + username + ' is not registered in the same lab.');
         }
+    }
+
+    private failedTeamCreationMsg() {
+        UI.notification('The team could not be created. Please ensure that team members are in the same lab' + 
+         ' and are not currently on a team for this deliverable.');
+    }
+
+    private successTeamCreationMsg() {
+        UI.notification('Your team was successfully created.');
     }
 
     private getTeamMembers(): string[] {
@@ -271,7 +310,7 @@ export class TeamView {
                 this.deliverables = deliverablesList.response;
                 that.loadNewTeamView({courseDelivList: deliverablesList.response, studentTeamList: data.response});
             });
-        let delivStudentTeamCount: number;
+        let delivStudentTeamCount: number = 0;
 
         if (deliverablesList) {
             deliverablesList.response.map((deliv: Deliverable) => {
@@ -286,6 +325,9 @@ export class TeamView {
         // if list of deliverables with studentsMakeTeams equal to team list length, then hide Add Team button.
         if (typeof teams.length !== 'undefined' && teams.length > 0) {
             headerText.innerHTML = '';
+
+            console.log('TEAMS LENGTH', teams.length);
+            console.log('DELIV STUDENT TEAM COUNT', delivStudentTeamCount);
 
             if (teams.length === delivStudentTeamCount) {
                 addTeamButton.style.display = 'none';
@@ -306,6 +348,11 @@ export class TeamView {
 
         const teamList = document.querySelector('#student-team-list');
         UI.hideModal();
+    }
+
+    private clearSearchInput() {
+        const usernameSearchField = document.querySelector(USERNAME_SEARCH_FIELD) as HTMLInputElement;
+        usernameSearchField.value = '';
     }
 
     public async validateUsername(): Promise<InSameLabData> {

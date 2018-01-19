@@ -4,12 +4,16 @@
     <div class="center">Add a Team</div>
   </ons-toolbar>
 
-  <div class="addANewTeamPage-deliverableList-container" style="display: block; margin: auto;">
-  	  <h3>Select Deliverable:</h3>
+  <div class="addANewTeamPage-deliverableList-container" style="display: block; margin-top: 60px; margin-bottom: 60px; text-align: center;">
+  	  <h3>Deliverable</h3>
 	  <div id="addANewTeamPage-deliverableList-selector">
 	  </div>
-	  <ons-search-input id="addANewTeamPage-deliverableList-username-input" placeholder="Username ie. 'x24n2'"></ons-search-input>
-	  <ons-button id="addANewTeamPage-deliverableList-username-input-button" modifier="medium">Add User to Team</ons-button>
+	  <div id="addANewTeamPage-deliverableList-username-input-container" style="display: block; margin: 20px">
+	    <ons-search-input id="addANewTeamPage-deliverableList-username-input" placeholder="Username ie. 'x24n2'"></ons-search-input>
+	  </div>
+	  <div id="addANewTeamPage-deliverableList-username-input-button-container" style="display: block;">
+	    <ons-button id="addANewTeamPage-deliverableList-username-input-button" modifier="medium">Add User to Team</ons-button>
+	  </div>
   </div>
 
   <ons-list id="addANewTeamPage-teammates-list">
@@ -18,5 +22,5 @@
   </ons-list>
 
     <p></p>
-    <ons-button id="addANewTeamPage-deliverableList-container-create-button" modifier="large">Create Team</ons-button>
+    <ons-button id="addANewTeamPage-deliverableList-container-create-button" modifier="large" style="margin-top: 20px">Create Team</ons-button>
 </ons-page>
