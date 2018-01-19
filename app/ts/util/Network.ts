@@ -63,7 +63,6 @@ export class Network {
             console.error('Network::handleRemote( ' + url + ' ) - ERROR ' + err, err);
             // onError(err.message);
         });
-
     }
 
     public static getRemotePost(url: string, payload: object, view: any, onError: any) {
@@ -108,10 +107,32 @@ export class Network {
         }
     }
 
+    public static async httpPost(url: string, payload: object): Promise<object> {
+        console.log('Network::httpPost( ' + url + ' ) - start');
+        const OPTIONS_HTTP_POST: object = {
+            credentials: 'include',
+            method: 'post',
+            cors: 'enabled',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        };
+        return fetch(url, OPTIONS_HTTP_POST).then((data: any) => {
+            if (data.status === 200) {
+                return data.json().then((jsonData: object) => {
+                    return jsonData;
+                })
+            } else {
+                throw 'Could not fetch data from ' + url;
+            }
+        })
+        .catch((err) => {
+            console.log('Network::httpPost() ERROR ' + err);
+        });
+    }
+
     public static async httpGet(url: string): Promise<object> {
         console.log('Network::httpGet( ' + url + ' ) - start');
         const OPTIONS_HTTP_GET: object = {credentials: 'include'};
-
         return fetch(url, OPTIONS_HTTP_GET).then((data: any) => {
             if (data.status === 200) {
                 return data.json().then((jsonData: object) => {

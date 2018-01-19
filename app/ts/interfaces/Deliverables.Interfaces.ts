@@ -5,7 +5,7 @@ export interface Deliverable {
   open: number;
   close: number;
   name: string;
-  studentsMakeTeam: boolean;
+  studentsMakeTeams: boolean;
   gradesReleased: boolean;
 }
 

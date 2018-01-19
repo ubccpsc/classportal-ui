@@ -15,3 +15,6 @@ export interface Team {
   githubOrg: string;
 }
 
+export interface TeamContainer {
+  response: Team[];
+}
