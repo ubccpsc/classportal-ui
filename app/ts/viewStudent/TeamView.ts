@@ -15,15 +15,21 @@ const TEAMMATES_LIST = '#addANewTeamPage-teammates-list';
 const TEAMMATES_LIST_HEADER = '#addANewTeamPage-teammates-list-header';
 const TEAMMATES_LIST_ITEM_CLASS = 'addANewTeamPage-teammates-list-item';
 const TEAMMATES_LIST_PLACEHOLDER = '#addANewTeamPage-teammates-list-placeholder';
+const CREATE_TEAM_BUTTON = '#addANewTeamPage-deliverableList-container-create-button';
 
 interface AddTeamData {
     courseDelivList: Deliverable[];
-    studentTeamList: Team[]
-}
+    studentTeamList: Team[];
+}    
 
 interface InSameLabData {
     username: string;
     inSameLab: boolean;
+}
+
+interface CreateTeamPayload {
+    members: string[];
+    deliverableName: string;
 }
 
 export class TeamView {
@@ -54,10 +60,13 @@ export class TeamView {
             .then(() => {
                 that.addDelivsToDropdown(data);
                 let usernameInputButton = document.querySelector(USERNAME_INPUT_BUTTON);
+                let createTeamButton = document.querySelector(CREATE_TEAM_BUTTON);
+
+                // can only select a deliv when addANewTeam.html loads, so we do it here.
+                let selectedDeliv = that.getCurrentlySelectedDeliv();
+
                 usernameInputButton.addEventListener('click', (e) => {
 
-                    // can only select a deliv when addANewTeam.html loads, so we do it here.
-                    let selectedDeliv = that.getCurrentlySelectedDeliv();
                     let deliv: Deliverable = that.getDelivByName(selectedDeliv);
 
                     that.validateUsername()
@@ -75,6 +84,22 @@ export class TeamView {
                             console.log('TeamView:: loadNewTeamView() ERROR ' + err);
                         });
                 });
+
+                createTeamButton.addEventListener('click', (e) => {
+
+                    let usernames: string[] = that.getTeamMembers();
+                    console.log(usernames);
+                    let createTeamPayload: CreateTeamPayload = {deliverableName: selectedDeliv, members: usernames};
+                    let url: string = this.app.backendURL + this.courseId + '/students/customTeam';
+                    console.log('TeamView:: Preparing to send payload to ' + url, createTeamPayload);
+                    Network.httpPut(url, createTeamPayload)
+                        .then((response: object) => {
+                            console.log('TeamView:: Network.createTeam() Response: ', response);
+                        });
+
+                    // Network.httpPost(usernames, selectedDeliv, that.courseId);
+                });
+
             })
             .catch((err: any) => {
                 console.log('TeamView:: loadNewTeamView(addTeamData) ERROR ' + err);
@@ -190,7 +215,18 @@ export class TeamView {
         } else {
             UI.notification('The user ' + username + ' is not registered in the same lab.');
         }
-        
+    }
+
+    private getTeamMembers(): string[] {
+        let htmlItems = document.getElementsByClassName(TEAMMATES_LIST_ITEM_CLASS);
+        let usernames: string[] = [];
+
+        for (let i = 0; i < htmlItems.length; i++) {
+            console.log('htmlItem in loop', htmlItems[i]);
+            let username: string = (htmlItems[i] as HTMLElement).dataset.username;
+            usernames.push(username);
+        }
+        return usernames;
     }
 
     private addDelivsToDropdown(addTeamData: AddTeamData) {

@@ -130,6 +130,29 @@ export class Network {
         });
     }
 
+    public static async httpPut(url: string, payload: object): Promise<object> {
+        console.log('Network::httpPut( ' + url + ' ) - start');
+        const OPTIONS_HTTP_PUT: object = {
+            credentials: 'include',
+            method: 'put',
+            cors: 'enabled',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        };
+        return fetch(url, OPTIONS_HTTP_PUT).then((data: any) => {
+            if (data.status === 200) {
+                return data.json().then((jsonData: object) => {
+                    return jsonData;
+                })
+            } else {
+                throw 'Could not fetch data from ' + url;
+            }
+        })
+        .catch((err) => {
+            console.log('Network::httpPut() ERROR ' + err);
+        });
+    }
+
     public static async httpGet(url: string): Promise<object> {
         console.log('Network::httpGet( ' + url + ' ) - start');
         const OPTIONS_HTTP_GET: object = {credentials: 'include'};
