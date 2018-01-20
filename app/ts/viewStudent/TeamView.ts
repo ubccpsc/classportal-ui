@@ -318,7 +318,9 @@ export class TeamView {
                 this.deliverables = deliverablesList.response;
                 that.loadNewTeamView({courseDelivList: deliverablesList.response, studentTeamList: data.response});
             });
+
         let delivStudentTeamCount: number = 0;
+        let onStudentMadeTeamCount: number = 0;
 
         if (deliverablesList) {
             deliverablesList.response.map((deliv: Deliverable) => {
@@ -334,10 +336,17 @@ export class TeamView {
         if (typeof teams.length !== 'undefined' && teams.length > 0) {
             headerText.innerHTML = '';
 
+            teams.map((team: any) => {
+                let studentMadeTeam: boolean = team.deliverableIds[0].studentsMakeTeams;
+                if (studentMadeTeam) {
+                    onStudentMadeTeamCount++;
+                }
+            });
+
             console.log('TEAMS LENGTH', teams.length);
             console.log('DELIV STUDENT TEAM COUNT', delivStudentTeamCount);
 
-            if (teams.length === delivStudentTeamCount) {
+            if (onStudentMadeTeamCount === delivStudentTeamCount) {
                 addTeamButton.style.display = 'none';
                 addTeamButton.style.padding = '0';
             }
