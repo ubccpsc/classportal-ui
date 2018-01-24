@@ -1,12 +1,3 @@
-/**
- *
- *
- *
- * Student Data Specifications
- *
- *
- *
- **/
 
 /**
  * All of the information ClassPortal knows about a given student.
@@ -113,6 +104,8 @@ export interface ProvisionHealthCheck {
     numOfTeamsWithRepo: object[];
     numOfTeamsWithoutRepo: object[];
     studentTeamStatus: StudentTeamStatusContainer;
+    buildStats: object;
+    studentsMakeTeams: boolean;
     teams: Team[];
 }
 

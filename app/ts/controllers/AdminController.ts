@@ -67,7 +67,7 @@ export class AdminController {
         this.teamView.updateTitle();
 
         // /:courseId/admin/teams
-        const url = this.app.backendURL + this.courseId + '/admin/teams/byBatch';
+        const url = this.app.backendURL + this.courseId + '/admin/teams/info/' + 'd1'; // d1 should be DELIVERABLE NAME variable
         Network.handleRemote(url, this.teamView, UI.handleError);
     }
 
