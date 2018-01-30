@@ -23,25 +23,19 @@ export class AddDeliverableView {
         Object.keys(newDeliv).forEach((key) => {
             let htmlInputHeader = delivHeaderMap[key];
             let objKey = key;
-
             let htmlHeader = this.createHtmlHeader(htmlInputHeader);
-            let htmlInput = this.createHtmlInput()
-
-
-        })
-        
+            let htmlInput = this.createHtmlInput(newDeliv[key]);
+        });
     }
 
     private createHtmlInput(fieldKey: string) {
-
         let defaultType = UI.inputTypes.TEXT;
-
-
-        return UI.createInputField(fieldKey, type);
+        let type = defaultType;
+        return UI.createTextInputField(fieldKey, fieldKey, type);
     }
 
-    private createHtmlHeader(header: string): HtmlElement {
-        return UI.createListHeader(header)
+    private createHtmlHeader(header: string): HTMLElement {
+        return UI.createListHeader(header);
     }
 
     private getDelivHeaderMap(): any {
@@ -105,21 +99,21 @@ export class AddDeliverableView {
 
 
     public save() {
-        console.log('EditDeliverableView::save() - start');
+        console.log('AddDeliverableView::save() - start');
         let url = this.app.backendURL + this.app.currentCourseId + '/admin/deliverable';
 
         let deliverable = document.getElementById('admin-editable-deliverable-form');
 
         let payload: any = {deliverable: {}}
 
-        for (let key in this.opts.data) {
-            let item = document.getElementById(key) as HTMLInputElement;
-            payload.deliverable[key] = item.value;
+        // for (let key in this.opts.data) {
+        //     let item = document.getElementById(key) as HTMLInputElement;
+        //     payload.deliverable[key] = item.value;
 
-            if (key === CLOSE_DELIV_KEY || key === OPEN_DELIV_KEY) {
-                payload.deliverable[key] = new Date(item.value).getTime();
-            }
-        }
+        //     if (key === CLOSE_DELIV_KEY || key === OPEN_DELIV_KEY) {
+        //         payload.deliverable[key] = new Date(item.value).getTime();
+        //     }
+        // }
 
         Network.remotePost(url, payload, UI.handleError);
         // save it

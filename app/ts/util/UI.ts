@@ -165,6 +165,15 @@ export class UI {
         return teamHTMLText;
     }
 
+    public static createTextInputField(key: string, value: string, type: string) {
+        let inputField = ons.createElement(
+            '<ons-list-header>' +
+            value +
+            '</ons-list-header>') as HTMLElement;
+
+        return inputField;
+    }
+
 // <ons-page id="studentTeamsPage">
 //     <ons-list id="student-team-list">
 //         <section style="margin-top: 50px;" class="studentTeamPage-header">

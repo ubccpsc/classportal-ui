@@ -4,7 +4,6 @@
 
 import {UI} from '../util/UI';
 import {Network} from '../util/Network';
-import 
 import {DashboardView} from "../viewAdmin/DashboardView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
 import {ProvisionTeamsDeliverableView} from "../viewAdmin/ProvisionTeamsDeliverableView";
