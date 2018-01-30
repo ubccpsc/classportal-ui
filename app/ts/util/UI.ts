@@ -14,7 +14,7 @@ const MONGO_DB_ID_KEY = '_id';
 declare var ons: any; // for release (or webpack bundling gets huge)
 
 export class UI {
-
+    public static inputTypes = { TIMEDATE: 'timeDate', NUMBER: 'number', TEXT: 'text', };
     public static ons = ons;
 
     /**

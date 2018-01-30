@@ -41,7 +41,7 @@ export class DeliverableView {
 
         const that = this;
         // deliverables
-        const deliverableList = document.querySelector('#admin-config-deliv-list');
+        const deliverableList = document.querySelector('#adminConfigDeliverablesPage-deliv-list');
         if (deliverableList !== null) {
             deliverableList.innerHTML = '';
             if (deliverables.length > 0) {

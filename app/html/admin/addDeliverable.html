@@ -1,0 +1,64 @@
+<ons-page id="addDeliverablePage">
+  <ons-toolbar>
+    <div class="center">Add Deliverable</div>
+  </ons-toolbar>
+
+  <section id="addDeliverablePage-container">
+  	
+  </section>
+
+  <div style="text-align: center; margin-top: 30px;">
+    <p>
+      <ons-input id="username" modifier="underbar" placeholder="Username" float></ons-input>
+    </p>
+    <p>
+      <ons-input id="password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
+    </p>
+  </div>
+
+  <ons-list">
+    <ons-list-header>Checkboxes</ons-list-header>
+      <ons-input id="password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
+
+    <ons-list-item tappable>
+      <label class="left">
+        <ons-checkbox input-id="check-1"></ons-checkbox>
+      </label>
+      <label for="check-1" class="center">
+        Apple
+      </label>
+    </ons-list-item>
+    <ons-list-item tappable>
+      <label class="left">
+        <ons-checkbox input-id="check-2"></ons-checkbox>
+      </label>
+      <label for="check-2" class="center">
+        Banana
+      </label>
+    </ons-list-item>
+  </ons-list>
+
+  <ons-list>
+    <ons-list-header>Radio buttons</ons-list-header>
+    <ons-list-item tappable>
+      <label class="left">
+        <ons-radio name="color" input-id="radio-1" checked></ons-radio>
+      </label>
+      <label for="radio-1" class="center">
+        Red
+      </label>
+    </ons-list-item>
+    <ons-list-item tappable>
+      <label class="left">
+        <ons-radio name="color" input-id="radio-2"></ons-radio>
+      </label>
+      <label for="radio-2" class="center">
+        Blue
+      </label>
+    </ons-list-item>
+  </ons-list>
+
+  <p style="margin-top: 30px;">
+	 <ons-button onclick="login()">Create Deliverable</ons-button>
+  </p>
+</ons-page>

@@ -8,6 +8,19 @@ export interface Deliverable {
   studentsMakeTeams: boolean;
   minTeamSize: number;
   maxTeamSize: number;
+  buildingRepos: boolean;
+  projectCount: number;
+  teamsInSameLab: boolean;
+  // dockerImage and dockerBuild being deprecated, as one Contaienr per Course will exist
+  dockerImage: string;
+  dockerBuild: string;
+  customHtml: boolean;
+  commit: string;
+  solutionsUrl: string;
+  whitelistedServers: string;
+  solutionsKey: string;
+  deliverableKey: string;
+  rate: number;
   gradesReleased: boolean;
 }
 

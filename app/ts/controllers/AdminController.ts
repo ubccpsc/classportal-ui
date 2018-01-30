@@ -4,6 +4,7 @@
 
 import {UI} from '../util/UI';
 import {Network} from '../util/Network';
+import 
 import {DashboardView} from "../viewAdmin/DashboardView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
 import {ProvisionTeamsDeliverableView} from "../viewAdmin/ProvisionTeamsDeliverableView";
@@ -11,8 +12,11 @@ import {TeamView} from "../viewAdmin/TeamView";
 import {ResultView} from "../viewAdmin/ResultView";
 import {AuthHelper} from "../util/AuthHelper";
 import {GitHubView} from "../viewAdmin/GitHubView";
+import {AddDeliverableView} from "../viewAdmin/AddDeliverableView";
 import {App} from "../App";
 import {EditDeliverableView} from '../viewAdmin/EditDeliverableView';
+
+const ADD_DELIVERABLE_BUTTON = '#adminDeliverablesPage-add-deliverable';
 
 export class AdminController {
 
@@ -54,6 +58,15 @@ export class AdminController {
         this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminDeliverablesPage - start');
         this.deliverableView.updateTitle();
+
+        let addDelivButton = document.querySelector(ADD_DELIVERABLE_BUTTON) as HTMLElement;
+
+        addDelivButton.addEventListener('click', () => {
+            let addDeliverableView: AddDeliverableView = new AddDeliverableView(this.courseId, this.app);
+            let data: any = { addDeliverableView }
+            UI.pushPage('html/admin/addDeliverable.html', data);
+        });
+
 
         // params.teamId = ... // not currently used
         // /:courseId/deliverables
