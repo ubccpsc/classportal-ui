@@ -167,9 +167,9 @@ export class UI {
 
     public static createTextInputField(key: string, value: string, type: string) {
         let inputField = ons.createElement(
-            '<ons-list-header>' +
+            '<input type="text" style="margin: 0 0 0 15px" class="text-input text-input--underbar" value="">' +
             value +
-            '</ons-list-header>') as HTMLElement;
+            '</input>') as HTMLElement;
 
         return inputField;
     }

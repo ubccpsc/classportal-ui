@@ -3,62 +3,189 @@
     <div class="center">Add Deliverable</div>
   </ons-toolbar>
 
-  <section id="addDeliverablePage-container">
-  	
+  <section>
+    <ons-list id="addDeliverablePage-list-container">
+
+      <!-- ####### Text Input: ######## -->      
+      <ons-list-header>Properties</ons-list-header>
+        <p>
+          <label 
+            style="margin: 0 0 0 15px" 
+            for="name">Name
+          </label>
+        </p>
+        <p>
+          <ons-input
+            style="margin: 0 0 0 15px"
+            input-id="name"
+            data-key="name"
+            placeholder="ie. 'd3'"
+            float>
+          </ons-input>
+        </p>
+        <p>
+          <label 
+            style="margin: 0 0 0 15px" 
+            for="dockerImage">Docker Image
+          </label>
+        </p>        
+        <p>
+          <ons-input
+            style="margin: 0 0 0 15px"
+            input-id="dockerImage"
+            data-key="dockerImage"
+            placeholder="ie. 'autotest/cpsc210__bootstrap'"
+            float>
+          </ons-input>
+        </p>
+        <p>
+          <label 
+            style="margin: 0 0 0 15px" 
+            for="dockerBuild">Docker Build
+          </label>
+        </p>        
+        <p>
+          <ons-input
+            style="margin: 0 0 0 15px"
+            input-id="dockerBuild"
+            data-key="dockerBuild"
+            placeholder="ie. 'master'"
+            float>
+          </ons-input>
+        </p>
+
+      <ons-list-header>Github Repos</ons-list-header>
+        <p>
+          <label 
+            style="margin: 0 0 0 15px" 
+            for="solutionsUrl">Solutions Repo Url
+          </label>
+        </p>
+        <p>
+          <ons-input
+            style="margin: 0 0 0 15px"
+            input-id="solutionsUrl"
+            data-key="solutionsUrl"
+            placeholder="https://github.com/mySolutions"
+            float>
+          </ons-input>
+        </p>        
+        <p>
+          <label 
+            style="margin: 0 0 0 15px" 
+            for="solutionsKey">Solutions Key
+          </label>
+        </p>
+        <p>
+          <ons-input
+            style="margin: 0 0 0 15px"
+            input-id="solutionsKey"
+            data-key="solutionsKey"
+            placeholder="ie. 'KCx49VgtHZ59bJOTLcU0Gr06ogUnDJi'"
+            float>
+          </ons-input>
+        </p>
+        <p>
+          <label 
+            style="margin: 0 0 0 15px" 
+            for="url">Deliverable Url
+          </label>
+        </p>        
+        <p>
+          <ons-input
+            style="margin: 0 0 0 15px"
+            input-id="url"
+            data-key="url"
+            placeholder="https://github.com/myDelivs"
+            float>
+          </ons-input>
+        </p>
+        <p>
+          <label 
+            style="margin: 0 0 0 15px" 
+            for="deliverableKey">Deliverable Key
+          </label>
+        </p>        
+        <p>
+          <ons-input
+            style="margin: 0 0 0 15px"
+            input-id="deliverableKey"
+            data-key="deliverableKey"
+            placeholder="ie. 'KCx49VgtHZ59bJOTLcU0Gr06ogUnDJi'"
+            float>
+          </ons-input>
+        </p>
+
+      <!-- ####### Boolean Switches: ######## -->      
+      <ons-list-header>Settings</ons-list-header>
+      <ons-list-item>
+        <div class="center">
+          Students Make Teams
+        </div>
+        <div class="right">
+          <ons-switch checked></ons-switch>
+        </div>
+      </ons-list-item>
+      <ons-list-item>
+        <div class="center">
+          Grades Released
+        </div>
+        <div class="right">
+          <ons-switch></ons-switch>
+        </div>
+      </ons-list-item>
+      <ons-list-item>
+        <div class="center">
+          Teams In Same Lab
+        </div>
+        <div class="right">
+          <ons-switch checked></ons-switch>
+        </div>
+      </ons-list-item>
+      <ons-list-item>
+        <div class="center">
+          Enable Static HTML Reporting
+        </div>
+        <div class="right">
+          <ons-switch></ons-switch>
+        </div>
+      </ons-list-item>
+
+      <!-- ####### Tea Numbers: ######## -->
+      <ons-list-header>Team Sizes</ons-list-header>
+        <p>
+          <label 
+            style="margin: 0 0 0 15px" 
+            for="minTeamSize">Min. Team Size
+          </label>
+        </p>          
+        <p>
+          <ons-input
+            style="margin: 0 0 0 15px"
+            input-id="Min. Team Size"
+            data-key="minTeamSize"
+            type="number"
+            placeholder="1"
+            value="1"
+            min="1">
+          </ons-input>
+        </p>
+        <p>
+          <label 
+            style="margin: 0 0 0 15px" 
+            for="maxTeamSize">Max Team Size
+          </label>
+        </p>          
+        <p>
+          <ons-input
+            style="margin: 0 0 0 15px"
+            input-id="maxTeamSize"
+            data-key="maxTeamSize"
+            type="number"
+            value="2"
+            min="1">
+          </ons-input>
+        </p>
+    </ons-list>
   </section>
-
-  <div style="text-align: center; margin-top: 30px;">
-    <p>
-      <ons-input id="username" modifier="underbar" placeholder="Username" float></ons-input>
-    </p>
-    <p>
-      <ons-input id="password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
-    </p>
-  </div>
-
-  <ons-list">
-    <ons-list-header>Checkboxes</ons-list-header>
-      <ons-input id="password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
-
-    <ons-list-item tappable>
-      <label class="left">
-        <ons-checkbox input-id="check-1"></ons-checkbox>
-      </label>
-      <label for="check-1" class="center">
-        Apple
-      </label>
-    </ons-list-item>
-    <ons-list-item tappable>
-      <label class="left">
-        <ons-checkbox input-id="check-2"></ons-checkbox>
-      </label>
-      <label for="check-2" class="center">
-        Banana
-      </label>
-    </ons-list-item>
-  </ons-list>
-
-  <ons-list>
-    <ons-list-header>Radio buttons</ons-list-header>
-    <ons-list-item tappable>
-      <label class="left">
-        <ons-radio name="color" input-id="radio-1" checked></ons-radio>
-      </label>
-      <label for="radio-1" class="center">
-        Red
-      </label>
-    </ons-list-item>
-    <ons-list-item tappable>
-      <label class="left">
-        <ons-radio name="color" input-id="radio-2"></ons-radio>
-      </label>
-      <label for="radio-2" class="center">
-        Blue
-      </label>
-    </ons-list-item>
-  </ons-list>
-
-  <p style="margin-top: 30px;">
-	 <ons-button onclick="login()">Create Deliverable</ons-button>
-  </p>
 </ons-page>

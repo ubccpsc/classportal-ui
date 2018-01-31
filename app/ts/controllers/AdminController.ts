@@ -47,6 +47,11 @@ export class AdminController {
         this.courseId = courseId;
     }
 
+    private renderAddDeliverableView() {
+        let addDeliverableView: AddDeliverableView = new AddDeliverableView(this.courseId, this.app);
+        addDeliverableView.render();
+    }
+
     public adminTabsPage(page: any) {
         this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminTabsPage - start (no-op)');
@@ -54,18 +59,19 @@ export class AdminController {
     }
 
     public adminDeliverablesPage() {
-        this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminDeliverablesPage - start');
+        let that = this;
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
         this.deliverableView.updateTitle();
-
         let addDelivButton = document.querySelector(ADD_DELIVERABLE_BUTTON) as HTMLElement;
 
         addDelivButton.addEventListener('click', () => {
-            let addDeliverableView: AddDeliverableView = new AddDeliverableView(this.courseId, this.app);
-            let data: any = { addDeliverableView }
-            UI.pushPage('html/admin/addDeliverable.html', data);
+            let data: any = {} // no need at this point
+            UI.pushPage('html/admin/addDeliverable.html', data)
+                .then(() => {
+                    that.renderAddDeliverableView();
+                });
         });
-
 
         // params.teamId = ... // not currently used
         // /:courseId/deliverables

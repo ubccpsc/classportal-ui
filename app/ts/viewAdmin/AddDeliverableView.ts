@@ -15,16 +15,20 @@ export class AddDeliverableView {
     }
 
     public render() {
-        console.log('EditDeliverableView::render() - start');
+        console.log('AddDeliverableView::render() - start');
         let addDelivContainer: HTMLElement = this.getAddDelivContainer();
-        let newDeliv: Deliverable = this.newDefaultDelivObj();
-        let delivHeaderMap: any = this.getDelivHeaderMap();
+        let newDeliv: Deliverable = this.getBlankDeliv();
+        console.log('new deliv', newDeliv);
+        console.log('add deliv container', addDelivContainer);
 
+        let delivHeaderMap: any = this.getDelivHeaderMap();
+        console.log('deliv header map', delivHeaderMap);
+        console.log(delivHeaderMap);
         Object.keys(newDeliv).forEach((key) => {
-            let htmlInputHeader = delivHeaderMap[key];
-            let objKey = key;
-            let htmlHeader = this.createHtmlHeader(htmlInputHeader);
+            let htmlHeader = this.createHtmlHeader(delivHeaderMap.get(key));
             let htmlInput = this.createHtmlInput(newDeliv[key]);
+            addDelivContainer.appendChild(htmlHeader);
+            addDelivContainer.appendChild(htmlInput);
         });
     }
 
@@ -59,9 +63,13 @@ export class AddDeliverableView {
         delivMap.set('deliverableKey', 'GITHUB DELIVERABLE KEY');
         delivMap.set('rate', 'GRADE REQUEST RATE');
         delivMap.set('gradesReleased', 'GRADES RELEASED');
+        return delivMap;
     }
 
-    private newDefaultDelivObj(): Deliverable {
+    public getBlankDeliv(): Deliverable {
+
+        // ## DEFAULT New Deliverable options ## 
+
         let that = this;
         let delivObj: Deliverable = {
             url: '',
