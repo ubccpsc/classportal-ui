@@ -4,6 +4,8 @@ import {Deliverable} from "../interfaces/Deliverables.Interfaces";
 import {Network} from "../util/Network";
 
 const ADD_DELIV_CONTAINER = '#addDeliverablePage-container';
+const NEW_DELIV_FIELDS = 'addDeliverablePage-new-deliverable';
+const SAVE_DELIV = '#addDeliverablePage-save-deliverable';
 
 export class AddDeliverableView {
     private courseId: string;
@@ -16,20 +18,17 @@ export class AddDeliverableView {
 
     public render() {
         console.log('AddDeliverableView::render() - start');
-        let addDelivContainer: HTMLElement = this.getAddDelivContainer();
-        let newDeliv: Deliverable = this.getBlankDeliv();
-        console.log('AddDeliverableView::render() - new deliv', newDeliv);
-        console.log('AddDeliverableView::render() - add deliv container', addDelivContainer);
-
-        let delivHeaderMap: any = this.getDelivHeaderMap();
-        console.log('AddDeliverableView::render() - deliv header map', delivHeaderMap);
-        console.log(delivHeaderMap);
-        Object.keys(newDeliv).forEach((key) => {
-            let htmlHeader = this.createHtmlHeader(delivHeaderMap.get(key));
-            let htmlInput = this.createHtmlInput(newDeliv[key]);
-            addDelivContainer.appendChild(htmlHeader);
-            addDelivContainer.appendChild(htmlInput);
+        // let addDelivContainer: HTMLElement = this.getAddDelivContainer();
+        let that = this;
+        let saveDelivButton: HTMLElement = document.querySelector(SAVE_DELIV) as HTMLElement;
+        saveDelivButton.addEventListener('click', () => {
+            that.save();
         });
+        // let newDeliv: Deliverable = this.getBlankDeliv();
+        // console.log('new deliv', newDeliv);
+        // console.log('add deliv container', addDelivContainer);
+        // let delivHeaderMap: any = this.getDelivHeaderMap();
+
     }
 
     private createHtmlInput(fieldKey: string) {
@@ -108,8 +107,26 @@ export class AddDeliverableView {
         return {};
     }
 
+    private getNewDelivFields(): object {
+        let onsenInputParents = document.getElementsByClassName(NEW_DELIV_FIELDS);
+        
+        console.log('onsenInputParents', onsenInputParents);
+        let deliv: Deliverable = this.getBlankDeliv();
+        for (let i = 0; i < onsenInputParents.length; i++) {
+            console.log((onsenInputParents[i]));
+            console.log('name', ((onsenInputParents[i]) as HTMLInputElement).name);
+            console.log('value', ((onsenInputParents[i]) as HTMLInputElement).value);
+            deliv[(onsenInputParents[i].firstChild as HTMLInputElement).name] = (onsenInputParents[i].firstChild as HTMLInputElement).value;
+        }
+        console.log('new deliv fields before return', deliv);
+        return deliv;
+    }
+
     public save() {
         console.log('AddDeliverableView::save() - start');
+
+        this.getNewDelivFields();
+
         let url = this.app.backendURL + this.app.currentCourseId + '/admin/deliverable';
 
         let deliverable = document.getElementById('admin-editable-deliverable-form');
@@ -125,10 +142,9 @@ export class AddDeliverableView {
         //     }
         // }
 
-        Network.remotePost(url, payload, UI.handleError);
+        // Network.remotePost(url, payload, UI.handleError);
         // save it
 
-        UI.popPage();
         console.log('EditDeliverableView::save() - end');
     }
 }

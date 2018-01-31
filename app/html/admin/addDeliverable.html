@@ -4,10 +4,9 @@
   </ons-toolbar>
 
   <section>
-    <ons-list id="addDeliverablePage-list-container">
-
+    <ons-list id="addDeliverablePage-list-container" style="width: 100%;">
       <!-- ####### Text Input: ######## -->      
-      <ons-list-header>Properties</ons-list-header>
+      <ons-list-header>Deliverable</ons-list-header>
         <p>
           <label 
             style="margin: 0 0 0 15px" 
@@ -16,8 +15,9 @@
         </p>
         <p>
           <ons-input
-            style="margin: 0 0 0 15px"
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             input-id="name"
+            name="name"
             data-key="name"
             placeholder="ie. 'd3'"
             float>
@@ -31,8 +31,9 @@
         </p>        
         <p>
           <ons-input
-            style="margin: 0 0 0 15px"
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             input-id="dockerImage"
+            name="dockerImage"
             data-key="dockerImage"
             placeholder="ie. 'autotest/cpsc210__bootstrap'"
             float>
@@ -40,14 +41,15 @@
         </p>
         <p>
           <label 
-            style="margin: 0 0 0 15px" 
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             for="dockerBuild">Docker Build
           </label>
         </p>        
         <p>
           <ons-input
-            style="margin: 0 0 0 15px"
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             input-id="dockerBuild"
+            name="dockerBuild"
             data-key="dockerBuild"
             placeholder="ie. 'master'"
             float>
@@ -57,14 +59,15 @@
       <ons-list-header>Github Repos</ons-list-header>
         <p>
           <label 
-            style="margin: 0 0 0 15px" 
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             for="solutionsUrl">Solutions Repo Url
           </label>
         </p>
         <p>
           <ons-input
-            style="margin: 0 0 0 15px"
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             input-id="solutionsUrl"
+            name="solutionsUrl"
             data-key="solutionsUrl"
             placeholder="https://github.com/mySolutions"
             float>
@@ -72,14 +75,15 @@
         </p>        
         <p>
           <label 
-            style="margin: 0 0 0 15px" 
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             for="solutionsKey">Solutions Key
           </label>
         </p>
         <p>
           <ons-input
-            style="margin: 0 0 0 15px"
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             input-id="solutionsKey"
+            name="solutionsKey"
             data-key="solutionsKey"
             placeholder="ie. 'KCx49VgtHZ59bJOTLcU0Gr06ogUnDJi'"
             float>
@@ -87,14 +91,15 @@
         </p>
         <p>
           <label 
-            style="margin: 0 0 0 15px" 
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             for="url">Deliverable Url
           </label>
         </p>        
         <p>
           <ons-input
-            style="margin: 0 0 0 15px"
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             input-id="url"
+            name="url"
             data-key="url"
             placeholder="https://github.com/myDelivs"
             float>
@@ -102,14 +107,15 @@
         </p>
         <p>
           <label 
-            style="margin: 0 0 0 15px" 
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             for="deliverableKey">Deliverable Key
           </label>
         </p>        
         <p>
           <ons-input
-            style="margin: 0 0 0 15px"
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             input-id="deliverableKey"
+            name="deliverableKey"
             data-key="deliverableKey"
             placeholder="ie. 'KCx49VgtHZ59bJOTLcU0Gr06ogUnDJi'"
             float>
@@ -155,14 +161,15 @@
       <ons-list-header>Team Sizes</ons-list-header>
         <p>
           <label 
-            style="margin: 0 0 0 15px" 
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             for="minTeamSize">Min. Team Size
           </label>
         </p>          
         <p>
           <ons-input
-            style="margin: 0 0 0 15px"
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             input-id="Min. Team Size"
+            name="minTeamSize"
             data-key="minTeamSize"
             type="number"
             placeholder="1"
@@ -172,14 +179,15 @@
         </p>
         <p>
           <label 
-            style="margin: 0 0 0 15px" 
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             for="maxTeamSize">Max Team Size
           </label>
         </p>          
         <p>
           <ons-input
-            style="margin: 0 0 0 15px"
+            class="addDeliverablePage-new-deliverable addDeliverableView-form-input"
             input-id="maxTeamSize"
+            name="maxTeamSize"
             data-key="maxTeamSize"
             type="number"
             value="2"
@@ -187,5 +195,11 @@
           </ons-input>
         </p>
     </ons-list>
+
+    <p style="margin-top: 30px;">
+      <ons-button id="addDeliverablePage-save-deliverable" type="submit">Save Deliverable</ons-button>
+        <input type="submit" class="btn btn-default validate">
+    </p>
   </section>
 </ons-page>
+

@@ -218,3 +218,12 @@ ons-splitter-side[side="left"][animation="overlay"] {
         height: 0;
     }
 }
+
+/********************
+ *** Animation CSS ***
+ ********************/
+
+ .addDeliverableView-form-input {
+    margin: 0 0 0 15px;
+    width: 100%;
+ }
