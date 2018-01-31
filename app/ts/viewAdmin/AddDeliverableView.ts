@@ -18,11 +18,11 @@ export class AddDeliverableView {
         console.log('AddDeliverableView::render() - start');
         let addDelivContainer: HTMLElement = this.getAddDelivContainer();
         let newDeliv: Deliverable = this.getBlankDeliv();
-        console.log('new deliv', newDeliv);
-        console.log('add deliv container', addDelivContainer);
+        console.log('AddDeliverableView::render() - new deliv', newDeliv);
+        console.log('AddDeliverableView::render() - add deliv container', addDelivContainer);
 
         let delivHeaderMap: any = this.getDelivHeaderMap();
-        console.log('deliv header map', delivHeaderMap);
+        console.log('AddDeliverableView::render() - deliv header map', delivHeaderMap);
         console.log(delivHeaderMap);
         Object.keys(newDeliv).forEach((key) => {
             let htmlHeader = this.createHtmlHeader(delivHeaderMap.get(key));
@@ -33,12 +33,14 @@ export class AddDeliverableView {
     }
 
     private createHtmlInput(fieldKey: string) {
+        console.log("AddDeliverableView::createHtmlInput() - start");
         let defaultType = UI.inputTypes.TEXT;
         let type = defaultType;
         return UI.createTextInputField(fieldKey, fieldKey, type);
     }
 
     private createHtmlHeader(header: string): HTMLElement {
+        console.log("AddDeliverableView::createHtmlHeader() - start");
         return UI.createListHeader(header);
     }
 
@@ -68,43 +70,43 @@ export class AddDeliverableView {
 
     public getBlankDeliv(): Deliverable {
 
-        // ## DEFAULT New Deliverable options ## 
+        // ## DEFAULT New Deliverable options ##
 
         let that = this;
         let delivObj: Deliverable = {
-            url: '',
-            open: 0,
-            close: 0,
-            name: '',
-            studentsMakeTeams: false,
-            minTeamSize: 1,
-            maxTeamSize: 3,
-            projectCount: 0,
-            teamsInSameLab: true,
-            customHtml: false,
-            buildingRepos: false,
-            dockerImage: '',
-            commit: '',
-            dockerBuild: '',
-            solutionsUrl: '',
+            url:                '',
+            open:               0,
+            close:              0,
+            name:               '',
+            studentsMakeTeams:  false,
+            minTeamSize:        1,
+            maxTeamSize:        3,
+            projectCount:       0,
+            teamsInSameLab:     true,
+            customHtml:         false,
+            buildingRepos:      false,
+            dockerImage:        '',
+            commit:             '',
+            dockerBuild:        '',
+            solutionsUrl:       '',
             whitelistedServers: 'portal.cs.ubc.ca:1210 portal.cs.ubc.ca:1310',
-            solutionsKey: '',
-            deliverableKey: '',
-            rate: 90000,
-            gradesReleased: false
-        }
+            solutionsKey:       '',
+            deliverableKey:     '',
+            rate:               90000,
+            gradesReleased:     false
+        };
         return delivObj;
     }
 
     private getAddDelivContainer(): HTMLElement {
+        console.log("AddDeliverableView::addDelivContainer() - start");
         return document.querySelector(ADD_DELIV_CONTAINER) as HTMLElement;
     }
 
     public saveDeliverable(): object {
+        console.log("AddDeliverableView::saveDeliverable() - start");
         return {};
     }
-
-
 
     public save() {
         console.log('AddDeliverableView::save() - start');
@@ -112,7 +114,7 @@ export class AddDeliverableView {
 
         let deliverable = document.getElementById('admin-editable-deliverable-form');
 
-        let payload: any = {deliverable: {}}
+        let payload: any = {deliverable: {}};
 
         // for (let key in this.opts.data) {
         //     let item = document.getElementById(key) as HTMLInputElement;

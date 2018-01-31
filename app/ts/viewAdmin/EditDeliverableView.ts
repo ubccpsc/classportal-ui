@@ -10,6 +10,7 @@ export class EditDeliverableView {
     private app: App;
 
     constructor(opts: any, app: App) {
+        console.log("EditDeliverableView::<init> - start");
         this.opts = opts;
         this.app = app;
     }
@@ -29,7 +30,9 @@ export class EditDeliverableView {
 
         let deliverable = document.getElementById('admin-editable-deliverable-form');
 
-        let payload: any = {deliverable: {}}
+        // TODO: retrieve specific form elements and construct object
+
+        let payload: any = {deliverable: {}};
 
         for (let key in this.opts.data) {
             let item = document.getElementById(key) as HTMLInputElement;

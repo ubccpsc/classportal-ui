@@ -2,6 +2,7 @@ import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {DeliverablePayload, DeliverablePayloadContainer} from "../Models";
 import {App} from "../App";
+
 const flatpickr: any = require('flatpickr');
 const OPEN_DELIV_KEY = 'open';
 const CLOSE_DELIV_KEY = 'close';
@@ -72,6 +73,10 @@ export class DeliverableView {
         UI.showModal();
         UI.pushPage('html/admin/editDeliverable.html', {data: deliverable})
             .then(() => {
+
+                // TODO: update to use the ids in the HTML file and populate values from there (except for the date, that will need to be moved over)
+
+                /*
                 let editableDeliv = document.querySelector('#admin-editable-deliverable-list') || document.querySelector('#admin-manage-deliverables');
                 editableDeliv.innerHTML = '';
 
@@ -111,7 +116,7 @@ export class DeliverableView {
                 } catch (err) {
                     console.error('ResultView::configure() - flatpickr ERROR: ' + err.message);
                 }
-
+                */
                 UI.hideModal();
             });
     }
