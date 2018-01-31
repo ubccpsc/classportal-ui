@@ -6,10 +6,178 @@
         <div class="center">Edit Deliverable</div>
     </ons-toolbar>
 
-    <h2 style="text-align:center;">Edit Deliverable</h2>
+    <!-- <h2 style="text-align:center;">Edit Deliverable</h2> -->
 
     <form id="admin-editable-deliverable-form">
-        <ons-list id="admin-editable-deliverable-list"></ons-list>
+        <ons-list id="admin-editable-deliverable-list">
+            <ons-list-header>Uneditable Options</ons-list-header>
+
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>ID</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="id"></ons-input>
+                </div>
+            </ons-list-item>
+
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Bootstrap URL</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="url"></ons-input>
+                </div>
+            </ons-list-item>
+
+            <ons-list-header>Deliverable Dates</ons-list-header>
+
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Open</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="open"></ons-input>
+                </div>
+            </ons-list-item>
+
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Close</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="close"></ons-input>
+                </div>
+            </ons-list-item>
+
+            <ons-list-header>Team Options</ons-list-header>
+
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Minimum Size</span>
+                </div>
+                <div class="right settingRight">
+                    <select id="minTeamSize" class="settingSelect">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                    </select>
+                </div>
+            </ons-list-item>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Maximum Size</span>
+                </div>
+                <div class="right settingRight">
+                    <select id="maxTeamSize" class="settingSelect">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                    </select>
+                </div>
+            </ons-list-item>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Must be in same lab</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-switch id="teamsInSameLanb" modifier="list-item" onclick=""></ons-switch>
+                </div>
+            </ons-list-item>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Students make teams</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-switch id="studentsMakeTeams" modifier="list-item" onclick=""></ons-switch>
+                </div>
+            </ons-list-item>
+
+            <ons-list-header>Grade Options</ons-list-header>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Grades Released</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-switch id="gradesReleased" modifier="list-item" onclick=""></ons-switch>
+                </div>
+            </ons-list-item>
+
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Batch Marking</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-switch id="markInBatch" modifier="list-item" onclick=""></ons-switch>
+                </div>
+            </ons-list-item>
+
+            <ons-list-header>Debug details</ons-list-header>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Building Repos</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="buildingRepos"></ons-input>
+                </div>
+            </ons-list-item>
+
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Project Count</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="projectCount"></ons-input>
+                </div>
+            </ons-list-item>
+
+        </ons-list>
     </form>
 
     <ons-fab position="bottom right" onclick="myApp.adminController.editDeliverableView.save();">
