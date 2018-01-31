@@ -159,7 +159,6 @@ export class AdminController {
     public adminGitHubPage() {
         console.log('AdminController::adminGitHubPage - start');
         this.githubView.updateTitle();
-
         this.githubView.render({});
     }
 

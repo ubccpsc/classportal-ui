@@ -72,6 +72,21 @@ export interface DeliverablePayload {
     maxTeamSize: number;
     minTeamSize: number;
     // NOTE: things are definitely missing here.
+    url: string;
+    studentsMakeTeams: boolean;
+    buildingRepos: boolean;
+    projectCount: number;
+    // dockerImage and dockerBuild being deprecated, as one Contaienr per Course will exist
+    dockerImage: string;
+    dockerBuild: string;
+    customHtml: boolean;
+    commit: string;
+    solutionsUrl: string;
+    whitelistedServers: string;
+    solutionsKey: string;
+    deliverableKey: string;
+    rate: number;
+    gradesReleased: boolean;
 }
 
 // TODO: lots of fields missing here

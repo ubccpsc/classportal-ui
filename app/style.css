@@ -83,6 +83,11 @@ ons-splitter-side[side="left"][animation="overlay"] {
     color: #666
 }
 
+.addDeliverableView-form-input {
+    margin: 0 0 0 15px;
+    width: 100%;
+}
+
 /********************
  *** Animation CSS ***
  ********************/
@@ -223,7 +228,4 @@ ons-splitter-side[side="left"][animation="overlay"] {
  *** Animation CSS ***
  ********************/
 
- .addDeliverableView-form-input {
-    margin: 0 0 0 15px;
-    width: 100%;
- }
+
