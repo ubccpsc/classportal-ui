@@ -1,6 +1,7 @@
 import {App} from "../App";
 import {UI} from "../util/UI";
-import DeliverableModel, {Deliverable} from "../models/Deliverable";
+import DeliverableRecord from "../models/DeliverableRecord";
+import {Deliverable} from '../Models';
 import {Network} from "../util/Network";
 
 const ADD_DELIV_CONTAINER = '#addDeliverablePage-container';
@@ -57,7 +58,7 @@ export class AddDeliverableView {
         let onsenInputParents = document.getElementsByClassName(NEW_DELIV_FIELDS);
         
         console.log('onsenInputParents', onsenInputParents);
-        let deliv: Deliverable = DeliverableModel.getDefaultDeliv();
+        let deliv: Deliverable = DeliverableRecord.getDefaultDeliv();
         for (let i = 0; i < onsenInputParents.length; i++) {
             console.log((onsenInputParents[i]));
             console.log('name', ((onsenInputParents[i]) as HTMLInputElement).name);

@@ -3,7 +3,7 @@
  */
 
 import 'whatwg-fetch';
-import {IsAuthenticatedResponse} from '../interfaces/IsAuthenticatedResponse.interface';
+import {IsAuthenticatedResponse} from '../Models';
 import {Network} from './Network';
 
 export class AuthHelper {

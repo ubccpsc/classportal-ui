@@ -1,6 +1,6 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
-import {DeliverablePayload, DeliverablePayloadContainer} from "../Models";
+import {Deliverable, DeliverablePayload} from "../Models";
 import {ProvisionTeamsDetailsView} from "../viewAdmin/ProvisionTeamsDetailsView";
 import {RawTeamPayload} from "../Models";
 import {Network} from "../util/Network";
@@ -27,7 +27,7 @@ export class ProvisionTeamsDeliverableView {
         document.querySelector('#adminProvisionTeamsHeader').innerHTML = "Team Provisions by Deliverable";
     }
 
-    public render(data: DeliverablePayloadContainer) {
+    public render(data: DeliverablePayload) {
         console.log('ProvisionTeamsDeliverableView::render(..) - start - data: ' + JSON.stringify(data));
         this.updateTitle();
         let that = this;

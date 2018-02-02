@@ -1,7 +1,5 @@
 import {UI} from "../util/UI";
-import {Team} from '../interfaces/Teams.Interfaces';
-import {Student} from '../interfaces/Student.Interfaces';
-import {Deliverable, DeliverableContainer} from '../interfaces/Deliverables.Interfaces';
+import {Deliverable, DeliverableContainer, Team, Student} from '../Models';
 import {Network} from '../util/Network';
 import {App} from "../App";
 const HEADER_TEXT = '#student-team-list-header-text';

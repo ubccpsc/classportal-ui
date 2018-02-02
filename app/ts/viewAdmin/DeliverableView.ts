@@ -1,9 +1,10 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
-import {DeliverablePayload, DeliverablePayloadContainer} from "../Models";
+import {DeliverablePayload} from "../Models";
 import {App} from "../App";
 import FlatPicker from "../helpers/FlatPicker";
-import DeliverableModel, {Deliverable} from "../models/Deliverable";
+import DeliverableRecord from "../models/DeliverableRecord";
+import {Deliverable} from '../Models';
 
 const flatpickr: any = require('flatpickr');
 const OPEN_DELIV_KEY = '#adminEditDeliverablePage-open';
@@ -35,7 +36,7 @@ export class DeliverableView {
         document.querySelector('#adminTabsHeader').innerHTML = "Deliverables";
     }
 
-    public render(data: DeliverablePayloadContainer) {
+    public render(data: DeliverablePayload) {
         console.log('DeliverableView::render(..) - start');
         this.updateTitle();
 
@@ -46,7 +47,7 @@ export class DeliverableView {
         console.log('DeliverableView::render(..) - data: ' + JSON.stringify(data));
 
         let deliverables = data.response;
-        const customSort = function (a: DeliverablePayload, b: DeliverablePayload) {
+        const customSort = function (a: Deliverable, b: Deliverable) {
             return (Number(a.id.match(/(\d+)/g)[0]) - Number((b.id.match(/(\d+)/g)[0])));
         };
         deliverables = deliverables.sort(customSort);
@@ -84,7 +85,7 @@ export class DeliverableView {
 
     public addDeliverable() { 
         console.log('DeliverableView::addDeliverable() - start');
-        let defaultNewDeliv: Deliverable = DeliverableModel.getDefaultDeliv();
+        let defaultNewDeliv: Deliverable = DeliverableRecord.getDefaultDeliv();
 
 
         let that = this;
@@ -101,7 +102,7 @@ export class DeliverableView {
             });
     }
 
-    private initEditDeliverableView(deliverable: DeliverablePayload, viewType: string) {
+    private initEditDeliverableView(deliverable: Deliverable, viewType: string) {
         console.log('DeliverableView::initEditDeliverable( ' + deliverable.id + ' ) - start');
 
         let starterCode: HTMLInputElement = document.querySelector(START_CODE_URL) as HTMLInputElement;
@@ -153,7 +154,7 @@ export class DeliverableView {
         UI.hideModal();
     }
 
-    private editDeliverable(deliverable: DeliverablePayload) {
+    private editDeliverable(deliverable: Deliverable) {
         console.log('DeliverableView::editDeliverable( ' + deliverable.id + ' ) - start');
         let that = this;
         UI.showModal();

@@ -58,11 +58,88 @@ export interface MongoInsertResponse {
  *
  **/
 
-export interface DeliverablePayloadContainer {
-    response: DeliverablePayload[];
+ // based off of ITeamDocument, but with populated properties
+// that contain other filled-out models by Mongoose
+
+export interface Team {
+  name: string;
+  githubState: GithubState;
+  TAs: object[];
+  members: Student[];
+  deliverableIds: Deliverable[]; // IDeliverableDocument
+  disbanded: boolean;
+  githubOrg: string;
 }
 
+export interface TeamContainer {
+  response: Team[];
+}
+
+export interface Student {
+  username: string;
+  fname: string;
+  lname: string;
+}
+
+export interface IsAuthenticatedResponse {
+    response: boolean;
+}
+
+// Copied from Github.interfaces.ts in ClassPortal-Backend application
+// Please keep copies consistent.
+
+export interface GithubRepo {
+  url: string;
+  id: number;
+  name: string;
+}
+
+export interface GithubState {
+  repo: GithubRepo;
+  team: GithubTeam;
+}
+
+export interface GithubTeam {
+  id: number;
+}
+
+
+// You can bring in more properties from ClassPortal-Backend if required.
+
+export interface Deliverable {
+  url: string;
+  open: number;
+  close: number;
+  name: string;
+  studentsMakeTeams: boolean;
+  minTeamSize: number;
+  maxTeamSize: number;
+  buildingRepos: boolean;
+  projectCount: number;
+  teamsInSameLab: boolean;
+  // dockerImage and dockerBuild being deprecated, as one Contaienr per Course will exist
+  dockerImage: string;
+  dockerBuild: string;
+  customHtml: boolean;
+  commit: string;
+  solutionsUrl: string;
+  whitelistedServers: string;
+  solutionsKey: string;
+  deliverableKey: string;
+  rate: number;
+  gradesReleased: boolean;
+}
+
+export interface DeliverableContainer {
+  response: Deliverable[];
+}
+
+
 export interface DeliverablePayload {
+    response: Deliverable[];
+}
+
+export interface Deliverable {
     id: string;
     open: number; // timestamp
     close: number; // timestamp
@@ -146,9 +223,9 @@ export interface Team {
     courseId: string;
     name: string;
     githubState: GithubState;
-    TAs: string[];
-    members: string[];
-    deliverableIds: string[];
+    TAs: object[];
+    members: Student[];
+    deliverableIds: Deliverable[];
     disbanded: boolean;
     githubOrg: string;
 }

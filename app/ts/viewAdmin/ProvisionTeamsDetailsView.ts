@@ -1,6 +1,6 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
-import {DeliverablePayload, DeliverablePayloadContainer, TeamGenerationPayload, 
+import {Deliverable, DeliverablePayload, TeamGenerationPayload, 
     TeamGenerationResponseContainer, TeamGenerationResponse} from "../Models";
 import {ProvisionHealthCheckContainer} from "../Models";
 import {Network} from "../util/Network";
@@ -26,11 +26,11 @@ declare var myApp: App;
 
 export class ProvisionTeamsDetailsView {
     private controller: AdminController;
-    private deliverable: DeliverablePayload;
+    private deliverable: Deliverable;
     private teamsProvisioned: boolean;
     // private currentlyProvisioning: boolean; - not implemented on back-end properly.
 
-    constructor(controller: AdminController, deliverable: DeliverablePayload) {
+    constructor(controller: AdminController, deliverable: Deliverable) {
         this.controller = controller;
         this.deliverable = deliverable;
     }

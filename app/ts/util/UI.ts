@@ -2,7 +2,7 @@
  * Created by rtholmes on 2017-10-04.
  */
 import {OnsModalElement} from "onsenui";
-import {Team} from '../interfaces/Teams.Interfaces';
+import {Team} from '../Models';
 
 const OPEN_DELIV_KEY = 'open';
 const CLOSE_DELIV_KEY = 'close';

@@ -1,43 +1,11 @@
-export interface Deliverable {
-  id: string;
-  url: string;
-  open: number;
-  teamsAllowed: boolean;
-  close: number;
-  name: string;
-  studentsMakeTeams: boolean;
-  minTeamSize: number;
-  maxTeamSize: number;
-  buildingRepos: boolean;
-  projectCount: number;
-  teamsInSameLab: boolean;
-  // dockerImage and dockerBuild being deprecated, as one Contaienr per Course will exist
-  dockerImage: string;
-  dockerBuild: string;
-  customHtml: boolean;
-  commit: string;
-  solutionsUrl: string;
-  whitelistedServers: string;
-  solutionsKey: string;
-  deliverableKey: string;
-  rate: number;
-  gradesReleased: boolean;
-}
+import {Deliverable} from '../Models';
 
-export interface DeliverablePayloadContainer {
-    response: Deliverable[];
-}
-
-export interface DeliverablePayload {
-  response: Deliverable[];
-}
-
-export default class DeliverableModel {
+export default class DeliverableRecord {
   constructor() {
 
   }
 
-  private _id: string;
+  private id: string;
   private url: string;
   private open: number;
   private close: number;
@@ -66,7 +34,7 @@ export default class DeliverableModel {
 
       let that = this;
       let defaultDeliv: Deliverable = {
-          id:                'WILL NOT BE USED ON BACK-END',
+          id:                '', // Will not be used on backend. Just keeps models consistent
           url:                '',
           open:               0,
           close:              0,
