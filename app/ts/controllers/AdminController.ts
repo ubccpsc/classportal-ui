@@ -63,15 +63,15 @@ export class AdminController {
         let that = this;
         this.authHelper.checkUserrole(this.REQ_USERROLE);
         this.deliverableView.updateTitle();
-        let addDelivButton = document.querySelector(ADD_DELIVERABLE_BUTTON) as HTMLElement;
+        // let addDelivButton = document.querySelector(ADD_DELIVERABLE_BUTTON) as HTMLElement;
 
-        addDelivButton.addEventListener('click', () => {
-            let data: any = {} // no need at this point
-            UI.pushPage('html/admin/addDeliverable.html', data)
-                .then(() => {
-                    that.renderAddDeliverableView();
-                });
-        });
+        // addDelivButton.addEventListener('click', () => {
+        //     let data: any = {} // no need at this point
+        //     UI.pushPage('html/admin/addDeliverable.html', data)
+        //         .then(() => {
+        //             that.renderAddDeliverableView();
+        //         });
+        // });
 
         // params.teamId = ... // not currently used
         // /:courseId/deliverables

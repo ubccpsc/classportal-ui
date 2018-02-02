@@ -3,7 +3,7 @@
         <div class="left">
             <ons-back-button></ons-back-button>
         </div>
-        <div class="center">Edit Deliverable</div>
+        <div id="adminEditDeliverablePage-header" class="center"></div>
     </ons-toolbar>
 
     <!-- <h2 style="text-align:center;">Edit Deliverable</h2> -->
@@ -20,7 +20,7 @@
                     <span>Name</span>
                 </div>
                 <div class="right settingRight">
-                    <ons-input id="name"></ons-input>
+                    <ons-input id="adminEditDeliverablePage-name"></ons-input>
                 </div>
             </ons-list-item>
 
@@ -32,7 +32,7 @@
                     <span>Starter Code URL</span>
                 </div>
                 <div class="right settingRight">
-                    <ons-input id="url"></ons-input>
+                    <ons-input id="adminEditDeliverablePage-url"></ons-input>
                 </div>
             </ons-list-item>
 
@@ -46,7 +46,7 @@
                     <span>Open</span>
                 </div>
                 <div class="right settingRight">
-                    <input id="open" class="flatpickr right settingRight" style="text-align: center; margin-left: 1em; margin-right: 1em;"
+                    <input id="adminEditDeliverablePage-open" class="flatpickr right settingRight" style="text-align: center; margin-left: 1em; margin-right: 1em;"
                            type="text"
                            placeholder="Select Date..">
                     </input>
@@ -61,7 +61,7 @@
                     <span>Close</span>
                 </div>
                 <div class="right settingRight">
-                    <input id="close" class="flatpickr right settingRight" style="text-align: center; margin-left: 1em; margin-right: 1em;"
+                    <input id="adminEditDeliverablePage-close" class="flatpickr right settingRight" style="text-align: center; margin-left: 1em; margin-right: 1em;"
                            type="text"
                            placeholder="Select Date..">
                     </input>
@@ -78,7 +78,7 @@
                     <span>Minimum Size</span>
                 </div>
                 <div class="right settingRight">
-                    <select id="minTeamSize" class="settingSelect">
+                    <select id="adminEditDeliverablePage-minTeamSize" class="settingSelect">
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -98,7 +98,7 @@
                     <span>Maximum Size</span>
                 </div>
                 <div class="right settingRight">
-                    <select id="maxTeamSize" class="settingSelect">
+                    <select id="adminEditDeliverablePage-maxTeamSize" class="settingSelect">
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -115,10 +115,10 @@
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
                 </div>
                 <div class="center settingLabel">
-                    <span>Must be in same lab</span>
+                    <span>Must Be In Same Lab</span>
                 </div>
                 <div class="right settingRight">
-                    <ons-switch id="teamsInSameLanb" modifier="list-item" onclick=""></ons-switch>
+                    <ons-switch id="adminEditDeliverablePage-inSameLab" modifier="list-item" onclick=""></ons-switch>
                 </div>
             </ons-list-item>
             <ons-list-item style="display: flex;">
@@ -126,10 +126,10 @@
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
                 </div>
                 <div class="center settingLabel">
-                    <span>Students make teams</span>
+                    <span>Students Make Teams</span>
                 </div>
                 <div class="right settingRight">
-                    <ons-switch id="studentsMakeTeams" modifier="list-item" onclick=""></ons-switch>
+                    <ons-switch id="adminEditDeliverablePage-studentsMakeTeams" modifier="list-item" onclick=""></ons-switch>
                 </div>
             </ons-list-item>
 
@@ -142,19 +142,7 @@
                     <span>Grades Released</span>
                 </div>
                 <div class="right settingRight">
-                    <ons-switch id="gradesReleased" modifier="list-item" onclick=""></ons-switch>
-                </div>
-            </ons-list-item>
-
-            <ons-list-item style="display: flex;">
-                <div class="left settingIcon">
-                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
-                </div>
-                <div class="center settingLabel">
-                    <span>Batch Marking</span>
-                </div>
-                <div class="right settingRight">
-                    <ons-switch id="markInBatch" modifier="list-item" onclick=""></ons-switch>
+                    <ons-switch id="adminEditDeliverablePage-gradesReleased" modifier="list-item" onclick=""></ons-switch>
                 </div>
             </ons-list-item>
 
@@ -167,7 +155,7 @@
                     <span>Building Repos</span>
                 </div>
                 <div class="right settingRight">
-                    <ons-input id="buildingRepos"></ons-input>
+                    <ons-input id="adminEditDeliverablePage-buildingRepos"></ons-input>
                 </div>
             </ons-list-item>
 
@@ -179,7 +167,7 @@
                     <span>Project Count</span>
                 </div>
                 <div class="right settingRight">
-                    <ons-input id="projectCount"></ons-input>
+                    <ons-input id="adminEditDeliverablePage-projectCount"></ons-input>
                 </div>
             </ons-list-item>
 

@@ -2,7 +2,7 @@
 // that contain other filled-out models by Mongoose
 
 import {GithubState} from './Github.Interfaces';
-import {Deliverable} from './Deliverables.Interfaces';
+import {Deliverable} from '../models/Deliverable';
 import {Student} from './Student.Interfaces';
 
 export interface Team {
