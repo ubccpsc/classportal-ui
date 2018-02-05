@@ -57,7 +57,6 @@ export class AddDeliverableView {
     private getNewDelivFields(): object {
         let onsenInputParents = document.getElementsByClassName(NEW_DELIV_FIELDS);
         
-        console.log('onsenInputParents', onsenInputParents);
         let deliv: Deliverable = DeliverableRecord.getDefaultDeliv();
         for (let i = 0; i < onsenInputParents.length; i++) {
             console.log((onsenInputParents[i]));

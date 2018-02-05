@@ -47,6 +47,7 @@ export default class DeliverableRecord {
           teamsInSameLab:     true,
           customHtml:         false,
           buildingRepos:      false,
+          dockerOverride:     false,
           dockerImage:        '',
           commit:             '',
           dockerBuild:        '',
@@ -55,7 +56,8 @@ export default class DeliverableRecord {
           solutionsKey:       '',
           deliverableKey:     '',
           rate:               90000,
-          gradesReleased:     false
+          gradesReleased:     false,
+          custom:             {},
       };
       return defaultDeliv;
   }

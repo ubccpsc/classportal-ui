@@ -103,9 +103,7 @@ export interface GithubTeam {
   id: number;
 }
 
-
 // You can bring in more properties from ClassPortal-Backend if required.
-
 export interface Deliverable {
   url: string;
   open: number;
@@ -117,17 +115,18 @@ export interface Deliverable {
   buildingRepos: boolean;
   projectCount: number;
   teamsInSameLab: boolean;
-  // dockerImage and dockerBuild being deprecated, as one Contaienr per Course will exist
+  dockerOverride: boolean;
   dockerImage: string;
   dockerBuild: string;
-  customHtml: boolean;
   commit: string;
-  solutionsUrl: string;
   whitelistedServers: string;
+  solutionsUrl: string;
   solutionsKey: string;
   deliverableKey: string;
+  customHtml: boolean;
   rate: number;
   gradesReleased: boolean;
+  custom: object;
 }
 
 export interface DeliverableContainer {

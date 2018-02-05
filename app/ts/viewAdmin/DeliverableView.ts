@@ -10,6 +10,10 @@ const flatpickr: any = require('flatpickr');
 const OPEN_DELIV_KEY = '#adminEditDeliverablePage-open';
 const CLOSE_DELIV_KEY = '#adminEditDeliverablePage-close';
 const START_CODE_URL = '#adminEditDeliverablePage-url';
+const START_CODE_COMMIT = '#adminEditDeliverablePage-starterCodeCommit';
+const START_CODE_KEY = '#adminEditDeliverablePage-deliverableKey';
+const SOLUTIONS_CODE_URL = '#adminEditDeliverablePage-solutionsUrl';
+const SOLUTIONS_CODE_KEY = '#adminEditDeliverablePage-solutionsKey';
 const DELIV_NAME = '#adminEditDeliverablePage-name';
 const MIN_TEAM_SIZE = '#adminEditDeliverablePage-minTeamSize';
 const MAX_TEAM_SIZE = '#adminEditDeliverablePage-maxTeamSize';
@@ -18,7 +22,15 @@ const STUDENTS_MAKE_TEAMS = '#adminEditDeliverablePage-studentsMakeTeams';
 const GRADES_RELEASED = '#adminEditDeliverablePage-gradesReleased';
 const BUILDING_REPOS = '#adminEditDeliverablePage-buildingRepos';
 const PROJECT_COUNT = '#adminEditDeliverablePage-projectCount';
+const DOCKER_IMAGE = '#adminEditDeliverablePage-dockerImage';
+const DOCKER_BUILD = '#adminEditDeliverablePage-dockerBuild';
+const CUSTOM_HTML = '#adminEditDeliverablePage-customHtml';
+const CUSTOM_JSON = '#adminEditDeliverablePage-custom';
+const WHITELISTED_SERVERS = '#adminEditDeliverablePage-whitelistedServers';
+const REQUEST_RATE = '#adminEditDeliverablePage-dockerOverride';
+const DOCKER_OVERRIDE = '#adminEditDeliverablePage-rate';
 const EDIT_DELIVERABLE_PAGE_HEADER = '#adminEditDeliverablePage-header';
+const SAVE_ACTION = '#adminEditDeliverablePage-save-action';
 const DISABLED_ONSEN_ATTRIBUTE = 'disabled';
 
 declare var myApp: App;
@@ -104,12 +116,25 @@ export class DeliverableView {
 
     private initEditDeliverableView(deliverable: Deliverable, viewType: string) {
         console.log('DeliverableView::initEditDeliverable( ' + deliverable.id + ' ) - start');
+        let that = this;
+
+        let delivName: HTMLInputElement = document.querySelector(DELIV_NAME) as HTMLInputElement;
+        delivName.value = deliverable.name;
 
         let starterCode: HTMLInputElement = document.querySelector(START_CODE_URL) as HTMLInputElement;
         starterCode.value = deliverable.url;
 
-        let delivName: HTMLInputElement = document.querySelector(DELIV_NAME) as HTMLInputElement;
-        delivName.value = deliverable.name;
+        let starterCodeCommit: HTMLInputElement = document.querySelector(START_CODE_COMMIT) as HTMLInputElement;
+        starterCodeCommit.value = deliverable.commit;
+
+        let starterCodeKey: HTMLInputElement = document.querySelector(START_CODE_KEY) as HTMLInputElement;
+        starterCodeKey.value = deliverable.deliverableKey;
+
+        let solutionsUrl: HTMLInputElement = document.querySelector(SOLUTIONS_CODE_URL) as HTMLInputElement;
+        solutionsUrl.value = deliverable.solutionsUrl;
+
+        let solutionsKey: HTMLInputElement = document.querySelector(SOLUTIONS_CODE_KEY) as HTMLInputElement;
+        solutionsKey.value = deliverable.solutionsKey;
 
         let minTeamSize: HTMLInputElement = document.querySelector(MIN_TEAM_SIZE) as HTMLInputElement;
         minTeamSize.value = String(deliverable.minTeamSize);
@@ -117,8 +142,8 @@ export class DeliverableView {
         let maxTeamSize: HTMLInputElement = document.querySelector(MAX_TEAM_SIZE) as HTMLInputElement;
         maxTeamSize.value = String(deliverable.maxTeamSize);
 
-        let mustBeInSameLab: HTMLInputElement = document.querySelector(MUST_BE_IN_SAME_LAB) as HTMLInputElement;
-        mustBeInSameLab.value = deliverable.teamsInSameLab === true ? 'true' : 'false';
+        let teamsInSameLab: HTMLInputElement = document.querySelector(MUST_BE_IN_SAME_LAB) as HTMLInputElement;
+        teamsInSameLab.value = deliverable.teamsInSameLab === true ? 'true' : 'false';
 
         let studentsMakeTeams: HTMLInputElement = document.querySelector(STUDENTS_MAKE_TEAMS) as HTMLInputElement;
         studentsMakeTeams.value = deliverable.studentsMakeTeams === true ? 'true' : 'false';
@@ -131,6 +156,28 @@ export class DeliverableView {
 
         let buildingRepos: HTMLInputElement = document.querySelector(BUILDING_REPOS) as HTMLInputElement;
         buildingRepos.value = deliverable.buildingRepos === true ? 'true' : 'false';
+
+        let dockerImage: HTMLInputElement = document.querySelector(DOCKER_IMAGE) as HTMLInputElement;
+        dockerImage.value = deliverable.dockerImage;
+
+        let dockerBuild: HTMLInputElement = document.querySelector(DOCKER_BUILD) as HTMLInputElement;
+        dockerBuild.value = deliverable.dockerBuild;
+
+        let whitelistedServers: HTMLInputElement = document.querySelector(WHITELISTED_SERVERS) as HTMLInputElement;
+        whitelistedServers.value = deliverable.whitelistedServers;
+
+        let dockerOverride: HTMLInputElement = document.querySelector(DOCKER_OVERRIDE) as HTMLInputElement;
+        dockerOverride.value = deliverable.dockerOverride === true ? 'true' : 'false';
+
+        let rate: HTMLInputElement = document.querySelector(REQUEST_RATE) as HTMLInputElement;
+        rate.value = String(deliverable.rate);
+
+        let customHtml: HTMLInputElement = document.querySelector(CUSTOM_HTML) as HTMLInputElement;
+        customHtml.value = deliverable.customHtml === true ? 'true' : 'false';
+
+        let custom: HTMLInputElement = document.querySelector(CUSTOM_JSON) as HTMLInputElement;
+        custom.value = JSON.stringify(deliverable.custom);
+
 
         if (viewType === this.editTypes.EDIT_DELIVERABLE) {
 
@@ -151,8 +198,68 @@ export class DeliverableView {
             editableDeliv.innerHTML = '';
         */
 
+        let open = document.querySelector(OPEN_DELIV_KEY) as HTMLInputElement;
+        let close = document.querySelector(CLOSE_DELIV_KEY) as HTMLInputElement;
+        let saveAction = document.querySelector(SAVE_ACTION) as HTMLElement;
+
+        saveAction.addEventListener('click', () => {
+
+            try {
+                let delivPayload: Deliverable = {
+                    id: '',
+                    name: delivName.value,
+                    url: starterCode.value,
+                    commit: starterCodeCommit.value,
+                    deliverableKey: starterCodeKey.value,
+                    solutionsUrl: solutionsUrl.value,
+                    solutionsKey: solutionsKey.value,
+                    teamsAllowed: Boolean(studentsMakeTeams.value),
+                    minTeamSize: parseInt(minTeamSize.value),
+                    maxTeamSize: parseInt(maxTeamSize.value),
+                    teamsInSameLab: Boolean(teamsInSameLab.value),
+                    studentsMakeTeams: Boolean(studentsMakeTeams.value),
+                    gradesReleased: Boolean(gradesReleased.value),
+                    projectCount: parseInt(projectCount.value),
+                    buildingRepos: Boolean(buildingRepos.value),
+                    open: parseInt(open.value),
+                    close: parseInt(close.value),
+                    dockerImage: dockerImage.value,
+                    dockerBuild: dockerBuild.value,
+                    rate: parseInt(rate.value),
+                    whitelistedServers: whitelistedServers.value,
+                    dockerOverride: Boolean(dockerOverride.value),
+                    customHtml: Boolean(customHtml.value),
+                    custom: JSON.parse(custom.value)
+                }
+                console.log('DeliverableView:: all Deliverable submission properties', deliverable);
+                that.save(delivPayload);
+            } catch (err) {
+                console.error('There was an error with one of the Deliverable inputs: ' + err);
+            }
+        });
+
         UI.hideModal();
     }
+
+    private validateDeliverable(deliverable: Deliverable) {
+
+        let customJSON: object;
+
+        // try {
+        //     customJSON = JSON.parse(custom.value)
+        // } catch (err) {
+        //     UI.notification(('Could not '))
+        // }
+
+    }
+
+    private save(deliverable: Deliverable) {
+        console.log('DeliverableView::save( ' + deliverable.id + ' ) - start');
+
+
+    }
+
+
 
     private editDeliverable(deliverable: Deliverable) {
         console.log('DeliverableView::editDeliverable( ' + deliverable.id + ' ) - start');
