@@ -10,7 +10,6 @@ const flatpickr: any = require('flatpickr');
 const OPEN_DELIV_KEY = '#adminEditDeliverablePage-open';
 const CLOSE_DELIV_KEY = '#adminEditDeliverablePage-close';
 const START_CODE_URL = '#adminEditDeliverablePage-url';
-const START_CODE_COMMIT = '#adminEditDeliverablePage-starterCodeCommit';
 const START_CODE_KEY = '#adminEditDeliverablePage-deliverableKey';
 const SOLUTIONS_CODE_URL = '#adminEditDeliverablePage-solutionsUrl';
 const SOLUTIONS_CODE_KEY = '#adminEditDeliverablePage-solutionsKey';
@@ -124,9 +123,6 @@ export class DeliverableView {
         let starterCode: HTMLInputElement = document.querySelector(START_CODE_URL) as HTMLInputElement;
         starterCode.value = deliverable.url;
 
-        let starterCodeCommit: HTMLInputElement = document.querySelector(START_CODE_COMMIT) as HTMLInputElement;
-        starterCodeCommit.value = deliverable.commit;
-
         let starterCodeKey: HTMLInputElement = document.querySelector(START_CODE_KEY) as HTMLInputElement;
         starterCodeKey.value = deliverable.deliverableKey;
 
@@ -137,25 +133,47 @@ export class DeliverableView {
         solutionsKey.value = deliverable.solutionsKey;
 
         let minTeamSize: HTMLInputElement = document.querySelector(MIN_TEAM_SIZE) as HTMLInputElement;
+        let minTeamSizeOptions = minTeamSize.children;
+        for (let i = 0; i < minTeamSizeOptions.length; i++) {
+            let maxTeamSizeOption = minTeamSizeOptions[i] as HTMLSelectElement;
+            if (parseInt(minTeamSizeOptions[i].innerHTML) === deliverable.minTeamSize) {
+                maxTeamSizeOption.selected = 'selected';
+            }
+        }
         minTeamSize.value = String(deliverable.minTeamSize);
 
-        let maxTeamSize: HTMLInputElement = document.querySelector(MAX_TEAM_SIZE) as HTMLInputElement;
+        let maxTeamSize: HTMLSelectElement = document.querySelector(MAX_TEAM_SIZE) as HTMLSelectElement;
+        let maxTeamSizeOptions = maxTeamSize.children;
+        let selectionMaps: boolean = false;
+
+        for (let i = 0; i < maxTeamSizeOptions.length; i++) {
+            let maxTeamSizeOption = maxTeamSizeOptions[i] as HTMLSelectElement;
+            if (parseInt(maxTeamSizeOptions[i].innerHTML) === deliverable.maxTeamSize) {
+                maxTeamSizeOption.selected = 'selected';
+                selectionMaps = true;
+            }
+        }
+
+        // if no max team size match on front-end, use default front-end max
+        if (selectionMaps === false) {
+             (maxTeamSizeOptions[7] as HTMLSelectElement).selected = 'selected';
+        }
         maxTeamSize.value = String(deliverable.maxTeamSize);
 
         let teamsInSameLab: HTMLInputElement = document.querySelector(MUST_BE_IN_SAME_LAB) as HTMLInputElement;
-        teamsInSameLab.value = deliverable.teamsInSameLab === true ? 'true' : 'false';
+        teamsInSameLab.checked = deliverable.teamsInSameLab;
 
         let studentsMakeTeams: HTMLInputElement = document.querySelector(STUDENTS_MAKE_TEAMS) as HTMLInputElement;
-        studentsMakeTeams.value = deliverable.studentsMakeTeams === true ? 'true' : 'false';
+        studentsMakeTeams.checked = deliverable.studentsMakeTeams;
 
         let gradesReleased: HTMLInputElement = document.querySelector(GRADES_RELEASED) as HTMLInputElement;
-        gradesReleased.value = deliverable.gradesReleased === true ? 'true' : 'false';
+        gradesReleased.checked = deliverable.gradesReleased;
 
         let projectCount: HTMLInputElement = document.querySelector(PROJECT_COUNT) as HTMLInputElement;
         projectCount.value = String(deliverable.projectCount);
 
         let buildingRepos: HTMLInputElement = document.querySelector(BUILDING_REPOS) as HTMLInputElement;
-        buildingRepos.value = deliverable.buildingRepos === true ? 'true' : 'false';
+        buildingRepos.checked = deliverable.buildingRepos;
 
         let dockerImage: HTMLInputElement = document.querySelector(DOCKER_IMAGE) as HTMLInputElement;
         dockerImage.value = deliverable.dockerImage;
@@ -167,16 +185,16 @@ export class DeliverableView {
         whitelistedServers.value = deliverable.whitelistedServers;
 
         let dockerOverride: HTMLInputElement = document.querySelector(DOCKER_OVERRIDE) as HTMLInputElement;
-        dockerOverride.value = deliverable.dockerOverride === true ? 'true' : 'false';
+        dockerOverride.checked = deliverable.dockerOverride;
 
         let rate: HTMLInputElement = document.querySelector(REQUEST_RATE) as HTMLInputElement;
         rate.value = String(deliverable.rate);
 
         let customHtml: HTMLInputElement = document.querySelector(CUSTOM_HTML) as HTMLInputElement;
-        customHtml.value = deliverable.customHtml === true ? 'true' : 'false';
+        customHtml.checked = deliverable.customHtml;
 
-        let custom: HTMLInputElement = document.querySelector(CUSTOM_JSON) as HTMLInputElement;
-        custom.value = JSON.stringify(deliverable.custom);
+        let customJson: HTMLInputElement = document.querySelector(CUSTOM_JSON) as HTMLInputElement;
+        customJson.value = JSON.stringify(deliverable.custom);
 
 
         if (viewType === this.editTypes.EDIT_DELIVERABLE) {
@@ -185,7 +203,6 @@ export class DeliverableView {
             header.innerHTML = 'Edit Deliverable';
             
             // ## DISABLE fields in edit       
-            buildingRepos.setAttribute(DISABLED_ONSEN_ATTRIBUTE, "");
             delivName.setAttribute(DISABLED_ONSEN_ATTRIBUTE, "");
         }
 
@@ -203,37 +220,40 @@ export class DeliverableView {
         let saveAction = document.querySelector(SAVE_ACTION) as HTMLElement;
 
         saveAction.addEventListener('click', () => {
+            let isValid: boolean = that.isDeliverableValid();
 
             try {
                 let delivPayload: Deliverable = {
                     id: '',
-                    name: delivName.value,
+                    name: String(delivName.value).toLowerCase(),
                     url: starterCode.value,
-                    commit: starterCodeCommit.value,
                     deliverableKey: starterCodeKey.value,
                     solutionsUrl: solutionsUrl.value,
                     solutionsKey: solutionsKey.value,
-                    teamsAllowed: Boolean(studentsMakeTeams.value),
+                    teamsAllowed: studentsMakeTeams.checked,
                     minTeamSize: parseInt(minTeamSize.value),
                     maxTeamSize: parseInt(maxTeamSize.value),
-                    teamsInSameLab: Boolean(teamsInSameLab.value),
-                    studentsMakeTeams: Boolean(studentsMakeTeams.value),
-                    gradesReleased: Boolean(gradesReleased.value),
+                    teamsInSameLab: teamsInSameLab.checked,
+                    studentsMakeTeams: studentsMakeTeams.checked,
+                    gradesReleased: gradesReleased.checked,
                     projectCount: parseInt(projectCount.value),
-                    buildingRepos: Boolean(buildingRepos.value),
-                    open: parseInt(open.value),
-                    close: parseInt(close.value),
+                    buildingRepos: buildingRepos.checked,
+                    open: new Date(open.value).getTime(),
+                    close: new Date(close.value).getTime(),
                     dockerImage: dockerImage.value,
                     dockerBuild: dockerBuild.value,
                     rate: parseInt(rate.value),
                     whitelistedServers: whitelistedServers.value,
-                    dockerOverride: Boolean(dockerOverride.value),
-                    customHtml: Boolean(customHtml.value),
-                    custom: JSON.parse(custom.value)
+                    dockerOverride: dockerOverride.checked,
+                    customHtml: customHtml.checked,
+                    custom: JSON.parse(customJson.value)
                 }
-                console.log('DeliverableView:: all Deliverable submission properties', deliverable);
-                that.save(delivPayload);
+                console.log('DeliverableView:: DEBUG All Deliverable submission properties', delivPayload);
+                if (isValid) {
+                    that.save(delivPayload);
+                }
             } catch (err) {
+                console.log('Could not save Deliverable: ERROR ' + err);
                 console.error('There was an error with one of the Deliverable inputs: ' + err);
             }
         });
@@ -241,16 +261,46 @@ export class DeliverableView {
         UI.hideModal();
     }
 
-    private validateDeliverable(deliverable: Deliverable) {
+    // All other fields are input numbers and booleans that are assumed to be valid.
+    private isDeliverableValid(): boolean {
 
-        let customJSON: object;
+        const HTTPS_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        const NAME_REGEX: RegExp = /^[^_]+([0-9])/;
+        const TEAM_SIZE_ERR: string = 'The minimum team size cannot be greater than the maximum team size';
+        const CUSTOM_JSON_ERR: string = 'Your custom JSON input should be valid stringified JSON: ';
+        const DELIV_NAME_ERR: string = 'A deliverable name must be all lowercase letters, up to 10 characters, and a combination of [a-z] and [0-9].';
+        const GIT_REPO_ERR: string = 'Please make sure your Git repo addresses are valid Https URIs.'
+        let minTeamSize: HTMLInputElement = document.querySelector(MIN_TEAM_SIZE) as HTMLInputElement;
+        let maxTeamSize: HTMLInputElement = document.querySelector(MAX_TEAM_SIZE) as HTMLInputElement;
+        let customJson: HTMLInputElement = document.querySelector(CUSTOM_JSON) as HTMLInputElement;
+        let delivName: HTMLInputElement = document.querySelector(DELIV_NAME) as HTMLInputElement;
+        let solutionsCodeUrl: HTMLInputElement = document.querySelector(SOLUTIONS_CODE_URL) as HTMLInputElement;
+        let starterCodeUrl: HTMLInputElement = document.querySelector(START_CODE_URL) as HTMLInputElement;
 
-        // try {
-        //     customJSON = JSON.parse(custom.value)
-        // } catch (err) {
-        //     UI.notification(('Could not '))
-        // }
+        if (parseInt(minTeamSize.value) > parseInt(maxTeamSize.value)) {
+            UI.notification(TEAM_SIZE_ERR);
+            return false;
+        }
 
+        try {
+            JSON.parse(customJson.value);
+        } catch (err) {
+            UI.notification(CUSTOM_JSON_ERR + err);
+            return false;
+        }
+
+        let name: string = delivName.value;
+        if (name.length > 10 || name.search(NAME_REGEX) === -1) {
+            UI.notification(DELIV_NAME_ERR);
+            return false;
+        }
+
+        if (starterCodeUrl.value.search(HTTPS_REGEX) === -1 || solutionsCodeUrl.value.search(HTTPS_REGEX) === -1) {
+            UI.notification(GIT_REPO_ERR);
+            return false;
+        }
+
+        return true;
     }
 
     private save(deliverable: Deliverable) {

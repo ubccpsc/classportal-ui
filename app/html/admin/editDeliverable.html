@@ -41,18 +41,6 @@
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
                 </div>
                 <div class="center settingLabel">
-                    <span>Repo Commit</span>
-                </div>
-                <div class="right settingRight">
-                    <ons-input id="adminEditDeliverablePage-starterCodeCommit"></ons-input>
-                </div>
-            </ons-list-item>
-
-            <ons-list-item style="display: flex;">
-                <div class="left settingIcon">
-                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
-                </div>
-                <div class="center settingLabel">
                     <span>Github Key</span>
                 </div>
                 <div class="right settingRight">
@@ -206,31 +194,6 @@
                 </div>
             </ons-list-item>
 
-            <ons-list-header>Debug details</ons-list-header>
-            <ons-list-item style="display: flex;">
-                <div class="left settingIcon">
-                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
-                </div>
-                <div class="center settingLabel">
-                    <span>Building Repos</span>
-                </div>
-                <div class="right settingRight">
-                    <ons-input id="adminEditDeliverablePage-buildingRepos"></ons-input>
-                </div>
-            </ons-list-item>
-
-            <ons-list-item style="display: flex;">
-                <div class="left settingIcon">
-                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
-                </div>
-                <div class="center settingLabel">
-                    <span title="The number that Team creation will begin at. Reset to '0' if Teams and Github Repositories are deleted for a Deliverable.">Project Count</span>
-                </div>
-                <div class="right settingRight">
-                    <ons-input id="adminEditDeliverablePage-projectCount"></ons-input>
-                </div>
-            </ons-list-item>
-
             <ons-list-header>Docker Override</ons-list-header>
             <ons-list-item style="display: flex;">
                 <div class="left settingIcon">
@@ -300,10 +263,36 @@
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
                 </div>
                 <div class="center settingLabel">
-                    <span title="The commit of the built and tagged Docker Image (likely 'master' or 'latest' by default).">Custom CMS JSON</span>
+                    <span title="The commit of the built and tagged Docker Image (likely 'master' or 'latest' by default).">Custom JSON Contianer Input</span>
                 </div>
                 <div class="right settingRight">
                     <ons-input id="adminEditDeliverablePage-custom"></ons-input>
+                </div>
+            </ons-list-item>
+
+
+            <ons-list-header>Debug details</ons-list-header>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Building Repos</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-switch disabled id="adminEditDeliverablePage-buildingRepos"></ons-switch>
+                </div>
+            </ons-list-item>
+
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span title="The number that Team creation will begin at. Reset to '0' if Teams and Github Repositories are deleted for a Deliverable.">Project Count</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input disabled id="adminEditDeliverablePage-projectCount"></ons-input>
                 </div>
             </ons-list-item>
         </ons-list>

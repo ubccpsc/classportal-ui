@@ -118,7 +118,6 @@ export interface Deliverable {
   dockerOverride: boolean;
   dockerImage: string;
   dockerBuild: string;
-  commit: string;
   whitelistedServers: string;
   solutionsUrl: string;
   solutionsKey: string;
@@ -156,7 +155,6 @@ export interface Deliverable {
     dockerImage: string;
     dockerBuild: string;
     customHtml: boolean;
-    commit: string;
     solutionsUrl: string;
     whitelistedServers: string;
     solutionsKey: string;

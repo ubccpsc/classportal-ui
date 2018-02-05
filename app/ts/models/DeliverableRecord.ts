@@ -20,7 +20,6 @@ export default class DeliverableRecord {
   private dockerImage: string;
   private dockerBuild: string;
   private customHtml: true;
-  private commit: string;
   private solutionsUrl: string;
   private whitelistedServers: string;
   private solutionsKey: string;
@@ -49,7 +48,6 @@ export default class DeliverableRecord {
           buildingRepos:      false,
           dockerOverride:     false,
           dockerImage:        '',
-          commit:             '',
           dockerBuild:        '',
           solutionsUrl:       '',
           whitelistedServers: 'portal.cs.ubc.ca:1210 portal.cs.ubc.ca:1310',
