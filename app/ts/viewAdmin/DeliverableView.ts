@@ -2,6 +2,7 @@ import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {DeliverablePayload} from "../Models";
 import {App} from "../App";
+import {Network} from "../util/Network";
 import FlatPicker from "../helpers/FlatPicker";
 import DeliverableRecord from "../models/DeliverableRecord";
 import {Deliverable} from '../Models';
@@ -28,7 +29,11 @@ const CUSTOM_JSON = '#adminEditDeliverablePage-custom';
 const WHITELISTED_SERVERS = '#adminEditDeliverablePage-whitelistedServers';
 const REQUEST_RATE = '#adminEditDeliverablePage-dockerOverride';
 const DOCKER_OVERRIDE = '#adminEditDeliverablePage-rate';
+const REQUEST_MINUTES = '#duration-minutes';
+const REQUEST_SECONDS = '#duration-seconds';
+const REQUEST_HOURS = '#duration-hours';
 const EDIT_DELIVERABLE_PAGE_HEADER = '#adminEditDeliverablePage-header';
+
 const SAVE_ACTION = '#adminEditDeliverablePage-save-action';
 const DISABLED_ONSEN_ATTRIBUTE = 'disabled';
 
@@ -187,15 +192,25 @@ export class DeliverableView {
         let dockerOverride: HTMLInputElement = document.querySelector(DOCKER_OVERRIDE) as HTMLInputElement;
         dockerOverride.checked = deliverable.dockerOverride;
 
-        let rate: HTMLInputElement = document.querySelector(REQUEST_RATE) as HTMLInputElement;
-        rate.value = String(deliverable.rate);
-
         let customHtml: HTMLInputElement = document.querySelector(CUSTOM_HTML) as HTMLInputElement;
         customHtml.checked = deliverable.customHtml;
 
         let customJson: HTMLInputElement = document.querySelector(CUSTOM_JSON) as HTMLInputElement;
         customJson.value = JSON.stringify(deliverable.custom);
 
+        let rate: HTMLInputElement = document.querySelector(REQUEST_RATE) as HTMLInputElement;
+        rate.value = String(deliverable.rate);
+
+
+        let rateSeconds: HTMLInputElement = document.querySelector(REQUEST_SECONDS) as HTMLInputElement;
+        let rateMinutes: HTMLInputElement = document.querySelector(REQUEST_MINUTES) as HTMLInputElement;
+        let rateHours: HTMLInputElement = document.querySelector(REQUEST_HOURS) as HTMLInputElement;
+
+        let times: string = new Date(deliverable.rate).toISOString().substr(11, 8);
+        let timesArr: string[] = times.split(':');
+        rateHours.value = timesArr[0];
+        rateMinutes.value = timesArr[1];
+        rateSeconds.value = timesArr[2];
 
         if (viewType === this.editTypes.EDIT_DELIVERABLE) {
 
@@ -221,6 +236,10 @@ export class DeliverableView {
 
         saveAction.addEventListener('click', () => {
             let isValid: boolean = that.isDeliverableValid();
+            let rateHoursInMs: number = parseInt(rateHours.value) * 60 * 60 * 1000; // convert hours to ms
+            let rateMinutesInMs: number = parseInt(rateMinutes.value) * 60 * 1000; // convert minutes to ms
+            let rateSecsInMs: number = parseInt(rateSeconds.value) * 1000 // convert seconds to ms
+            let rateInMs: number = rateHoursInMs + rateMinutesInMs + rateSecsInMs;
 
             try {
                 let delivPayload: Deliverable = {
@@ -242,7 +261,7 @@ export class DeliverableView {
                     close: new Date(close.value).getTime(),
                     dockerImage: dockerImage.value,
                     dockerBuild: dockerBuild.value,
-                    rate: parseInt(rate.value),
+                    rate: rateInMs,
                     whitelistedServers: whitelistedServers.value,
                     dockerOverride: dockerOverride.checked,
                     customHtml: customHtml.checked,
@@ -253,7 +272,7 @@ export class DeliverableView {
                     that.save(delivPayload);
                 }
             } catch (err) {
-                console.log('Could not save Deliverable: ERROR ' + err);
+                console.error('Could not save Deliverable: ERROR ' + err);
                 console.error('There was an error with one of the Deliverable inputs: ' + err);
             }
         });

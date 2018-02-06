@@ -79,10 +79,10 @@
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
                 </div>
                 <div class="center settingLabel">
-                    <span title="The wait-period in minutes that a grade request is allowed to occur in.">Open</span>
+                    <span title="Grade request delay in minutes.">Delay</span>
                 </div>
                 <div class="right settingRight">
-                    <ons-input type="number" id="adminEditDeliverablePage-rate"></ons-input>
+                    <input id="adminEditDeliverablePage-rate" type="text" name="duration-picker">
                 </div>
             </ons-list-item>
 
@@ -263,7 +263,7 @@
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
                 </div>
                 <div class="center settingLabel">
-                    <span title="The commit of the built and tagged Docker Image (likely 'master' or 'latest' by default).">Custom JSON Contianer Input</span>
+                    <span title="The commit of the built and tagged Docker Image (likely 'master' or 'latest' by default).">Custom JSON Input</span>
                 </div>
                 <div class="right settingRight">
                     <ons-input id="adminEditDeliverablePage-custom"></ons-input>
@@ -295,8 +295,19 @@
                     <ons-input disabled id="adminEditDeliverablePage-projectCount"></ons-input>
                 </div>
             </ons-list-item>
+
+            <ons-list-item style="display: flex;">
+            </ons-list-item>
         </ons-list>
     </form>
+
+    <!-- #DURATION PICKER from https://github.com/Tartarus762/jquery-duration-picker -->
+    <script>
+        $(document).ready(function() {
+            $('#adminEditDeliverablePage-rate').durationPicker();
+        });
+
+    </script>
 
     <ons-fab id="adminEditDeliverablePage-save-action" position="bottom right">
         <ons-icon icon="md-save"></ons-icon>
