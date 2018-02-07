@@ -138,6 +138,7 @@ export interface DeliverablePayload {
 }
 
 export interface Deliverable {
+    _id: string;
     id: string;
     open: number; // timestamp
     close: number; // timestamp
@@ -158,6 +159,8 @@ export interface Deliverable {
     solutionsUrl: string;
     whitelistedServers: string;
     solutionsKey: string;
+    regressionTest: boolean;
+    regressionTests: string;
     deliverableKey: string;
     rate: number;
     gradesReleased: boolean;

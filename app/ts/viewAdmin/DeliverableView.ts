@@ -6,8 +6,10 @@ import {Network} from "../util/Network";
 import FlatPicker from "../helpers/FlatPicker";
 import DeliverableRecord from "../models/DeliverableRecord";
 import {Deliverable} from '../Models';
+import HTMLTags from '../helpers/HTMLTags';
 
 const flatpickr: any = require('flatpickr');
+const MONGO_ID = '#adminEditDeliverablePage-id';
 const OPEN_DELIV_KEY = '#adminEditDeliverablePage-open';
 const CLOSE_DELIV_KEY = '#adminEditDeliverablePage-close';
 const START_CODE_URL = '#adminEditDeliverablePage-url';
@@ -32,19 +34,25 @@ const DOCKER_OVERRIDE = '#adminEditDeliverablePage-rate';
 const REQUEST_MINUTES = '#duration-minutes';
 const REQUEST_SECONDS = '#duration-seconds';
 const REQUEST_HOURS = '#duration-hours';
+const REGRESSION_TESTS = '#adminEditDeliverablePage-regressionTests';
+const REGRESSION_TEST = '#adminEditDeliverablePage-regressionTest';
 const EDIT_DELIVERABLE_PAGE_HEADER = '#adminEditDeliverablePage-header';
-
 const SAVE_ACTION = '#adminEditDeliverablePage-save-action';
 const DISABLED_ONSEN_ATTRIBUTE = 'disabled';
+const ADD_DELIVERABLE_TAG = 'Add Deliverable';
+const EDIT_DELIVERABLE_TAG = 'Edit Deliverable';
 
 declare var myApp: App;
 
 export class DeliverableView {
     private controller: AdminController;
+    private app: App;
     private editTypes = { EDIT_DELIVERABLE: 'edit', ADD_DELIVERABLE: 'add'};
 
-    constructor(controller: AdminController) {
+
+    constructor(controller: AdminController, app: App) {
         this.controller = controller;
+        this.app = app;
     }
 
     public updateTitle() {
@@ -103,7 +111,6 @@ export class DeliverableView {
         console.log('DeliverableView::addDeliverable() - start');
         let defaultNewDeliv: Deliverable = DeliverableRecord.getDefaultDeliv();
 
-
         let that = this;
         UI.showModal();
         UI.pushPage('html/admin/editDeliverable.html')
@@ -121,6 +128,9 @@ export class DeliverableView {
     private initEditDeliverableView(deliverable: Deliverable, viewType: string) {
         console.log('DeliverableView::initEditDeliverable( ' + deliverable.id + ' ) - start');
         let that = this;
+
+        let mongoId: HTMLInputElement = document.querySelector(MONGO_ID) as HTMLInputElement;
+        mongoId.value = deliverable._id;
 
         let delivName: HTMLInputElement = document.querySelector(DELIV_NAME) as HTMLInputElement;
         delivName.value = deliverable.name;
@@ -150,11 +160,13 @@ export class DeliverableView {
         let maxTeamSize: HTMLSelectElement = document.querySelector(MAX_TEAM_SIZE) as HTMLSelectElement;
         let maxTeamSizeOptions = maxTeamSize.children;
         let selectionMaps: boolean = false;
+        let maxTeamSizeFound: boolean = false;
 
         for (let i = 0; i < maxTeamSizeOptions.length; i++) {
             let maxTeamSizeOption = maxTeamSizeOptions[i] as HTMLSelectElement;
             if (parseInt(maxTeamSizeOptions[i].innerHTML) === deliverable.maxTeamSize) {
                 maxTeamSizeOption.selected = 'selected';
+                maxTeamSizeFound = true;
                 selectionMaps = true;
             }
         }
@@ -173,6 +185,12 @@ export class DeliverableView {
 
         let gradesReleased: HTMLInputElement = document.querySelector(GRADES_RELEASED) as HTMLInputElement;
         gradesReleased.checked = deliverable.gradesReleased;
+
+        let regressionTest: HTMLInputElement = document.querySelector(REGRESSION_TEST) as HTMLInputElement;
+        regressionTest.checked = deliverable.regressionTest;
+
+        let regressionTests: HTMLInputElement = document.querySelector(REGRESSION_TESTS) as HTMLInputElement;
+        regressionTest.value = deliverable.regressionTests;
 
         let projectCount: HTMLInputElement = document.querySelector(PROJECT_COUNT) as HTMLInputElement;
         projectCount.value = String(deliverable.projectCount);
@@ -241,8 +259,9 @@ export class DeliverableView {
             let rateSecsInMs: number = parseInt(rateSeconds.value) * 1000 // convert seconds to ms
             let rateInMs: number = rateHoursInMs + rateMinutesInMs + rateSecsInMs;
 
-            try {
+            // try {
                 let delivPayload: Deliverable = {
+                    _id: mongoId.value,
                     id: '',
                     name: String(delivName.value).toLowerCase(),
                     url: starterCode.value,
@@ -253,6 +272,8 @@ export class DeliverableView {
                     minTeamSize: parseInt(minTeamSize.value),
                     maxTeamSize: parseInt(maxTeamSize.value),
                     teamsInSameLab: teamsInSameLab.checked,
+                    regressionTest: regressionTest.checked,
+                    regressionTests: regressionTests.value,
                     studentsMakeTeams: studentsMakeTeams.checked,
                     gradesReleased: gradesReleased.checked,
                     projectCount: parseInt(projectCount.value),
@@ -267,14 +288,14 @@ export class DeliverableView {
                     customHtml: customHtml.checked,
                     custom: JSON.parse(customJson.value)
                 }
-                console.log('DeliverableView:: DEBUG All Deliverable submission properties', delivPayload);
+                console.log('DeliverableView:: DEBUG All Deliverable submission properties' + JSON.stringify(delivPayload));
                 if (isValid) {
                     that.save(delivPayload);
                 }
-            } catch (err) {
-                console.error('Could not save Deliverable: ERROR ' + err);
-                console.error('There was an error with one of the Deliverable inputs: ' + err);
-            }
+            // } catch (err) {
+            //     console.error('Could not save Deliverable: ERROR ' + err);
+            //     console.error('There was an error with one of the Deliverable inputs: ' + err);
+            // }
         });
 
         UI.hideModal();
@@ -288,7 +309,7 @@ export class DeliverableView {
         const TEAM_SIZE_ERR: string = 'The minimum team size cannot be greater than the maximum team size';
         const CUSTOM_JSON_ERR: string = 'Your custom JSON input should be valid stringified JSON: ';
         const DELIV_NAME_ERR: string = 'A deliverable name must be all lowercase letters, up to 10 characters, and a combination of [a-z] and [0-9].';
-        const GIT_REPO_ERR: string = 'Please make sure your Git repo addresses are valid Https URIs.'
+        const GIT_REPO_ERR: string = 'Please make sure your Git repo addresses are valid Https URIs.';
         let minTeamSize: HTMLInputElement = document.querySelector(MIN_TEAM_SIZE) as HTMLInputElement;
         let maxTeamSize: HTMLInputElement = document.querySelector(MAX_TEAM_SIZE) as HTMLInputElement;
         let customJson: HTMLInputElement = document.querySelector(CUSTOM_JSON) as HTMLInputElement;
@@ -322,10 +343,40 @@ export class DeliverableView {
         return true;
     }
 
-    private save(deliverable: Deliverable) {
-        console.log('DeliverableView::save( ' + deliverable.id + ' ) - start');
+    /**
+    * ## INFO ## 
+    *
+    * EditDeliverableView.ts is used for two different CRUD operations:
+    *
+    * If 'Add Deliverable' view, hit PUT: '/:courseId/admin/deliverable'
+    * If 'Edit Deliverable' view, hit POST: '/:courseId/admin/deliverable'
+    * @return void
+    */
+    private save(deliv: Deliverable) {
+        console.log('EditDeliverableView::save() - start');
+        let editUrl = this.app.backendURL + this.app.currentCourseId + '/admin/deliverable';
+        let header = document.querySelector(HTMLTags.EDIT_DELIVERABLE_HEADER) as HTMLElement;
+        let isEdit: boolean = header.innerHTML === EDIT_DELIVERABLE_TAG ? true : false;
+        let isAdd: boolean = header.innerHTML === ADD_DELIVERABLE_TAG ? true : false;
 
+        let deliverablePayload = {deliverable: deliv};
 
+        if (isEdit) {
+            Network.httpPost(editUrl, deliverablePayload)
+                .then((response: object) => {
+                    console.log('EditDeliverableView POST UPDATE DELIV response', response);
+                })
+        } else if (isAdd) {
+            Network.httpPut(editUrl, deliverablePayload)
+                .then((response: object) => {
+                    console.log('EditDeliverableView PUT ADD DELIV response', response);
+                })
+        } else {
+            console.log('EditDeliverableView ERROR Could not determine Deliv update/add type');
+        }
+
+        // UI.popPage(); ENABLE AFTER DEBUGGING
+        console.log('EditDeliverableView::save() - end');
     }
 
 

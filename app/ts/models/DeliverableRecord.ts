@@ -16,6 +16,8 @@ export default class DeliverableRecord {
   private maxTeamSize: number;
   private buildingRepos: boolean;
   private projectCount: number;
+  private regressionTest: boolean;
+  private regressionTests: string;
   private teamsInSameLab: false;
   private dockerImage: string;
   private dockerBuild: string;
@@ -33,6 +35,7 @@ export default class DeliverableRecord {
 
       let that = this;
       let defaultDeliv: Deliverable = {
+          _id:               '', // Leave blank, but Mongo will make an _id on the back-end by default
           id:                '', // Will not be used on backend. Just keeps models consistent
           url:                '',
           open:               0,
@@ -41,7 +44,9 @@ export default class DeliverableRecord {
           studentsMakeTeams:  false,
           teamsAllowed:       false,
           minTeamSize:        1,
-          maxTeamSize:        3,
+          maxTeamSize:        8,
+          regressionTest:     false,
+          regressionTests:    '',
           projectCount:       0,
           teamsInSameLab:     true,
           customHtml:         false,

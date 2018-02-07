@@ -19,9 +19,8 @@ const ADD_DELIVERABLE_BUTTON = '#adminDeliverablesPage-add-deliverable';
 
 export class AdminController {
 
-
+    private deliverableView: DeliverableView;
     private courseId: string;
-    private deliverableView = new DeliverableView(this);
     private provisionTeamsDeliverableView = new ProvisionTeamsDeliverableView(this);
     private teamView = new TeamView(this);
     private resultView = new ResultView(this);
@@ -43,7 +42,7 @@ export class AdminController {
         this.app = app;
         this.authHelper = new AuthHelper(app.backendURL);
         this.authHelper.checkUserrole(this.REQ_USERROLE);
-
+        this.deliverableView = new DeliverableView(this, this.app);
         this.courseId = courseId;
     }
 

@@ -12,6 +12,7 @@
     
     <form id="admin-editable-deliverable-form">
         <ons-list id="admin-editable-deliverable-list">
+            <input type="hidden" id="adminEditDeliverablePage-id"/>
             <ons-list-header>Deliverable Options</ons-list-header>
             <ons-list-item style="display: flex;">
                 <div class="left settingIcon">
@@ -119,7 +120,7 @@
                 </div>
             </ons-list-item>
 
-            <ons-list-header>Team Options</ons-list-header>
+            <ons-list-header>Default Team Options</ons-list-header>
             <ons-list-item style="display: flex;">
                 <div class="left settingIcon">
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
@@ -208,7 +209,6 @@
                     <ons-switch id="adminEditDeliverablePage-dockerOverride"></ons-switch>
                 </div>
             </ons-list-item>
-
             <ons-list-item style="display: flex;">
                 <div class="left settingIcon">
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
@@ -224,7 +224,6 @@
                     <ons-input id="adminEditDeliverablePage-dockerImage"></ons-input>
                 </div>
             </ons-list-item>
-
             <ons-list-item style="display: flex;">
                 <div class="left settingIcon">
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
@@ -234,6 +233,32 @@
                 </div>
                 <div class="right settingRight">
                     <ons-input id="adminEditDeliverablePage-dockerBuild"></ons-input>
+                </div>
+            </ons-list-item>
+
+            <ons-list-header>Regression Tester</ons-list-header>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span title="AutoTest will mark additional deliverables on the basis of this Github Push">Regression Tests Enabled</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-switch id="adminEditDeliverablePage-regressionTest"></ons-switch>
+                </div>
+            </ons-list-item>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span title="Put any Deliverable names seperated by spaces that you want graded against Pushes on this Deliverable.
+
+                    ie. 'd1 d2 d3 c99'">Additional Tests</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="adminEditDeliverablePage-regressionTests"></ons-input>
                 </div>
             </ons-list-item>
 
@@ -254,7 +279,7 @@
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
                 </div>
                 <div class="center settingLabel">
-                    <span title="Eneter server and port to allow external internet requests from inside container. ie. 'google.ca:80'. ">Whitelisted Servers</span>
+                    <span title="Enter server and port to allow external internet requests from inside container. ie. 'google.ca:80 portal.cs.ubc.ca:1210'. ">Whitelisted Servers</span>
                 </div>
                 <div class="right settingRight">
                     <ons-input id="adminEditDeliverablePage-whitelistedServers"></ons-input>

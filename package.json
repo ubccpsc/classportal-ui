@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:prod": "sudo NODE_ENV='production' forever start --spinSleepTime 10000 -l LOGFILE -o OUTPUT -e ERRFILE --append ./run.js",
     "start:dev": "sudo node ./run.js",
-    "build": "./node_modules/.bin/webpack"
+    "build": "./node_modules/.bin/webpack",
+    "build:watch": "./node_modules/.bin/webpack --watch"
   },
   "repository": {
     "type": "git",
