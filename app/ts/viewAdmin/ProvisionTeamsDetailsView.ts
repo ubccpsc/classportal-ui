@@ -37,7 +37,7 @@ export class ProvisionTeamsDetailsView {
 
     public updateTitle() {
         // document.querySelector('#adminTabsHeader').innerHTML = data.course;
-        document.querySelector(PROVISION_DETAILS_HEADER).innerHTML = "Teams Overview: " + String(this.deliverable.name).toUpperCase();
+        document.querySelector(PROVISION_DETAILS_HEADER).innerHTML = "Teams Overview: '" + String(this.deliverable.name) + "'";
     }
 
     public render(data: ProvisionHealthCheckContainer) {

@@ -117,13 +117,7 @@ export class Network {
             body: JSON.stringify(payload)
         };
         return fetch(url, OPTIONS_HTTP_POST).then((data: any) => {
-            if (data.status === 200) {
-                return data.json().then((jsonData: object) => {
-                    return jsonData;
-                })
-            } else {
-                throw 'Could not fetch data from ' + url;
-            }
+            return data
         })
         .catch((err) => {
             console.log('Network::httpPost() ERROR ' + err);
@@ -140,13 +134,7 @@ export class Network {
             body: JSON.stringify(payload)
         };
         return fetch(url, OPTIONS_HTTP_PUT).then((data: any) => {
-            if (data.status === 200) {
-                return data.json().then((jsonData: object) => {
-                    return jsonData;
-                })
-            } else {
-                throw 'Could not fetch data from ' + url;
-            }
+            return data;
         })
         .catch((err) => {
             console.log('Network::httpPut() ERROR ' + err);

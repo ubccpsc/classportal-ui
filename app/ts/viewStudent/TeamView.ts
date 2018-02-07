@@ -55,7 +55,14 @@ export class TeamView {
         let url: string = this.app.backendURL + this.courseId + '/currentUser';
         Network.httpGet(url)
             .then((data: any) => {
-                return data.response.user as Student;
+                if (data.status >= 200 && data.status < 300) {
+                    return data.json()
+                        .then((response: any) => {
+                            response.user as Student;
+                        })
+                } else {
+                    UI.notification('There was an error fetching the user ' + user.fname + ' ' + user.lname);
+                }
             });
     }
 
