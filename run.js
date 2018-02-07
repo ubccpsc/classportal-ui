@@ -5,6 +5,7 @@ const path = require('path');
 const http = require('http');
 const https = require('https');
 const config = require('./config');
+const io = require('socket.io')(https);
 
 const PORT = process.env.NODE_ENV === 'production' ? 443 : 3000;
 
@@ -19,7 +20,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use('/static/', express.static('/var/www/classportal-ui-next/app/html/staticHtml'));
+app.use('/static/', express.static(config.staticHtmlPath));
 app.use('/public/', express.static(path.resolve(__dirname, './build/public')));
 app.use('/html/', express.static(path.resolve(__dirname, './app/html')));
 app.use('/dist/', express.static(path.resolve(__dirname, './app/build/dist')));
