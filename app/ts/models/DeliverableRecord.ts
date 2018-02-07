@@ -44,7 +44,7 @@ export default class DeliverableRecord {
           studentsMakeTeams:  false,
           teamsAllowed:       false,
           minTeamSize:        1,
-          maxTeamSize:        8,
+          maxTeamSize:        1,
           regressionTest:     false,
           regressionTests:    '',
           projectCount:       0,

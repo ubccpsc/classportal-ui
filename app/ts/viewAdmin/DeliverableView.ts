@@ -89,7 +89,7 @@ export class DeliverableView {
                     const close = new Date(deliverable.close);
                     const open = new Date(deliverable.open);
                     deliverableList.appendChild(UI.createListHeader(deliverable.id));
-                    let text = "Open: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString() + "; Close: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString();
+                    let text = "Open: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString() + "; Close: " + close.toLocaleDateString() + ' @ ' + close.toLocaleTimeString();
                     let subtext = 'Subtext';
                     let elem = UI.createListItem(text, subtext, true);
                     elem.onclick = function () {
