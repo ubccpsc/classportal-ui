@@ -39,7 +39,7 @@ const REGRESSION_TEST = '#adminEditDeliverablePage-regressionTest';
 const EDIT_DELIVERABLE_PAGE_HEADER = '#adminEditDeliverablePage-header';
 const SAVE_ACTION = '#adminEditDeliverablePage-save-action';
 const DISABLED_ONSEN_ATTRIBUTE = 'disabled';
-const ADD_DELIVERABLE_TAG = 'Add Deliverable';
+const ADD_DELIVERABLE_TAG = 'Create Deliverable';
 const EDIT_DELIVERABLE_TAG = 'Edit Deliverable';
 
 declare var myApp: App;
@@ -354,7 +354,7 @@ export class DeliverableView {
     */
     private save(deliv: Deliverable) {
         console.log('EditDeliverableView::save() - start');
-        let editUrl = this.app.backendURL + this.app.currentCourseId + '/admin/deliverable';
+        let url = this.app.backendURL + this.app.currentCourseId + '/admin/deliverable';
         let header = document.querySelector(HTMLTags.EDIT_DELIVERABLE_HEADER) as HTMLElement;
         let isEdit: boolean = header.innerHTML === EDIT_DELIVERABLE_TAG ? true : false;
         let isAdd: boolean = header.innerHTML === ADD_DELIVERABLE_TAG ? true : false;
@@ -362,12 +362,12 @@ export class DeliverableView {
         let deliverablePayload = {deliverable: deliv};
 
         if (isEdit) {
-            Network.httpPost(editUrl, deliverablePayload)
+            Network.httpPost(url, deliverablePayload)
                 .then((response: object) => {
                     console.log('EditDeliverableView POST UPDATE DELIV response', response);
                 })
         } else if (isAdd) {
-            Network.httpPut(editUrl, deliverablePayload)
+            Network.httpPut(url, deliverablePayload)
                 .then((response: object) => {
                     console.log('EditDeliverableView PUT ADD DELIV response', response);
                 })
