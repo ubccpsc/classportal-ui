@@ -90,7 +90,8 @@ export class DeliverableView {
                     const open = new Date(deliverable.open);
                     deliverableList.appendChild(UI.createListHeader(deliverable.id));
                     let text = "Open: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString() + "; Close: " + close.toLocaleDateString() + ' @ ' + close.toLocaleTimeString();
-                    let subtext = 'Subtext';
+                    let subtext: string;
+                    deliverable.dockerOverride === true ? subtext = deliverable.dockerImage + ':' + deliverable.dockerBuild : '';
                     let elem = UI.createListItem(text, subtext, true);
                     elem.onclick = function () {
                         that.editDeliverable(deliverable);
