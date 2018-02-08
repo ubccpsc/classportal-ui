@@ -93,7 +93,7 @@ export class AdminController {
         console.log('AdminController::adminResultsPage( ' + delivId + ' ) - start');
         this.resultView.updateTitle();
 
-        if (typeof delivId === 'undefined' || delivId === null || delivId === 'null' || Object.keys(delivId).length === 0 ) {
+        if (typeof delivId === 'undefined' || delivId === null || delivId === 'null' || Object.keys(delivId).length === 0) {
             console.log('AdminController::adminResultsPage - skipped; select deliverable.');
             // configure selects
             this.resultView.configure();
@@ -111,6 +111,7 @@ export class AdminController {
     }
 
     public adminDashboardPage(delivId?: string, teamId?: string | null) {
+        console.log('AdminController::adminDashboardPage(..) - start');
         this.dashboardView.updateTitle();
 
         if (typeof delivId === 'undefined') {
@@ -120,6 +121,9 @@ export class AdminController {
             this.dashboardView.configure();
             // just don't do anything!
             return;
+        } else {
+            console.log('should this init happen here? XXX');
+            //   this.dashboardView.configure();
         }
 
         if (typeof teamId === 'undefined') {

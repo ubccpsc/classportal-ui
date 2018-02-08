@@ -97,7 +97,7 @@ export class ResultView {
             let headers: TableHeader[] = [];
             //const headerRow = processedData['_index'];
 
-            headers.push({id: 'userName', text: 'CWL', sortable: true, defaultSort: false, sortDown: true});
+            headers.push({id: 'userName', text: 'csid', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'studentNumber', text: 'Student #', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'fName', text: 'First', sortable: true, defaultSort: false, sortDown: true});
             headers.push({id: 'lName', text: 'Last', sortable: true, defaultSort: false, sortDown: true});
