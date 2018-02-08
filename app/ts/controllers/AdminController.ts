@@ -189,5 +189,10 @@ export class AdminController {
         console.log('AdminController::adminProvisionReposPage - start; options: ' + JSON.stringify(opts));
 
     }
+
+    public adminClassListPage(opts: any) {
+        console.log('AdminController::adminUploadClassListPage - start; options: ' + JSON.stringify(opts));
+
+    }
 }
 

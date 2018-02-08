@@ -49,7 +49,6 @@ export class DeliverableView {
     private app: App;
     private editTypes = { EDIT_DELIVERABLE: 'edit', ADD_DELIVERABLE: 'add'};
 
-
     constructor(controller: AdminController, app: App) {
         this.controller = controller;
         this.app = app;
@@ -294,7 +293,11 @@ export class DeliverableView {
         UI.hideModal();
     }
 
-    // All other fields are input numbers and booleans that are assumed to be valid.
+    /**
+    * Determines if the Deliverable values loaded on the EditDeliverable view are valid and are ready to be saved.
+    *
+    * @return boolean true if deliverable properties are valid.
+    */
     private isDeliverableValid(): boolean {
 
         const HTTPS_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
@@ -358,15 +361,14 @@ export class DeliverableView {
         console.log('EditDeliverableView::save() - start');
         let url = this.app.backendURL + this.app.currentCourseId + '/admin/deliverable';
         let header = document.querySelector(HTMLTags.EDIT_DELIVERABLE_HEADER) as HTMLElement;
-        let isEdit: boolean = header.innerHTML === EDIT_DELIVERABLE_TAG ? true : false;
-        let isAdd: boolean = header.innerHTML === ADD_DELIVERABLE_TAG ? true : false;
+        let isEditDeliv: boolean = header.innerHTML === EDIT_DELIVERABLE_TAG ? true : false;
+        let isCreateDeliv: boolean = header.innerHTML === ADD_DELIVERABLE_TAG ? true : false;
 
         let deliverablePayload = {deliverable: deliv};
 
-        if (isEdit) {
+        if (isEditDeliv) {
             Network.httpPost(url, deliverablePayload)
                 .then((data: any) => {
-                    console.log('EditDeliverableView POST UPDATE DELIV response', data);
                     if (data.status >= 200 && data.status < 300) {
                         UI.notification(('Successfully updated Deliverable'));
                         UI.popPage();
@@ -377,10 +379,9 @@ export class DeliverableView {
                             })
                     }
                 })
-        } else if (isAdd) {
+        } else if (isCreateDeliv) {
             Network.httpPut(url, deliverablePayload)
                 .then((data: any) => {
-                    console.log('EditDeliverableView PUT ADD DELIV response', data);
                     if (data.status >= 200 && data.status < 300) {
                         UI.notification('Successfully created Deliverable');
                         UI.popPage();
@@ -394,16 +395,12 @@ export class DeliverableView {
                                 }
                             });
                     }
+                    console.log('EditDeliverableView::save() - end');
                 })
         } else {
             console.log('EditDeliverableView ERROR Could not determine Deliv update/add type');
         }
-
-        // UI.popPage(); ENABLE AFTER DEBUGGING
-        console.log('EditDeliverableView::save() - end');
     }
-
-
 
     private editDeliverable(deliverable: Deliverable) {
         console.log('DeliverableView::editDeliverable( ' + deliverable.id + ' ) - start');
