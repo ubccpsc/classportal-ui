@@ -89,8 +89,8 @@ export class AdminController {
     }
 
     public adminResultsPage(delivId?: string) {
-        this.authHelper.checkUserrole(this.REQ_USERROLE);
         console.log('AdminController::adminResultsPage( ' + delivId + ' ) - start');
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
         this.resultView.updateTitle();
 
         if (typeof delivId === 'undefined' || delivId === null || delivId === 'null' || Object.keys(delivId).length === 0) {
@@ -123,6 +123,7 @@ export class AdminController {
             return;
         } else {
             console.log('should this init happen here? XXX');
+            // we need this, but if we do it here it will reset the current selection
             //   this.dashboardView.configure();
         }
 
