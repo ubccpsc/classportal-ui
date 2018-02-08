@@ -1,3 +1,38 @@
+/*******************
+
+# ADMIN CLASS LIST PAGE
+
+*/
+
+#adminClassListPage ons-col {
+  border: 1px solid #ccc;
+  background: #fff;
+  overflow: hidden;
+  padding: 4px;
+  color: #999;
+}
+
+#adminClassListPage ons-row:first-of-type ons-col {
+    text-align: center;
+    background-color: lightgrey;
+    border: 0;
+}
+
+#adminClassListPage {
+  background-color: #f6f;
+  padding: 8px;
+}
+
+#adminClassListPage h3 {
+  color: #666;
+  padding-left: 10px;
+  font-size: 17px;
+}
+
+
+
+
+
 .settingIcon {
     min-width: 0;
     padding-right: 10px;

@@ -5,8 +5,6 @@ const path = require('path');
 const http = require('http');
 const https = require('https');
 const config = require('./config');
-const io = require('socket.io')(https);
-
 const PORT = process.env.NODE_ENV === 'production' ? 443 : 3000;
 
 // configure express app
@@ -51,6 +49,14 @@ redirectApp.get('*', function (req, res) {
 // create servers
 let httpServer = http.createServer(redirectApp);
 let httpsServer = https.createServer(options, app);
+
+// ## SOCKET IO - Adds Client interface to index.html through <script> tag ##
+const io = require('socket.io')(httpsServer);
+
+io.on('connection', () => {
+    console.log('user connected');
+});
+// ##
 
 // start servers
 httpServer.listen(80, function (err) {

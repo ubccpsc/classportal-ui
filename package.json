@@ -40,6 +40,7 @@
     "parsleyjs": "^2.8.0",
     "python": "^0.0.4",
     "socket.io": "^2.0.4",
+    "socket.io-client": "^2.0.4",
     "whatwg-fetch": "^2.0.3"
   }
 }
