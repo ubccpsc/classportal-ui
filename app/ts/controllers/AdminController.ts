@@ -114,7 +114,7 @@ export class AdminController {
         console.log('AdminController::adminDashboardPage(..) - start');
         this.dashboardView.updateTitle();
 
-        if (typeof delivId === 'undefined') {
+        if (typeof delivId === 'undefined' || delivId === null || delivId === 'null' || Object.keys(delivId).length === 0) {
             console.log('AdminController::adminDashboardPage - delivId missing!');
 
             // configure selects
@@ -122,9 +122,6 @@ export class AdminController {
             // just don't do anything!
             return;
         } else {
-            console.log('should this init happen here? XXX');
-            // we need this, but if we do it here it will reset the current selection
-            //   this.dashboardView.configure();
         }
 
         if (typeof teamId === 'undefined') {
