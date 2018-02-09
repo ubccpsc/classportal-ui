@@ -1,0 +1,53 @@
+<ons-page id="adminClassListPage">
+
+    <ons-toolbar>
+        <div class="left">
+            <ons-back-button></ons-back-button>
+        </div>
+        <div id="uploadClassListPage-header" class="center">Class List Manager</div>
+    </ons-toolbar>
+
+    <ons-list-header>Upload a New Class List</ons-list-header>
+    <div class="adminClassListPage-uploadListContainer">
+    	<div id="adminClassListPage-uploadWarningContainer">
+	    	<p><span>Warning:</span> Uploading a Class List will overwrite pre-existing Course and Lab Information</p>
+	    	<p>All pre-existing Users, Teams, and Github Repos, and other Courses <span>WILL NOT</span> be affected.</p>
+    	</div>
+    	<ons-input id="adminClassListPage-fileInput" type="file"></ons-input>
+    	<p></p>
+    	<ons-button modifier="medium">Upload</ons-button>
+    </div>
+	<ons-list-header>Current Class List</ons-list-header>
+    <div class="adminClassListPage-listContainer">
+		<ons-row>
+			<ons-col>Last Name</ons-col>
+			<ons-col>First Name</ons-col>
+			<ons-col>SNUM</ons-col>
+			<ons-col>CSID</ons-col>
+			<ons-col>Lab Section</ons-col>
+		</ons-row>
+			<p></p>
+		<ons-row>
+			<ons-col>asd</ons-col>
+			<ons-col>asd</ons-col>
+			<ons-col>asd</ons-col>
+			<ons-col>asd</ons-col>
+			<ons-col><asd/ons-col>
+		</ons-row>
+	<div>
+    <ons-list id="uploadClassListPage-list">
+
+    </ons-list>
+
+
+
+
+
+
+
+    <!-- Event listener will trigger the upload after successful validation -->
+    <ons-fab id="uploadClassListPage-action" position="bottom right">
+        <ons-icon icon="md-save"></ons-icon>
+    </ons-fab>
+
+</ons-page>

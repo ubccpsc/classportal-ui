@@ -6,6 +6,7 @@ import {UI} from '../util/UI';
 import {Network} from '../util/Network';
 import {DashboardView} from "../viewAdmin/DashboardView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
+import {ClassListView} from "../viewAdmin/ClassListView";
 import {ProvisionTeamsDeliverableView} from "../viewAdmin/ProvisionTeamsDeliverableView";
 import {TeamView} from "../viewAdmin/TeamView";
 import {ResultView} from "../viewAdmin/ResultView";
@@ -192,6 +193,8 @@ export class AdminController {
 
     public adminClassListPage(opts: any) {
         console.log('AdminController::adminUploadClassListPage - start; options: ' + JSON.stringify(opts));
+
+
 
     }
 }
