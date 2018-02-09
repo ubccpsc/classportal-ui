@@ -14,6 +14,7 @@ import {GitHubView} from "../viewAdmin/GitHubView";
 import {AddDeliverableView} from "../viewAdmin/AddDeliverableView";
 import {App} from "../App";
 import {EditDeliverableView} from '../viewAdmin/EditDeliverableView';
+import {GradeUploadView} from "../viewAdmin/GradeUploadView";
 
 const ADD_DELIVERABLE_BUTTON = '#adminDeliverablesPage-add-deliverable';
 
@@ -26,6 +27,8 @@ export class AdminController {
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
     private dashboardView = new DashboardView(this);
+    private gradeUploadView = new GradeUploadView(this);
+
     private authHelper: AuthHelper;
     private readonly REQ_USERROLE = 'admin';
     private editDeliverableView: EditDeliverableView;
@@ -170,6 +173,20 @@ export class AdminController {
 
         const url = this.app.backendURL + this.courseId + '/deliverables';
         Network.handleRemote(url, this.deliverableView, UI.handleError);
+    }
+
+    public adminGitHubManageGradesPage(delivId?: string) {
+        console.log('AdminController::adminGitHubManageGradesPage( ' + delivId + ' ) - start');
+        this.authHelper.checkUserrole(this.REQ_USERROLE);
+        this.resultView.updateTitle();
+
+        if (typeof delivId === 'undefined' || delivId === null || delivId === 'null' || Object.keys(delivId).length === 0 || typeof (<any>delivId).delivId === 'undefined') {
+            console.log('AdminController::adminGitHubManageGradesPage - skipped; select deliverable.');
+            // configure selects
+            this.gradeUploadView.configure();
+            return;
+        }
+
     }
 
     public adminEditDeliverablePage(opts: any) {

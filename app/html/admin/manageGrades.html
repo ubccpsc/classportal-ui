@@ -4,10 +4,30 @@
         <div class="center">Manage Grades</div>
     </ons-toolbar>
 
-    <h2 style="text-align:center;">ManageGrades NOT IMPLEMENTED</h2>
-    <p>
-        This is the page where you will look at your AutoTest results and either convert them directly to Grade Records, or download them for local modification before uploading them as grade records.
-    </p>
+    <h2 style="text-align:center;">Grade Submit button NOT IMPLEMENTED</h2>
+
+    <ons-list>
+        <ons-list-header>Grades Instructions</ons-list-header>
+        <ons-list-item>
+            <p>Grade upload spreadsheet should be a CSV; any grades you upload will overwrite previous values for that deliverable.</p>
+            <p>The first row of the CSV should contain row headers. Any number of rows are allowed, but four are required: csid, student#, finalGrade, comments. Empty values are allowed for any finalGrade or comments cell.</p>
+        </ons-list-item>
+        <ons-list-header>Upload Grades:</ons-list-header>
+        <ons-list-item style="text-align: center;">
+            <ons-row>
+                <ons-col>
+                    Deliverable:
+                    <ons-select id="admin-gradeUpload-deliverable-select"
+                                style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
+                        <option value="null">Deliv</option>
+                    </ons-select>
+
+                    <ons-button onclick="doTheUploadThing">Upload Grades</ons-button>
+                </ons-col>
+            </ons-row>
+        </ons-list-item>
+    </ons-list>
+
     <!--
     <ons-list id="admin-github-list">
         <ons-list-header>Create Project</ons-list-header>
