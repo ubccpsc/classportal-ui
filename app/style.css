@@ -23,7 +23,7 @@
   color: #999;
 }
 
-#adminClassListPage .adminClassListPage-listContainer {
+#adminClassListPage #adminClassListPage-listContainer {
     width: 95%;
     margin: auto;
     margin-top: 35px;

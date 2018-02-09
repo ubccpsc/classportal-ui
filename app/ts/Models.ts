@@ -1,4 +1,21 @@
 
+export interface StudentWithLab {
+  fname: string;
+  lname: string;
+  snum: string;
+  csid: string;
+  labSection: string;
+}
+
+export interface StudentWithLabContainer {
+  response: StudentWithLab[];
+}
+
+export interface LabSection {
+  labId: string;
+  users: Student[];
+}
+
 /**
  * All of the information ClassPortal knows about a given student.
  */

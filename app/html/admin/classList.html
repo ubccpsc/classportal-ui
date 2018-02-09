@@ -10,7 +10,7 @@
     <ons-list-header>Add/Update Class List</ons-list-header>
     <div class="adminClassListPage-uploadListContainer">
     	<div id="adminClassListPage-uploadWarningContainer">
-	    	<p><span>Warning:</span> Uploading a Class List will overwrite pre-existing Course and Lab Information</p>
+	    	<p><span>Warning:</span> Uploading a Class List will overwrite pre-existing Class List and Lab Section information</p>
 	    	<p>All pre-existing Users, Teams, and Github Repos, and other Courses <span>WILL NOT</span> be affected.</p>
     	</div>
     	<input id="adminClassListPage-fileInput" type="file"/>
@@ -18,26 +18,22 @@
     	<ons-button id="adminClassListPage-uploadButton" modifier="medium">Upload</ons-button>
     </div>
 	<ons-list-header>Current Class List</ons-list-header>
-    <div class="adminClassListPage-listContainer">
-		<ons-row>
+	    <div id="adminClassListPage-listContainer">
+	    	<!-- Where updated class list user information is placed !-->
+		<div>
+    <ons-list id="uploadClassListPage-list">
+
+    </ons-list>
+
+    <div style="display: none" id="adminClassListPage-rowHeaderContainer">
+    	<ons-row id="adminClassListPage-rowHeaders">
 			<ons-col>Last Name</ons-col>
 			<ons-col>First Name</ons-col>
 			<ons-col>SNUM</ons-col>
 			<ons-col>CSID</ons-col>
 			<ons-col>Lab Section</ons-col>
 		</ons-row>
-			<p></p>
-		<ons-row>
-			<ons-col>asd</ons-col>
-			<ons-col>asd</ons-col>
-			<ons-col>asd</ons-col>
-			<ons-col>asd</ons-col>
-			<ons-col><asd/ons-col>
-		</ons-row>
-	<div>
-    <ons-list id="uploadClassListPage-list">
-
-    </ons-list>
+    </div>
 
 
 
