@@ -124,6 +124,22 @@ export class Network {
         });
     }
 
+    public static async httpPostFile(url: string, payload: FormData): Promise<object> {
+        console.log('Network::httpPost( ' + url + ' ) - start');
+        const OPTIONS_HTTP_POST_FILE: object = {
+            credentials: 'include',
+            method: 'post',
+            cors: 'enabled',
+            body: payload
+        };
+        return fetch(url, OPTIONS_HTTP_POST_FILE).then((data: any) => {
+            return data
+        })
+        .catch((err) => {
+            console.log('Network::httpPost() ERROR ' + err);
+        });
+    }
+
     public static async httpPut(url: string, payload: object): Promise<object> {
         console.log('Network::httpPut( ' + url + ' ) - start');
         const OPTIONS_HTTP_PUT: object = {

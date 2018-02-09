@@ -7,15 +7,15 @@
         <div id="uploadClassListPage-header" class="center">Class List Manager</div>
     </ons-toolbar>
 
-    <ons-list-header>Upload a New Class List</ons-list-header>
+    <ons-list-header>Add/Update Class List</ons-list-header>
     <div class="adminClassListPage-uploadListContainer">
     	<div id="adminClassListPage-uploadWarningContainer">
 	    	<p><span>Warning:</span> Uploading a Class List will overwrite pre-existing Course and Lab Information</p>
 	    	<p>All pre-existing Users, Teams, and Github Repos, and other Courses <span>WILL NOT</span> be affected.</p>
     	</div>
-    	<ons-input id="adminClassListPage-fileInput" type="file"></ons-input>
+    	<input id="adminClassListPage-fileInput" type="file"/>
     	<p></p>
-    	<ons-button modifier="medium">Upload</ons-button>
+    	<ons-button id="adminClassListPage-uploadButton" modifier="medium">Upload</ons-button>
     </div>
 	<ons-list-header>Current Class List</ons-list-header>
     <div class="adminClassListPage-listContainer">

@@ -211,10 +211,9 @@ export class AdminController {
     }
 
     public adminClassListPage(opts: any) {
-        console.log('AdminController::adminUploadClassListPage - start; options: ' + JSON.stringify(opts));
-
-
-
+        console.log('AdminController::adminClassListPage - start; options: ' + JSON.stringify(opts));
+        let classListView = new ClassListView(this.courseId, this.app);
+        classListView.render();
     }
 }
 
