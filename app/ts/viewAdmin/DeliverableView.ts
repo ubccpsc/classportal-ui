@@ -50,6 +50,7 @@ export class DeliverableView {
     private editTypes = { EDIT_DELIVERABLE: 'edit', ADD_DELIVERABLE: 'add'};
 
     constructor(controller: AdminController, app: App) {
+        console.log("DeliverableView::<init> - start");
         this.controller = controller;
         this.app = app;
     }
@@ -60,7 +61,7 @@ export class DeliverableView {
     }
 
     public render(data: DeliverablePayload) {
-        console.log('DeliverableView::render(..) - start');
+        console.log("DeliverableView::render(..) - start");
         this.updateTitle();
 
         if (typeof data === 'undefined') {
@@ -107,7 +108,7 @@ export class DeliverableView {
         UI.hideModal();
     }
 
-    public addDeliverable() { 
+    public addDeliverable() {
         console.log('DeliverableView::addDeliverable() - start');
         let defaultNewDeliv: Deliverable = DeliverableRecord.getDefaultDeliv();
         let that = this;
@@ -231,8 +232,8 @@ export class DeliverableView {
 
             let header = document.querySelector(EDIT_DELIVERABLE_PAGE_HEADER) as HTMLElement;
             header.innerHTML = 'Edit Deliverable';
-            
-            // ## DISABLE fields in edit       
+
+            // ## DISABLE fields in edit
             delivName.setAttribute(DISABLED_ONSEN_ATTRIBUTE, "");
         }
 
@@ -349,7 +350,7 @@ export class DeliverableView {
     }
 
     /**
-    * ## INFO ## 
+    * ## INFO ##
     *
     * EditDeliverableView.ts is used for two different CRUD operations:
     *

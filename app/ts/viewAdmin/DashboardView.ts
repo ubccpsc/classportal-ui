@@ -33,10 +33,12 @@ export class DashboardView {
     private controller: AdminController;
 
     constructor(controller: AdminController) {
+        console.log("DashboardView::<init> - start");
         this.controller = controller;
     }
 
     public configure() {
+        console.log('DashboardView::configure() - start');
         if (this.controller.deliverables !== null) {
             const delivSelect = document.getElementById('admin-dashboard-deliverable-select') as OnsSelectElement;
             while (delivSelect.options.length > 0) {
