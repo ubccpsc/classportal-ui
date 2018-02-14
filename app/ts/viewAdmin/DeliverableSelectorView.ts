@@ -4,6 +4,7 @@ import {Deliverable, DeliverablePayload} from "../Models";
 import {TeamHealthView} from "../viewAdmin/TeamHealthView";
 import {ProvisionReposView} from "../viewAdmin/ProvisionReposView";
 import {ProvisionTeamsView} from "../viewAdmin/ProvisionTeamsView";
+import {DeliverableView} from "../viewAdmin/DeliverableView";
 import {RawTeamPayload} from "../Models";
 import {Network} from "../util/Network";
 import {App} from "../App";
@@ -18,7 +19,8 @@ export enum ForwardOptions {
     PROVISION_REPOS = 'PROVISION_REPOS',
     CREATE_TEAMS = 'CREATE_TEAMS',
     TEAM_HEALTH = 'TEAM_HEALTH',
-    ASSIGN_GRADES = 'ASSIGN_GRADES'
+    ASSIGN_GRADES = 'ASSIGN_GRADES',
+    MANAGE_DELIVERABLES = 'MANAGE_DELIVERABLES'
 }
 
 declare var myApp: App;
@@ -27,6 +29,7 @@ export class DeliverableSelectorView {
     private controller: AdminController;
     private teamHealthView: TeamHealthView;
     private provisionReposView: ProvisionReposView;
+    private deliverableView: DeliverableView;
     private provisionTeamsView: ProvisionTeamsView;
     private forwardTo: string;
 
@@ -89,6 +92,11 @@ export class DeliverableSelectorView {
                                 that.viewDeliverableProvision(deliverable.name);
                                 break;
                             }
+                            case (ForwardOptions.MANAGE_DELIVERABLES): {
+                                that.deliverableView = new DeliverableView(that.controller, myApp);
+                                that.deliverableView.editDeliverable(deliverable);
+                                break;
+                            }
                             default: {
                                 UI.notification('DeliverableSelectorView.ts ERROR; No Model has been assigned to this view.');
                             }
@@ -106,9 +114,13 @@ export class DeliverableSelectorView {
         UI.hideModal();
     }
 
+    private editDeliverable(delivName: string) {
+      let that = this;
+    }
+
     private getTeamProvisions(delivName: string) {
       let that = this;
-      let url = myApp.backendURL + myApp.currentCourseId + '/admin/teams/' + delivName +'/overview';
+      let url = myApp.backendURL + myApp.currentCourseId + '/admin/teams/' + delivName + '/overview';
       Network.handleRemote(url, that.teamHealthView, UI.handleError);
     }
 

@@ -14,7 +14,6 @@ import {AuthHelper} from "../util/AuthHelper";
 import {GitHubView} from "../viewAdmin/GitHubView";
 import {AddDeliverableView} from "../viewAdmin/AddDeliverableView";
 import {App} from "../App";
-import {EditDeliverableView} from '../viewAdmin/EditDeliverableView';
 import {GradeUploadView} from "../viewAdmin/GradeUploadView";
 
 const ADD_DELIVERABLE_BUTTON = '#adminDeliverablesPage-add-deliverable';
@@ -32,7 +31,6 @@ export class AdminController {
 
     private authHelper: AuthHelper;
     private readonly REQ_USERROLE = 'admin';
-    private editDeliverableView: EditDeliverableView;
 
     public deliverables: any = null;
 
@@ -187,15 +185,12 @@ export class AdminController {
             this.gradeUploadView.configure();
             return;
         }
-
     }
 
     public adminEditDeliverablePage(opts: any) {
         console.log('AdminController::adminEditDeliverablePage - start; options: ' + JSON.stringify(opts));
         // this.githubView.updateTitle();
         // this.githubView.render({});
-        this.editDeliverableView = new EditDeliverableView(opts, this.app);
-        this.editDeliverableView.render();
     }
 
     public adminDeliverableSelector(opts: any) {

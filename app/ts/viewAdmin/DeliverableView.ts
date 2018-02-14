@@ -56,7 +56,6 @@ export class DeliverableView {
     }
 
     public updateTitle() {
-        // document.querySelector('#adminTabsHeader').innerHTML = data.course;
         document.querySelector('#adminTabsHeader').innerHTML = "Deliverables";
     }
 
@@ -403,7 +402,7 @@ export class DeliverableView {
         }
     }
 
-    private editDeliverable(deliverable: Deliverable) {
+    public editDeliverable(deliverable: Deliverable) {
         console.log('DeliverableView::editDeliverable( ' + deliverable.id + ' ) - start');
         let that = this;
         UI.showModal();
