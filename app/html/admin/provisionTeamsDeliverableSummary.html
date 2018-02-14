@@ -21,66 +21,39 @@
             <ons-list-item id="admin-prov-details__students-without-team-body" modifier="chevron" tappable></ons-list-item>
             <ons-list-header class="admin-prov-details__num-of-teams-header">Teams</ons-list-header>
             <ons-list-item id="admin-prov-details__students-num-of-teams-body" modifier="chevron" tappable></ons-list-item>
-            <ons-list-header class="admin-prov-details__num-of-teams-with-repo-header">Teams with Repo</ons-list-header>
+            <ons-list-header class="admin-prov-details__num-of-teams-with-repo-header">Teams With Provisioned Repo</ons-list-header>
             <ons-list-item id="admin-prov-details__students-num-of-teams-with-repo-body" modifier="chevron" tappable></ons-list-item>
-            <ons-list-header class="admin-prov-details__num-of-teams-without-repo-header">Teams without Repo</ons-list-header>
+            <ons-list-header class="admin-prov-details__num-of-teams-without-repo-header">Teams without Provisioned Repo</ons-list-header>
             <ons-list-item id="admin-prov-details__students-num-of-teams-without-repo-body" modifier="chevron" tappable></ons-list-item>
         </section>
 
-        <h3 id="admin-prov-details__team-actions" style="text-align: center;">Team Creator</h3>
+        <h3 id="admin-prov-details__team-actions" style="text-align: center;">Team Generation</h3>
 
         <section>
-            <div id="admin-prov-details__team-size-container" style="margin: 10px;">
-                <ons-input style='width: 48%; float: left;' placeholder="Min Team Size" id="admin-prov-details__min-team-size-input"
-                           type="number" modifier="underbar"></ons-input>
-                <ons-input style='width: 48%; float: right;' placeholder="Max Team Size" id="admin-prov-details__max-team-size-input"
-                           type="number" modifier="underbar" placeholder="maxTeamSize" float></ons-input>
+            <div id="admin-prov-details__generate-teams-container" style="margin: 10px;">
+              <ons-row id="admin-prov-details__generate-teams-headers">
+                <ons-col>Min Team Size</ons-col>
+                <ons-col>Max Team Size</ons-col>
+              </ons-row>
+
+              <ons-row id="admin-prov-details__generate-teams-rows">
+                <ons-col>Min Team Size</ons-col>
+                <ons-col>Max Team Size</ons-col>
+              </ons-row>
+
+                <ons-input disabled style='width: 48%; float: left;' placeholder="Min Team Size" id="admin-prov-details__min-team-size-input"
+                           type="text" modifier="underbar"></ons-input>
+                <ons-input disabled style='width: 48%; float: right;' placeholder="Max Team Size" id="admin-prov-details__max-team-size-input"
+                           type="text" modifier="underbar" placeholder="maxTeamSize" float></ons-input>
             </div>
             <ons-list-item>
                 <div class="center">
                     Teams in Same Lab
                 </div>
-                <div id="admin-prov-details__team-in-same-lab" class="right">
-                    <ons-switch></ons-switch>
-                </div>
             </ons-list-item>
             <ons-button id="admin-prov-details__generate-teams" modifier="large" modifier='cta'>Generate Teams</ons-button>
         </section>
 
-        <!--
-        <ons-list-item>
-          <div class="left">
-            <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
-          </div>
-          <div class="center">
-            <span class="list-item__title">Repos</span><span class="list-item__subtitle">On the Internet</span>
-          </div>
-        </ons-list-item>
-
-        <ons-list-header>Icons</ons-list-header>
-        <ons-list-item>
-          <div class="left">
-            <ons-icon icon="md-face" class="list-item__icon"></ons-icon>
-          </div>
-          <div class="center">
-            Icon
-          </div>
-        </ons-list-item>
-
-
-
-        <ons-list-header>Switch and icon</ons-list-header>
-        <ons-list-item>
-          <div class="left">
-            <ons-icon icon="md-face" class="list-item__icon"></ons-icon>
-          </div>
-          <div class="center">
-            Icon and switch
-          </div>
-          <div class="right">
-            <ons-switch></ons-switch>
-          </div>
--->
     </ons-list>
 
 </ons-page>

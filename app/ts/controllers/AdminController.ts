@@ -7,7 +7,7 @@ import {Network} from '../util/Network';
 import {DashboardView} from "../viewAdmin/DashboardView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
 import {ClassListView} from "../viewAdmin/ClassListView";
-import {ProvisionTeamsDeliverableView} from "../viewAdmin/ProvisionTeamsDeliverableView";
+import {DeliverableSelectorView} from "../viewAdmin/DeliverableSelectorView";
 import {TeamView} from "../viewAdmin/TeamView";
 import {ResultView} from "../viewAdmin/ResultView";
 import {AuthHelper} from "../util/AuthHelper";
@@ -23,7 +23,7 @@ export class AdminController {
 
     private deliverableView: DeliverableView;
     private courseId: string;
-    private provisionTeamsDeliverableView = new ProvisionTeamsDeliverableView(this);
+    private deliverableSelectorView: DeliverableSelectorView;
     private teamView = new TeamView(this);
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
@@ -198,15 +198,19 @@ export class AdminController {
         this.editDeliverableView.render();
     }
 
-    public adminProvisionTeamsPage(opts: any) {
-        console.log('AdminController::adminProvisionTeamsPage - start; options: ' + JSON.stringify(opts));
-
+    public adminDeliverableSelector(opts: any) {
+        console.log('AdminController::adminDeliverableSelector - start; options: ' + JSON.stringify(opts));
         const url = this.app.backendURL + this.courseId + '/deliverables';
-        Network.handleRemote(url, this.provisionTeamsDeliverableView, UI.handleError);
-    }
+        try {
+            if (typeof opts.forward === 'undefined' || opts.forward === '') {
+                throw `Opts.Forward must contain forwardTo option. Options found enumerated on DeliverableSelector.ts`;
+            }
+        } catch (err) {
+            console.log(`AdminController::adminDeliverableSelector(opts.forward) ERROR ` + err);
+        }
+        this.deliverableSelectorView = new DeliverableSelectorView(this, opts.forward);
 
-    public adminProvisionReposPage(opts: any) {
-        console.log('AdminController::adminProvisionReposPage - start; options: ' + JSON.stringify(opts));
+        Network.handleRemote(url, this.deliverableSelectorView, UI.handleError);
 
     }
 
