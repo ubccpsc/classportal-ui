@@ -15,18 +15,19 @@
 
         <!--Course Actions-->
         <ons-list-header>Course Actions</ons-list-header>
-        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'MANAGE_DELIVERABLES'})">Configure Deliverables</ons-button></ons-list-item>
+        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'MANAGE_DELIVERABLES', header: 'Manage Deliverables'})">Configure Deliverables</ons-button></ons-list-item>
         <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/classList.html')">Upload Class List</ons-button></ons-list-item>
+        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/manageGrades.html')">Manage Grades</ons-button></ons-list-item>
 
         <!--Github Actions-->
         <ons-list-header>GitHub Actions</ons-list-header>
-        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'CREATE_TEAMS'})">Create Teams</ons-button></ons-list-item>
-        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'PROVISION_REPOS'})">Provision Repos</ons-button></ons-list-item>
-        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'TEAM_HEALTH'})">Team Health</ons-button></ons-list-item>
-        
+        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'CREATE_TEAMS', header: 'Create Teams'})">Create Teams</ons-button></ons-list-item>
+        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'PROVISION_REPOS', header: 'Provision Repos'})">Provision Repos</ons-button></ons-list-item>
+        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'TEAM_HEALTH', header: 'Team Health Info'})">Team Health</ons-button></ons-list-item>
+
         <!--Grades Actions-->
         <ons-list-header>Grades Actions</ons-list-header>
-        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'ASSIGN_GRADES'})">Assign Grades</ons-button></ons-list-item>
+        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'ASSIGN_GRADES', header: 'Assign Grades'})">Assign Grades</ons-button></ons-list-item>
     </ons-list>
 
 </ons-page>

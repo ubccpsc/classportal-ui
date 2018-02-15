@@ -32,15 +32,17 @@ export class DeliverableSelectorView {
     private deliverableView: DeliverableView;
     private provisionTeamsView: ProvisionTeamsView;
     private forwardTo: string;
+    private header: string;
 
-    constructor(controller: AdminController, forwardTo: string) {
+    constructor(controller: AdminController, forwardTo: string, header: string) {
         this.controller = controller;
         this.forwardTo = forwardTo;
+        this.header = header;
     }
 
     public updateTitle() {
         // document.querySelector('#adminTabsHeader').innerHTML = data.course;
-        document.querySelector('#adminProvisionTeamsHeader').innerHTML = "Team Provisions by Deliverable";
+        document.querySelector('#adminProvisionTeamsHeader').innerHTML = this.header;
     }
 
     public render(data: DeliverablePayload) {

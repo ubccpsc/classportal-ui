@@ -1,0 +1,27 @@
+<ons-page id="adminGradesView">
+    <ons-toolbar>
+        <div class="left"><ons-back-button></ons-back-button></div>
+        <div class="center">View Grades</div>
+    </ons-toolbar>
+
+    <ons-list>
+        <ons-list-header>Select Deliverable:</ons-list-header>
+        <ons-list-item style="text-align: center;">
+            <ons-row>
+                <ons-col>
+                    Deliverable:
+                    <ons-select id="admin-grades-view__deliverable-select"
+                                style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
+                        <option value="null">Deliv</option>
+                    </ons-select>
+
+                    <ons-button onclick="doTheUploadThing">Update Results</ons-button>
+                </ons-col>
+            </ons-row>
+        </ons-list-item>
+
+        <ons-list-header>Grades Instructions</ons-list-header>
+        <ons-list-item>
+        </ons-list-item>
+    </ons-list>
+</ons-page>

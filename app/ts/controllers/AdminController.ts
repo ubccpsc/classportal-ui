@@ -12,6 +12,7 @@ import {TeamView} from "../viewAdmin/TeamView";
 import {ResultView} from "../viewAdmin/ResultView";
 import {AuthHelper} from "../util/AuthHelper";
 import {GitHubView} from "../viewAdmin/GitHubView";
+import {GradesView} from "../viewAdmin/GradesView";
 import {AddDeliverableView} from "../viewAdmin/AddDeliverableView";
 import {App} from "../App";
 import {GradeUploadView} from "../viewAdmin/GradeUploadView";
@@ -23,6 +24,7 @@ export class AdminController {
     private deliverableView: DeliverableView;
     private courseId: string;
     private deliverableSelectorView: DeliverableSelectorView;
+    private viewGrades: GradesView;
     private teamView = new TeamView(this);
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
@@ -187,12 +189,6 @@ export class AdminController {
         }
     }
 
-    public adminEditDeliverablePage(opts: any) {
-        console.log('AdminController::adminEditDeliverablePage - start; options: ' + JSON.stringify(opts));
-        // this.githubView.updateTitle();
-        // this.githubView.render({});
-    }
-
     public adminDeliverableSelector(opts: any) {
         console.log('AdminController::adminDeliverableSelector - start; options: ' + JSON.stringify(opts));
         const url = this.app.backendURL + this.courseId + '/deliverables';
@@ -203,10 +199,17 @@ export class AdminController {
         } catch (err) {
             console.log(`AdminController::adminDeliverableSelector(opts.forward) ERROR ` + err);
         }
-        this.deliverableSelectorView = new DeliverableSelectorView(this, opts.forward);
+        this.deliverableSelectorView = new DeliverableSelectorView(this, opts.forward, opts.header);
 
         Network.handleRemote(url, this.deliverableSelectorView, UI.handleError);
 
+    }
+
+    public adminGradesView(opts: any) {
+        console.log('AdminController::adminViewGrades - start; options: ' + JSON.stringify(opts));
+        this.viewGrades = new GradesView(this.courseId, this.app);
+        const url = this.app.backendURL + this.courseId + '/deliverables';
+        Network.handleRemote(url, this.viewGrades, UI.handleError);
     }
 
     public adminClassListPage(opts: any) {
