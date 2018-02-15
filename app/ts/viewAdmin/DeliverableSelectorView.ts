@@ -5,6 +5,7 @@ import {TeamHealthView} from "../viewAdmin/TeamHealthView";
 import {ProvisionReposView} from "../viewAdmin/ProvisionReposView";
 import {ProvisionTeamsView} from "../viewAdmin/ProvisionTeamsView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
+import {AssignGradesView} from "../viewAdmin/AssignGradesView";
 import {RawTeamPayload} from "../Models";
 import {Network} from "../util/Network";
 import {App} from "../App";
@@ -14,6 +15,7 @@ const CLOSE_DELIV_KEY = 'close';
 const TAPPABLE_INTERFACE = true;
 const DELIV_HTML_LIST_ID = '#admin-provision-teams-deliverable-list';
 const PROVISION_DETAILS_ID = '#admin-provision-details';
+const ADD_DELIV_MENU = '#adminDeliverableSelector-add-deliverable';
 
 export enum ForwardOptions {
     PROVISION_REPOS = 'PROVISION_REPOS',
@@ -28,6 +30,7 @@ declare var myApp: App;
 export class DeliverableSelectorView {
     private controller: AdminController;
     private teamHealthView: TeamHealthView;
+    private assignGradesView: AssignGradesView;
     private provisionReposView: ProvisionReposView;
     private deliverableView: DeliverableView;
     private provisionTeamsView: ProvisionTeamsView;
@@ -58,6 +61,12 @@ export class DeliverableSelectorView {
         console.log('DeliverableView::render(..) - setting deliverables: ' + JSON.stringify(deliverables));
         this.controller.deliverables = deliverables; // HACK: global
 
+        if (ForwardOptions.MANAGE_DELIVERABLES === that.forwardTo) {
+            that.toggleAddDelivButton('show');
+        } else {
+            that.toggleAddDelivButton('hide');
+        }
+
         // deliverables
         const deliverableList = document.querySelector(DELIV_HTML_LIST_ID);
         if (deliverableList !== null) {
@@ -76,22 +85,22 @@ export class DeliverableSelectorView {
                         switch (that.forwardTo) {
                             case (ForwardOptions.PROVISION_REPOS): {
                                 that.provisionReposView = new ProvisionReposView(that.controller, deliverable);
-                                that.manageRepoProvisions(deliverable.name);
                                 break;
                             }
                             case (ForwardOptions.CREATE_TEAMS): {
                                 that.provisionTeamsView = new ProvisionTeamsView(that.controller, deliverable);
-                                that.manageRepoProvisions(deliverable.name);
+                                that.provisionTeamsView.render();
                                 break;
                             }
                             case (ForwardOptions.TEAM_HEALTH): {
                                 that.teamHealthView = new TeamHealthView(that.controller, deliverable);
-                                that.viewDeliverableProvision(deliverable.name);
+                                console.log('showteamhealttest');
+                                that.showTeamHealthInfo(deliverable);
                                 break;
                             }
                             case (ForwardOptions.ASSIGN_GRADES): {
-                                that.teamHealthView = new TeamHealthView(that.controller, deliverable);
-                                that.viewDeliverableProvision(deliverable.name);
+                                that.assignGradesView = new AssignGradesView(that.controller, deliverable);
+                                // that.viewDeliverableProvision(deliverable.name);
                                 break;
                             }
                             case (ForwardOptions.MANAGE_DELIVERABLES): {
@@ -116,26 +125,24 @@ export class DeliverableSelectorView {
         UI.hideModal();
     }
 
+    private toggleAddDelivButton(action: string) {
+        let hiddenMenu = document.querySelector(ADD_DELIV_MENU) as HTMLElement;
+        if (hiddenMenu !== null && hiddenMenu.style.display  === 'none' && action === 'show') {
+            hiddenMenu.style.display = 'block';
+        } else if (hiddenMenu !== null && action === 'hide'){
+            hiddenMenu.style.display = 'none';
+        }
+    }
+
     private editDeliverable(delivName: string) {
       let that = this;
     }
 
-    private getTeamProvisions(delivName: string) {
+    private showTeamHealthInfo(deliverable: Deliverable) {
+      console.log('DeliverableSelectorView::showTeamHealthInfo( ' + deliverable.name + ' ) - start');
+      UI.showModal();
       let that = this;
-      let url = myApp.backendURL + myApp.currentCourseId + '/admin/teams/' + delivName + '/overview';
+      let url = myApp.backendURL + myApp.currentCourseId + '/admin/teams/' + deliverable.name + '/overview';
       Network.handleRemote(url, that.teamHealthView, UI.handleError);
     }
-
-    private manageRepoProvisions(delivName: string) {
-        console.log('ProvisionTeamsDeliverableView::viewDeliverableProvision( ' + delivName + ' ) - start');
-        UI.showModal();
-        this.getTeamProvisions(delivName);
-    }
-
-    private viewDeliverableProvision(delivName: string) {
-        console.log('ProvisionTeamsDeliverableView::viewDeliverableProvision( ' + delivName + ' ) - start');
-        UI.showModal();
-        this.getTeamProvisions(delivName);
-    }
-
 }

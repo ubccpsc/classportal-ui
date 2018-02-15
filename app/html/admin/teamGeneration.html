@@ -1,0 +1,43 @@
+<ons-page id="adminTeamGeneration">
+    <ons-list id="admin-team-list">
+        <ons-list-header>Unassigned Students</ons-list-header>
+        <ons-list-item>
+            <div id="admin-team-unassigned-table">None</div>
+        </ons-list-item>
+        <ons-list-header>Assigned Teams</ons-list-header>
+        <ons-list-item>
+            <div id="admin-team-table" style="text-align: center; margin-left: auto; margin-right: auto;"></div>
+        </ons-list-item>
+
+
+        <h3 id="admin-prov-details__team-actions" style="text-align: center;">Team Generation</h3>
+
+        <section>
+            <div id="admin-prov-details__generate-teams-container" style="margin: 10px;">
+              <ons-row id="admin-prov-details__generate-teams-headers">
+                <ons-col>Min Team Size</ons-col>
+                <ons-col>Max Team Size</ons-col>
+              </ons-row>
+
+              <ons-row id="admin-prov-details__generate-teams-rows">
+                <ons-col>Min Team Size</ons-col>
+                <ons-col>Max Team Size</ons-col>
+              </ons-row>
+
+                <ons-input disabled style='width: 48%; float: left;' placeholder="Min Team Size" id="admin-prov-details__min-team-size-input"
+                           type="text" modifier="underbar"></ons-input>
+                <ons-input disabled style='width: 48%; float: right;' placeholder="Max Team Size" id="admin-prov-details__max-team-size-input"
+                           type="text" modifier="underbar" placeholder="maxTeamSize" float></ons-input>
+            </div>
+            <ons-list-item>
+                <div class="center">
+                    Teams in Same Lab
+                </div>
+            </ons-list-item>
+            <ons-button id="admin-prov-details__generate-teams" modifier="large" modifier='cta'>Generate Teams</ons-button>
+        </section>
+
+
+        
+    </ons-list>
+</ons-page>

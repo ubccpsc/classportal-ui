@@ -54,7 +54,7 @@ export class TeamHealthView {
           console.log(data);
    
 
-        UI.pushPage('html/admin/provisionTeamsDeliverableSummary.html', {data: null})
+        UI.pushPage('html/admin/teamHealth.html', {data: null})
             .then(() => {
                 that.updateTitle();
 
@@ -89,10 +89,6 @@ export class TeamHealthView {
                     that.loadDetails(teamsWithoutRepo);
                 });
 
-                (document.querySelector(GENERATE_TEAMS_ACTION)).addEventListener('click', () => {
-                    // that.generateTeams(); // ENABLE after respective Team provision / team repo views loading.
-                });
-
                 (document.querySelector(TEAMS_ALLOWED).firstChild as HTMLElement).innerHTML = teamsAllowed === true ? 'Yes' : 'No';
                 (document.querySelector(CLASS_SIZE).firstChild as HTMLElement).innerHTML = classSize.toString();
                 (document.querySelector(STUDENTS_WITH_TEAM).firstChild as HTMLElement).innerHTML = studentsWithTeam.length.toString();
@@ -103,36 +99,7 @@ export class TeamHealthView {
 
                 UI.hideModal();
         });
-
-        // let uiHTMLList = document.querySelector(PROVISION_DETAILS_BODY_ID);
-        // uiHTMLList.innerHTML = '';
     }
-
-    // public generateTeams() {
-    //     console.log('ProvisionTeamsDetailsView::generateTeams(..) - start');
-
-    //     let that = this;
-
-    //     // NOTE: 
-    //     // #1a min Team size unimplemented 
-    //     // #1b currently assumes min team size is always 1
-    //     // #2 max Team size IMPLEMENTED
-
-    //     let minTeamSize = (document.querySelector(MIN_TEAM_SIZE_INPUT) as HTMLInputElement).value;
-    //     let maxTeamSize = (document.querySelector(MAX_TEAM_SIZE_INPUT) as HTMLInputElement).value;
-    //     let data: TeamGenerationPayload = {teamSize: parseInt(maxTeamSize), deliverableName: that.deliverable.name, courseId: String(myApp.currentCourseId)}
-    //     let createTeamUrl = myApp.backendURL + myApp.currentCourseId + '/admin/teamGeneration';
-
-    //     Network.remotePost(createTeamUrl, data, UI.handleError)
-    //         .then((data: TeamGenerationResponseContainer) => {
-    //             UI.notification(data.response.result.n + ' Teams Successfully Created');
-    //             UI.popPage();
-    //         })
-
-    //     let teamOverviewUrl = myApp.backendURL + myApp.currentCourseId + '/admin/teams/' + that.deliverable.name +'/overview';
-
-    //     console.log('ProvisionTeamsDetailsView::generateTeams(..) - end');
-    // }
 
     public loadDetails(data: object[]) {
         console.log('ProvisionTeamsDetailsView::loadDetails(..) - start - data: ' + JSON.stringify(data));
@@ -140,7 +107,7 @@ export class TeamHealthView {
         let that = this;
         UI.showModal();
 
-        UI.pushPage('html/admin/provisionTeamsDeliverableDetails.html', {data})
+        UI.pushPage('html/admin/teamHealth.html', {data})
             .then(() => {
                 let htmlContainer = document.querySelector('#admin-prov-teams__details-container');
 
@@ -188,7 +155,6 @@ export class TeamHealthView {
 
                 that.updateTitle();
             });
-
         UI.hideModal();
 
         console.log('ProvisionTeamsDetailsView::loadDetails(..) - end');

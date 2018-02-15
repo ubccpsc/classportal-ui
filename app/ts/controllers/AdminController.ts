@@ -24,7 +24,7 @@ export class AdminController {
     private deliverableView: DeliverableView;
     private courseId: string;
     private deliverableSelectorView: DeliverableSelectorView;
-    private viewGrades: GradesView;
+    private gradesView: GradesView;
     private teamView = new TeamView(this);
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
@@ -200,16 +200,14 @@ export class AdminController {
             console.log(`AdminController::adminDeliverableSelector(opts.forward) ERROR ` + err);
         }
         this.deliverableSelectorView = new DeliverableSelectorView(this, opts.forward, opts.header);
-
         Network.handleRemote(url, this.deliverableSelectorView, UI.handleError);
-
     }
 
     public adminGradesView(opts: any) {
         console.log('AdminController::adminViewGrades - start; options: ' + JSON.stringify(opts));
-        this.viewGrades = new GradesView(this.courseId, this.app);
+        this.gradesView = new GradesView(this.courseId, this.app);
         const url = this.app.backendURL + this.courseId + '/deliverables';
-        Network.handleRemote(url, this.viewGrades, UI.handleError);
+        Network.handleRemote(url, this.gradesView, UI.handleError);
     }
 
     public adminClassListPage(opts: any) {

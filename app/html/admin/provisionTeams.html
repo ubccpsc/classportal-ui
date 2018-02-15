@@ -1,12 +1,40 @@
 <ons-page id="adminProvisionTeamsPage">
     <ons-toolbar>
-        <div class="left"><ons-back-button></ons-back-button></div>
-        <div class="center">Manage Teams</div>
+        <div class="left">
+            <ons-back-button></ons-back-button>
+        </div>
+        <h2 id="adminTeamsPage__toolbar-title" class="center">Teams Provisions</h2>
     </ons-toolbar>
 
-    <h2 style="text-align:center;" id='adminProvisionTeamsHeader'></h2>
+    <section id="adminTeamsPage-assigned-teams">
+        <h3 id="adminTeamsPage__assigned-teams-header" class="center">tea</h3>
 
-    <ons-list id='admin-provision-teams-deliverable-list'>
-        
-    </ons-list>
+        <ons-list-header>Assigned Teams</ons-list-header>
+        <div class="adminTeamsPage__assigned-teams-container">
+            test
+            <div id="adminTeamsPage__assigned-teams-list">
+
+            </div>
+        </div>
+    </section>
+
+    <section id="adminTeamsPage-unassigned-students">
+        <ons-list-header>Unassigned Students</ons-list-header>
+            <div id="adminTeamsPage__list-container">
+                <!-- Where updated class list user information is placed !-->
+            <div>
+        <ons-list id="adminTeamsPage__list">
+
+        </ons-list>
+    </section>
+
+    <div style="display: none" id="adminTeamsPage__placeholder-html">
+        <ons-row id="adminTeamsPage__unassigned-students-rowHeaders">
+            <ons-col>Last Name</ons-col>
+            <ons-col>First Name</ons-col>
+            <ons-col>SNUM</ons-col>
+            <ons-col>CSID</ons-col>
+            <ons-col>Lab Section</ons-col>
+        </ons-row>
+    </div>
 </ons-page>

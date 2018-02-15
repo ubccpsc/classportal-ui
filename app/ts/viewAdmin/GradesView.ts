@@ -18,7 +18,6 @@ export class GradesView {
     public render(data: DeliverablePayload) {
         console.log('ViewGrades::render() - start');
         this.configure(data);
-        console.log(data);
     }
 
     private configure(data: DeliverablePayload) {
@@ -26,7 +25,6 @@ export class GradesView {
         let deliverables = data.response;
         if (deliverables !== null) {
             const delivSelect = document.querySelector(DELIVERABLE_SELECTOR) as OnsSelectElement;
-            console.log('deliv select', delivSelect);
             while (delivSelect.options.length > 0) {
                 delivSelect.remove();
             }

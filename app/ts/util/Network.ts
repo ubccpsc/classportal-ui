@@ -163,7 +163,6 @@ export class Network {
         return fetch(url, OPTIONS_HTTP_GET).then((data: any) => {
             if (data.status === 200) {
                 return data.json().then((jsonData: object) => {
-                    console.log(jsonData);
                     return jsonData;
                 });
             } else {
