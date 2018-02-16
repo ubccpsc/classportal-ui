@@ -1,4 +1,5 @@
 import {App} from "../App";
+import {AdminController} from "../controllers/AdminController";
 import {UI} from "../util/UI";
 import {DeliverablePayload} from '../Models';
 import {OnsSelectElement} from "onsenui";
@@ -9,10 +10,12 @@ const DELIVERABLE_SELECTOR = '#admin-grades-view__deliverable-select';
 export class GradesView {
     private courseId: string;
     private app: App;
+    private controller: AdminController;
 
-    constructor(courseId: string, app: App) {
+    constructor(courseId: string, app: App, adminController: AdminController) {
         this.courseId = courseId;
         this.app = app;
+        this.controller = adminController;
     }
 
     public render(data: DeliverablePayload) {
@@ -23,6 +26,7 @@ export class GradesView {
     private configure(data: DeliverablePayload) {
         console.log('DashboardView::configure() - start');
         let deliverables = data.response;
+        this.controller.deliverables = data.response;
         if (deliverables !== null) {
             const delivSelect = document.querySelector(DELIVERABLE_SELECTOR) as OnsSelectElement;
             while (delivSelect.options.length > 0) {

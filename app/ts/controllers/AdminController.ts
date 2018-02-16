@@ -17,6 +17,9 @@ import {AddDeliverableView} from "../viewAdmin/AddDeliverableView";
 import {App} from "../App";
 import {GradeUploadView} from "../viewAdmin/GradeUploadView";
 
+// * First loaded controller method should put Deliverables in global variable.
+// Currently adminGradesView.ts
+
 const ADD_DELIVERABLE_BUTTON = '#adminDeliverablesPage-add-deliverable';
 
 export class AdminController {
@@ -46,6 +49,7 @@ export class AdminController {
         this.app = app;
         this.authHelper = new AuthHelper(app.backendURL);
         this.authHelper.checkUserrole(this.REQ_USERROLE);
+        this.gradesView = new GradesView(this.courseId, this.app, this);
         this.deliverableView = new DeliverableView(this, this.app);
         this.courseId = courseId;
     }
@@ -205,7 +209,6 @@ export class AdminController {
 
     public adminGradesView(opts: any) {
         console.log('AdminController::adminViewGrades - start; options: ' + JSON.stringify(opts));
-        this.gradesView = new GradesView(this.courseId, this.app);
         const url = this.app.backendURL + this.courseId + '/deliverables';
         Network.handleRemote(url, this.gradesView, UI.handleError);
     }

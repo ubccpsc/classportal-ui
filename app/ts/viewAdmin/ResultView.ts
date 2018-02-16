@@ -32,8 +32,11 @@ export class ResultView {
 
     public configure() {
         console.log('ResultView::configure() - start');
+        console.log('global delivs', this.controller.deliverables);
         if (this.controller.deliverables !== null) {
             const delivSelect = document.getElementById('admin-result-deliverable-select') as OnsSelectElement;
+                            console.log('is deliv select null', delivSelect);
+
             while (delivSelect.options.length > 0) {
                 delivSelect.remove();
             }
@@ -220,7 +223,6 @@ export class ResultView {
     public update() {
         console.log('ResultView::update() - start');
         const delivSelect = document.getElementById('admin-result-deliverable-select') as OnsSelectElement;
-
         if (delivSelect !== null) {
             let delivId = delivSelect.value;
             let timeFilter = this.dateFilter.latestSelectedDateObj;
