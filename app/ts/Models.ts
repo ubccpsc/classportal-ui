@@ -56,6 +56,10 @@ export interface RepoRepairPayload {
   githubOrg: string;
 }
 
+export interface RepoProvisionResponse {
+  response: string; // 'successfully created, etc.'
+}
+
 export interface RepoProvisionPayload {
   deliverableName: string;
 }

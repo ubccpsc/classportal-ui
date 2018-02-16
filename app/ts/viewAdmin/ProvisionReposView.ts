@@ -1,7 +1,7 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
-import {Deliverable, DeliverablePayload, TeamGenerationPayload, RepoRepairPayload, RepoProvisionPayload,
-    TeamGenerationResponseContainer, TeamGenerationResponse} from "../Models";
+import {Deliverable, DeliverablePayload, RepoRepairPayload, RepoProvisionPayload,
+        RepoProvisionResponse} from "../Models";
 import {ProvisionHealthCheck, ProvisionHealthCheckContainer} from "../Models";
 import {Network} from "../util/Network";
 import {OnsModalElement} from "onsenui";
@@ -11,7 +11,7 @@ const PAGE_TITLE = '#adminProvisionReposPage__toolbar-title';
 const INPUT_MAX_TEAM_SIZE = '#adminProvisionReposPage__option-maxTeamSize';
 const INPUT_IN_SAME_LAB = '#adminProvisionReposPage__option-inSameLab';
 const ACTION_PROVISION_REPOS = '#adminProvisionReposPage__provision-repos-action';
-const CURRENT_DELIV_NAME = '#adminProvisionReposPage__team-generation-deliverable';
+const CURRENT_DELIV_NAME = '#adminProvisionReposPage__error-manager-deliverable';
 
 declare var myApp: App;
 
@@ -59,14 +59,10 @@ export class ProvisionReposView {
         });
     }
 
-    private confirmRepoGeneration(payload: TeamGenerationPayload) {
+    private confirmRepoGeneration(payload: RepoProvisionPayload) {
         let that = this;
-        let numOfCurrentTeams: number = this.provisionHealthCheck.numOfTeamsWithoutRepo.length;
-        let classSize: number = this.provisionHealthCheck.classSize;
-        let numWithTeam: number = this.provisionHealthCheck.studentTeamStatus.studentsWithTeam.length;
-        let numWithoutTeam: number = this.provisionHealthCheck.studentTeamStatus.studentsWithoutTeam.length;
 
-        let warningMessage: string = 'You cannot currently stop repo creation without restarting ClassPortal-Backend. You cannot delete repos without Github Organization Admin permissions. Would you like to proceed?';
+        let warningMessage: string = 'The Repo Provisioning process, once underway, cannot be stopped. Would you like to proceed?';
 
         UI.notificationConfirm(warningMessage, function(answer: boolean) {
             if (answer) {
@@ -88,27 +84,13 @@ export class ProvisionReposView {
         let that = this;
         let maxTeamSize: number;
         let teamsInSameLab: boolean;
-        let teamGenerationPayload: TeamGenerationPayload;
+        let repoProvisionPayload: RepoProvisionPayload = {deliverableName: that.deliverable.name};
         let isValid: boolean = true;
-        let teamSizeError: string = 'Your team size must be greater than 0 and less than 30 students.';
-        let allStudentsOnTeamError: string = 'You cannot create teams because all of your students are already on a Team';
 
-        try {
-            maxTeamSize = parseInt((document.querySelector(INPUT_MAX_TEAM_SIZE) as HTMLInputElement).value);
-            teamsInSameLab = (document.querySelector(INPUT_IN_SAME_LAB) as HTMLInputElement).checked;
-            teamGenerationPayload = {maxTeamSize, teamsInSameLab, deliverableName: that.deliverable.name}
-        } catch (err) {
-            console.log('ProvisionTeamsView() ERROR: ' + err);
-            UI.notification('Could not read Team Generation options to make a Team. Team generation cancelled.');
-        }
-
-        if (maxTeamSize < 0 && maxTeamSize > 30) {
-            isValid = false;
-            UI.notification('Your team size cannot be 0 or greater than 30 students.');
-        }
+        // No validation required as of yet.
 
         if (isValid) {
-            this.confirmRepoGeneration(teamGenerationPayload);
+            this.confirmRepoGeneration(repoProvisionPayload);
         }
     }
 
@@ -120,14 +102,15 @@ export class ProvisionReposView {
         console.log('ProvisionReposView::generateRepos() Network payload', payload);
         console.log('generate teams payload', payload);
         let url = myApp.backendURL + myApp.currentCourseId + '/admin/github/repo/team';
-        Network.httpPost(url, payload)
+        Network.httpPut(url, payload)
             .then((data: any) => {
                 data.json()
-                    .then((container: TeamGenerationResponseContainer) => {
-                        if (typeof container.response !== 'undefined' && container.response.result.ok) {
-                            UI.notification('Successfully inserted ' + container.response.result.n);
+                    .then((container: RepoProvisionResponse) => {
+                        if (typeof container.response !== 'undefined') {
+                            UI.notification(container.response);
                         } else {
-                            UI.notification('Unable to find students who are not on a team. You must disband student teams before you can create additional student teams.');
+                            console.log('ProvisionReposView::provisionRepos() ERROR', container);
+                            UI.notification('Unable to Provision Repos. Please see console and ClassPortal-Backend logs for more information.');
                         }
                     });
             });

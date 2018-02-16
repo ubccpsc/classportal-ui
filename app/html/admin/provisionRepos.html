@@ -33,21 +33,21 @@
         <ons-list-header>Error Manager</ons-list-header>
 
         <div id="adminProvisionReposPage__list-container">
-    <!-- Where updated class list user information is placed !-->
+    		<!-- Where updated class list user information is placed !-->
         <ons-list id="adminProvisionReposPage__list">
 
         </ons-list>
 
         <div id="adminProvisionReposPage__error-manager-info" class="classportal-info-container">
         	<div id="adminProvisionReposPage__error-manager-info">
-                <p><span>WARNING: </span>This will <span>PERMANENTLY</span> disassociate all Github linkages for the Teams created under the current Deliverable and Github's Repositories.</p>
+                <p><span>WARNING: </span>This will <span>PERMANENTLY</span> disassociate all Github linkages for the Teams created under <span id="adminProvisionReposPage__error-manager-deliverable">the current Deliverable</span> and Github's Repositories.</p>
                 <p>This operation should only if it is essential that all Github Repos must be re-created, either due to an error in business logic or a critical error during the Github Repo creation process.</p>
                 <p><span>STEPS TO RECOVERY: </span></p>
                 <p><span>(1.)</span> A Github Organization owner must manually delete all of the Github Repos associated with this Deliverable.</p>
                 <p><span>(2.)</span> The Team object links to the Github Repos can then be erased by clicking on "Erase Github Repo".</p>
                 <p><span>(3.)</span> Click on "Provision Repos".
             </div>
-        <ons-button id="adminProvisionReposPage__provision-repos-action" modifier="large" modifier='cta'>Erase Github Repo States</ons-button>
+        <ons-button id="adminProvisionReposPage__provision-repos-action" modifier="large" modifier='cta'>Erase Github Repo/Team Links</ons-button>
     	</div>
 
     </section>
