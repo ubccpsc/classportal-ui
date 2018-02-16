@@ -51,9 +51,21 @@ export interface Student {
 }
 
 
+// RepoRepairPayload is for Endpoint /:courseId/admin/github/repo/team/repair
+// If there are any errors encountered during the Repo creation process, we can re-run adding team members, etc., to fix the issues.
 export interface RepoRepairPayload {
   deliverableName: string;
   githubOrg: string;
+}
+
+// RepoTeamUnlink is for Endpoint /:courseId/admin/github/repo/team/unlink
+// Removes Github URL reference, which allows us to re-do Repo Provisions (after Github repos are deleted)
+export interface RepoTeamUnlinkPayload {
+  deliverableName: string;
+}
+
+export interface RepoTeamUnlinkResponseContainer {
+  response: MongoUpdateManyResponse;
 }
 
 export interface RepoProvisionResponse {
@@ -76,6 +88,12 @@ export interface TeamGenerationResponse {
 export interface MongoInsertResponse {
     ok: number; // 1 if successfully inserted
     n: number; // number of items inserted into database
+}
+
+export interface MongoUpdateManyResponse {
+    ok: number; // 1 if successfully inserted
+    n: number; // number of items inserted into database
+    nModified: number // number of documents updated in the database
 }
 
 /**

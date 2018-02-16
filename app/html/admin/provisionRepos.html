@@ -13,8 +13,8 @@
 
             <div id="adminProvisionReposPage__repo-generation-info">
                 <p><span>WARNING: </span>Repo generation is a time-consuming process that takes approximately 5 seconds per repository. Since API calls can occasionally fail, a script to fix minor errors can also be run based on the need.</p>
-                <p>Github repositories <span>CANNOT</span> be deleted once they are created.</p>
-                <p>If students have not logged into Github Enterprise, then they will not be visible in Github Enterprise. This will lead their respective repo creation to fail. The repair script can be run periodically to re-add repository teams members after they have re-logged in.</p>
+                <p>Github repositories <span>CANNOT</span> be deleted once they are created without Github Organization permissions.</p>
+                <p>If students have not logged into Github Enterprise, then they will not be visible in Github Enterprise. This will result in the creation of their respective repo to fail. The repair script can be run periodically to re-add team members to a repository after they have logged in to Github.</p>
             </div>
 
             <ons-button id="adminProvisionReposPage__provision-repos-action" modifier="large" modifier='cta'>Provision Repos</ons-button>
@@ -47,7 +47,7 @@
                 <p><span>(2.)</span> The Team object links to the Github Repos can then be erased by clicking on "Erase Github Repo".</p>
                 <p><span>(3.)</span> Click on "Provision Repos".
             </div>
-        <ons-button id="adminProvisionReposPage__provision-repos-action" modifier="large" modifier='cta'>Erase Github Repo/Team Links</ons-button>
+        <ons-button id="adminProvisionReposPage__unlink-repos-action" modifier="large" modifier='cta'>Erase Github Repo/Team Links</ons-button>
     	</div>
 
     </section>
