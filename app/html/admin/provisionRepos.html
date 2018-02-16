@@ -1,0 +1,63 @@
+<ons-page id="adminProvisionReposPage">
+    <ons-toolbar>
+        <div class="left">
+            <ons-back-button></ons-back-button>
+        </div>
+        <h2 id="adminProvisionReposPage__toolbar-title" class="center">Team Provisions</h2>
+    </ons-toolbar>
+
+        <section id="adminProvisionReposPage-assigned-teams">
+
+            <ons-list-header>Team Generation</ons-list-header>
+            <div id="adminProvisionReposPage__team-generation-container">
+
+            <div id="adminProvisionReposPage__team-generation-info" >
+                <p><span>Info: </span>Randomly generated teams will be created for all students who are not on a team for <span id="adminProvisionReposPage__team-generation-deliverable">this Deliverable.</span>.</p>
+                <p>All pre-existing Teams and Github Repos <span>WILL NOT</span> be affected.</p>
+                <p>All pre-existing Users, Teams, Github Repos, and other Courses <span>WILL NOT</span> be affected.</p>
+            </div>
+
+            <ons-list-item>
+                <div class="center adminProvisionReposPage-options-container">
+                    <label style='width: 50%;' for="maxTeamSize">Team Size</label>             
+                    <ons-input style='width: 50%; float: right;' placeholder="Max Team Size" id="adminProvisionReposPage__option-maxTeamSize" value="1" type="number" modifier="underbar" placeholder="maxTeamSize" float min="1" max="30"></ons-input>
+                </div>
+            </ons-list-item>
+
+            <ons-list-item>
+                <div class="center adminProvisionReposPage-options-container">
+                    <label style="width: 50%" for="teamsInSameLab">Teams in Same Lab</label>             
+                    <ons-checkbox style='width: 50%; float: right;' placeholder="Max Team Size" id="adminProvisionReposPage__option-inSameLab" type="number" modifier="underbar" checked float></ons-checkbox>
+                </div>
+            </ons-list-item>
+            <ons-button id="adminProvisionReposPage__generate-teams-action" modifier="large" modifier='cta'>Generate Teams</ons-button>
+        </div>
+    </section>
+
+    <section id="adminProvisionReposPage-assigned-teams">
+        <ons-list-header>Assigned Teams</ons-list-header>
+        <div class="adminProvisionReposPage__assigned-teams-container">
+            <div id="adminProvisionReposPage__assigned-teams-list">
+
+            </div>
+        </div>
+    </section>
+    <section id="adminProvisionReposPage-unassigned-students">
+        <ons-list-header>Unassigned Students</ons-list-header>
+        <div id="adminProvisionReposPage__list-container">
+    <!-- Where updated class list user information is placed !-->
+        <ons-list id="adminProvisionReposPage__list">
+
+        </ons-list>
+    </section>
+
+    <div style="display: none" id="adminProvisionReposPage__placeholder-html">
+        <ons-row id="adminProvisionReposPage__unassigned-students-rowHeaders">
+            <ons-col>Last Name</ons-col>
+            <ons-col>First Name</ons-col>
+            <ons-col>SNUM</ons-col>
+            <ons-col>CSID</ons-col>
+            <ons-col>Lab Section</ons-col>
+        </ons-row>
+    </div>
+</ons-page>

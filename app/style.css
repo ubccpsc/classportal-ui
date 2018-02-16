@@ -5,14 +5,14 @@
 
 */
 
-#adminTeamsPage__team-generation-container {
+#adminProvisionTeamsPage__team-generation-container {
     width: 95%;
     margin: auto;
     margin-top: 25px;
     margin-bottom: 20px;
 }
 
-#adminTeamsPage__team-generation-info span {
+#adminProvisionTeamsPage__team-generation-info span {
     font-weight: 900;
 }
 

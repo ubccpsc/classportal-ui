@@ -7,11 +7,11 @@ import {Network} from "../util/Network";
 import {OnsModalElement} from "onsenui";
 import {App} from "../App";
 
-const PAGE_TITLE = '#adminTeamsPage__toolbar-title';
-const INPUT_MAX_TEAM_SIZE = '#adminTeamsPage__option-maxTeamSize';
-const INPUT_IN_SAME_LAB = '#adminTeamsPage__option-inSameLab';
-const ACTION_GENERATE_TEAMS = '#adminTeamsPage__generate-teams-action';
-const CURRENT_DELIV_NAME = '#adminTeamsPage__team-generation-deliverable';
+const PAGE_TITLE = '#adminProvisionTeamsPage__toolbar-title';
+const INPUT_MAX_TEAM_SIZE = '#adminProvisionTeamsPage__option-maxTeamSize';
+const INPUT_IN_SAME_LAB = '#adminProvisionTeamsPage__option-inSameLab';
+const ACTION_GENERATE_TEAMS = '#adminProvisionTeamsPage__generate-teams-action';
+const CURRENT_DELIV_NAME = '#adminProvisionTeamsPage__team-generation-deliverable';
 
 declare var myApp: App;
 
@@ -123,7 +123,7 @@ export class ProvisionTeamsView {
                         if (typeof container.response !== 'undefined' && container.response.result.ok) {
                             UI.notification('Successfully inserted ' + container.response.result.n + ' teams of ' + payload.maxTeamSize + '.');
                         } else {
-                            UI.notification('No students were found without a team. You must disband student teams before you can create additional student teams.');
+                            UI.notification('Unable to find students who are not on a team. You must disband student teams before you can create additional student teams.');
                         }
                     });
             });

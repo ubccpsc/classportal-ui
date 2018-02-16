@@ -3,56 +3,56 @@
         <div class="left">
             <ons-back-button></ons-back-button>
         </div>
-        <h2 id="adminTeamsPage__toolbar-title" class="center">Team Provisions</h2>
+        <h2 id="adminProvisionTeamsPage__toolbar-title" class="center">Team Provisions</h2>
     </ons-toolbar>
 
-        <section id="adminTeamsPage-assigned-teams">
+        <section id="adminProvisionTeamsPage-assigned-teams">
 
             <ons-list-header>Team Generation</ons-list-header>
-            <div id="adminTeamsPage__team-generation-container">
+            <div id="adminProvisionTeamsPage__team-generation-container">
 
-            <div id="adminTeamsPage__team-generation-info" >
-                <p><span>Info: </span>Randomly generated teams will be created for all students who are not on a team for <span id="adminTeamsPage__team-generation-deliverable">this Deliverable.</span>.</p>
+            <div id="adminProvisionTeamsPage__team-generation-info" >
+                <p><span>Info: </span>Randomly generated teams will be created for all students who are not on a team for <span id="adminProvisionTeamsPage__team-generation-deliverable">this Deliverable.</span>.</p>
                 <p>All pre-existing Teams and Github Repos <span>WILL NOT</span> be affected.</p>
                 <p>All pre-existing Users, Teams, Github Repos, and other Courses <span>WILL NOT</span> be affected.</p>
             </div>
 
             <ons-list-item>
-                <div class="center adminTeamsPage-options-container">
+                <div class="center adminProvisionTeamsPage-options-container">
                     <label style='width: 50%;' for="maxTeamSize">Team Size</label>             
-                    <ons-input style='width: 50%; float: right;' placeholder="Max Team Size" id="adminTeamsPage__option-maxTeamSize" value="1" type="number" modifier="underbar" placeholder="maxTeamSize" float min="1" max="30"></ons-input>
+                    <ons-input style='width: 50%; float: right;' placeholder="Max Team Size" id="adminProvisionTeamsPage__option-maxTeamSize" value="1" type="number" modifier="underbar" placeholder="maxTeamSize" float min="1" max="30"></ons-input>
                 </div>
             </ons-list-item>
 
             <ons-list-item>
-                <div class="center adminTeamsPage-options-container">
+                <div class="center adminProvisionTeamsPage-options-container">
                     <label style="width: 50%" for="teamsInSameLab">Teams in Same Lab</label>             
-                    <ons-checkbox style='width: 50%; float: right;' placeholder="Max Team Size" id="adminTeamsPage__option-inSameLab" type="number" modifier="underbar" checked float></ons-checkbox>
+                    <ons-checkbox style='width: 50%; float: right;' placeholder="Max Team Size" id="adminProvisionTeamsPage__option-inSameLab" type="number" modifier="underbar" checked float></ons-checkbox>
                 </div>
             </ons-list-item>
-            <ons-button id="adminTeamsPage__generate-teams-action" modifier="large" modifier='cta'>Generate Teams</ons-button>
+            <ons-button id="adminProvisionTeamsPage__generate-teams-action" modifier="large" modifier='cta'>Generate Teams</ons-button>
         </div>
     </section>
 
-    <section id="adminTeamsPage-assigned-teams">
+    <section id="adminProvisionTeamsPage-assigned-teams">
         <ons-list-header>Assigned Teams</ons-list-header>
-        <div class="adminTeamsPage__assigned-teams-container">
-            <div id="adminTeamsPage__assigned-teams-list">
+        <div class="adminProvisionTeamsPage__assigned-teams-container">
+            <div id="adminProvisionTeamsPage__assigned-teams-list">
 
             </div>
         </div>
     </section>
-    <section id="adminTeamsPage-unassigned-students">
+    <section id="adminProvisionTeamsPage-unassigned-students">
         <ons-list-header>Unassigned Students</ons-list-header>
-        <div id="adminTeamsPage__list-container">
+        <div id="adminProvisionTeamsPage__list-container">
     <!-- Where updated class list user information is placed !-->
-        <ons-list id="adminTeamsPage__list">
+        <ons-list id="adminProvisionTeamsPage__list">
 
         </ons-list>
     </section>
 
-    <div style="display: none" id="adminTeamsPage__placeholder-html">
-        <ons-row id="adminTeamsPage__unassigned-students-rowHeaders">
+    <div style="display: none" id="adminProvisionTeamsPage__placeholder-html">
+        <ons-row id="adminProvisionTeamsPage__unassigned-students-rowHeaders">
             <ons-col>Last Name</ons-col>
             <ons-col>First Name</ons-col>
             <ons-col>SNUM</ons-col>
