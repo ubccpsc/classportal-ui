@@ -17,6 +17,15 @@ export interface LabSection {
 }
 
 /**
+* Maps to the /:courseId/admin/teamGeneration ClassPortal-Backend Endpoint
+*/ 
+export interface TeamGenerationPayload {
+  maxTeamSize: number; 
+  teamsInSameLab: boolean;
+  deliverableName: string;  // ie. 'd1', 'p1'.
+}
+
+/**
  * All of the information ClassPortal knows about a given student.
  */
 export interface Student {
@@ -39,16 +48,6 @@ export interface Student {
     userUrl: string;            // URL to this GitHub username.
 
     TA: string[];               // TAs who have tagged team. For future. Just return [] for now.
-}
-
-export interface TeamGenerationPayloadContainer {
-    response: TeamGenerationPayload;
-}
-
-export interface TeamGenerationPayload {
-    deliverableName: string; // ie. 'd1', 'p1'.
-    courseId: string; // ie. 310, 210
-    teamSize: number;
 }
 
 export interface TeamGenerationResponseContainer {

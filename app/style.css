@@ -1,3 +1,23 @@
+
+/*******************
+
+# ADMIN PROVISION TEAMS.HTML
+
+*/
+
+#adminTeamsPage__team-generation-container {
+    width: 95%;
+    margin: auto;
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+#adminTeamsPage__team-generation-info span {
+    font-weight: 900;
+}
+
+
+
 /*******************
 
 # ADMIN CLASS LIST PAGE

@@ -56,6 +56,10 @@ export class UI {
         ons.notification.alert(note);
     }
 
+    public static notificationConfirm(note: string, callback: Function) {
+        ons.notification.confirm({message: note, callback});
+    }
+
     public static handleError(err: Error) {
         if (err instanceof Error) {
             ons.notification.alert(err.message);
