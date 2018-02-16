@@ -85,6 +85,7 @@ export class DeliverableSelectorView {
                         switch (that.forwardTo) {
                             case (ForwardOptions.PROVISION_REPOS): {
                                 that.provisionReposView = new ProvisionReposView(that.controller, deliverable);
+                                that.provisionReposView.render();
                                 break;
                             }
                             case (ForwardOptions.CREATE_TEAMS): {

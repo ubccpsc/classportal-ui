@@ -1,3 +1,37 @@
+/*******************
+
+# GLOBALLY USED AMONGST GITHUB MANAGEMENT VIEWS
+
+*/
+
+.classportal-info-container {
+    width: 95%;
+    margin: auto;
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+.classportal-info-container span {
+    font-weight: 900;
+}
+
+/*******************
+
+# ADMIN PROVISION REPOS.HTML
+
+*/
+
+#adminProvisionReposPage__repo-generation-container {
+    width: 95%;
+    margin: auto;
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+#adminProvisionReposPage__repo-generation-info span {
+    font-weight: 900;
+}
+
 
 /*******************
 
@@ -15,7 +49,6 @@
 #adminProvisionTeamsPage__team-generation-info span {
     font-weight: 900;
 }
-
 
 
 /*******************

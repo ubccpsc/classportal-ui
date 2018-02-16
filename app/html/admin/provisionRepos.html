@@ -3,39 +3,26 @@
         <div class="left">
             <ons-back-button></ons-back-button>
         </div>
-        <h2 id="adminProvisionReposPage__toolbar-title" class="center">Team Provisions</h2>
+        <h2 id="adminProvisionReposPage__toolbar-title" class="center">Repo Provisions</h2>
     </ons-toolbar>
 
         <section id="adminProvisionReposPage-assigned-teams">
 
-            <ons-list-header>Team Generation</ons-list-header>
-            <div id="adminProvisionReposPage__team-generation-container">
+            <ons-list-header>Github Repo Generation</ons-list-header>
+            <div id="adminProvisionReposPage__repo-generation-container">
 
-            <div id="adminProvisionReposPage__team-generation-info" >
-                <p><span>Info: </span>Randomly generated teams will be created for all students who are not on a team for <span id="adminProvisionReposPage__team-generation-deliverable">this Deliverable.</span>.</p>
-                <p>All pre-existing Teams and Github Repos <span>WILL NOT</span> be affected.</p>
-                <p>All pre-existing Users, Teams, Github Repos, and other Courses <span>WILL NOT</span> be affected.</p>
+            <div id="adminProvisionReposPage__repo-generation-info">
+                <p><span>WARNING: </span>Repo generation is a time-consuming process that takes approximately 5 seconds per repository. Since API calls can occasionally fail, a script to fix minor errors can also be run based on the need.</p>
+                <p>Github repositories <span>CANNOT</span> be deleted once they are created.</p>
+                <p>If students have not logged into Github Enterprise, then they will not visible in Github Enterprise. This will lead their respective repo creation to fail. The repair script can be run periodically to re-add repository teams members after they have re-logged in.</p>
             </div>
 
-            <ons-list-item>
-                <div class="center adminProvisionReposPage-options-container">
-                    <label style='width: 50%;' for="maxTeamSize">Team Size</label>             
-                    <ons-input style='width: 50%; float: right;' placeholder="Max Team Size" id="adminProvisionReposPage__option-maxTeamSize" value="1" type="number" modifier="underbar" placeholder="maxTeamSize" float min="1" max="30"></ons-input>
-                </div>
-            </ons-list-item>
-
-            <ons-list-item>
-                <div class="center adminProvisionReposPage-options-container">
-                    <label style="width: 50%" for="teamsInSameLab">Teams in Same Lab</label>             
-                    <ons-checkbox style='width: 50%; float: right;' placeholder="Max Team Size" id="adminProvisionReposPage__option-inSameLab" type="number" modifier="underbar" checked float></ons-checkbox>
-                </div>
-            </ons-list-item>
-            <ons-button id="adminProvisionReposPage__generate-teams-action" modifier="large" modifier='cta'>Generate Teams</ons-button>
+            <ons-button id="adminProvisionReposPage__provision-repos-action" modifier="large" modifier='cta'>Provision Repos</ons-button>
         </div>
     </section>
 
     <section id="adminProvisionReposPage-assigned-teams">
-        <ons-list-header>Assigned Teams</ons-list-header>
+        <ons-list-header>Provisioned Repos</ons-list-header>
         <div class="adminProvisionReposPage__assigned-teams-container">
             <div id="adminProvisionReposPage__assigned-teams-list">
 
@@ -43,12 +30,26 @@
         </div>
     </section>
     <section id="adminProvisionReposPage-unassigned-students">
-        <ons-list-header>Unassigned Students</ons-list-header>
+        <ons-list-header>Error Manager</ons-list-header>
+
         <div id="adminProvisionReposPage__list-container">
     <!-- Where updated class list user information is placed !-->
         <ons-list id="adminProvisionReposPage__list">
 
         </ons-list>
+
+        <div id="adminProvisionReposPage__error-manager-info" class="classportal-info-container">
+        	<div id="adminProvisionReposPage__error-manager-info">
+                <p><span>WARNING: </span>This will <span>PERMANENTLY</span> disassociate all Github linkages for the Teams created under the current Deliverable and Github's Repositories.</p>
+                <p>This operation should only if it is essential that all Github Repos must be re-created, either due to an error in business logic or a critical error during the Github Repo creation process.</p>
+                <p><span>STEPS TO RECOVERY: </span></p>
+                <p><span>(1.)</span> A Github Organization owner must manually delete all of the Github Repos associated with this Deliverable.</p>
+                <p><span>(2.)</span> The Team object links to the Github Repos can then be erased by clicking on "Erase Github Repo".</p>
+                <p><span>(3.)</span> Click on "Provision Repos".
+            </div>
+        <ons-button id="adminProvisionReposPage__provision-repos-action" modifier="large" modifier='cta'>Erase Github Repo States</ons-button>
+    	</div>
+
     </section>
 
     <div style="display: none" id="adminProvisionReposPage__placeholder-html">

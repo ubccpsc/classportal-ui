@@ -50,6 +50,16 @@ export interface Student {
     TA: string[];               // TAs who have tagged team. For future. Just return [] for now.
 }
 
+
+export interface RepoRepairPayload {
+  deliverableName: string;
+  githubOrg: string;
+}
+
+export interface RepoProvisionPayload {
+  deliverableName: string;
+}
+
 export interface TeamGenerationResponseContainer {
     response: TeamGenerationResponse;
 }

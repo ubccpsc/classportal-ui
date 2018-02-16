@@ -1,13 +1,17 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
-import {Deliverable, DeliverablePayload, TeamGenerationPayload, 
+import {Deliverable, DeliverablePayload, TeamGenerationPayload, RepoRepairPayload, RepoProvisionPayload,
     TeamGenerationResponseContainer, TeamGenerationResponse} from "../Models";
-import {ProvisionHealthCheckContainer} from "../Models";
+import {ProvisionHealthCheck, ProvisionHealthCheckContainer} from "../Models";
 import {Network} from "../util/Network";
 import {OnsModalElement} from "onsenui";
 import {App} from "../App";
 
-const REPO_PROVISION_HEADER = '#adminRepoProvisionHeader';
+const PAGE_TITLE = '#adminProvisionReposPage__toolbar-title';
+const INPUT_MAX_TEAM_SIZE = '#adminProvisionReposPage__option-maxTeamSize';
+const INPUT_IN_SAME_LAB = '#adminProvisionReposPage__option-inSameLab';
+const ACTION_PROVISION_REPOS = '#adminProvisionReposPage__provision-repos-action';
+const CURRENT_DELIV_NAME = '#adminProvisionReposPage__team-generation-deliverable';
 
 declare var myApp: App;
 
@@ -15,6 +19,7 @@ export class ProvisionReposView {
     private controller: AdminController;
     private deliverable: Deliverable;
     private teamsProvisioned: boolean;
+    private provisionHealthCheck: ProvisionHealthCheck;
     // private currentlyProvisioning: boolean; - not implemented on back-end properly.
 
     constructor(controller: AdminController, deliverable: Deliverable) {
@@ -23,80 +28,122 @@ export class ProvisionReposView {
     }
 
     public updateTitle() {
-        // document.querySelector('#adminTabsHeader').innerHTML = data.course;
-        document.querySelector(REPO_PROVISION_HEADER).innerHTML = "Repo Provision: '" + String(this.deliverable.name) + "'";
+        document.querySelector(PAGE_TITLE).innerHTML = String(this.deliverable.name).toUpperCase() + ' Github Repo Provisions';
     }
 
-    public render(data: ProvisionHealthCheckContainer) {
-        console.log('ProvisionTeamsDetailsView::render(..) - start - data: ' + JSON.stringify(data));
-        UI.showModal();
-        let that = this;   
-        console.log(data);
+    private updateInfoText() {
+        document.querySelector(CURRENT_DELIV_NAME).innerHTML = String(this.deliverable.name);
+    }
+
+    private fetchDelivTeamOverview() {
+        console.log('ProvisionTeamsDetailsView::fetchHealthInfo(..) - start - data: ');
+        let url = myApp.backendURL + myApp.currentCourseId + '/admin/teams/' + this.deliverable.name + '/overview';
+        return Network.httpGet(url)
+            .then((data: ProvisionHealthCheckContainer) => {
+                return data;
+            });
+    }
+
+    public render() {
+        console.log('ProvisionReposDeliverableView::render(..) - start');
+        let that = this;
 
         UI.pushPage('html/admin/provisionRepos.html', {data: null})
             .then(() => {
-                that.updateTitle();
-
-                // let classSize = data.response.classSize;
-                // let studentsWithTeam = data.response.studentTeamStatus.studentsWithTeam;
-                // let teamsAllowed = data.response.teamsAllowed;
-                // let studentsWithoutTeam = data.response.studentTeamStatus.studentsWithoutTeam;
-                // let teams = data.response.teams;
-                // let numOfTeams = data.response.numOfTeams;
-                // let teamsWithRepo = data.response.numOfTeamsWithRepo;
-                // let teamsWithoutRepo = data.response.numOfTeamsWithoutRepo;
-                // let minTeamSize = (document.querySelector(MIN_TEAM_SIZE) as HTMLInputElement).value = String(this.deliverable.minTeamSize);
-                // let maxTeamSize = (document.querySelector(MAX_TEAM_SIZE) as HTMLInputElement).value = String(this.deliverable.maxTeamSize);
-
-                // (document.querySelector(STUDENTS_WITH_TEAM)).addEventListener('click', () => {
-                //     that.loadDetails(studentsWithTeam);
-                // });
-
-                // (document.querySelector(STUDENTS_WITHOUT_TEAM)).addEventListener('click', () => {
-                //     that.loadDetails(studentsWithoutTeam);
-                // });
-
-                // (document.querySelector(TEAMS)).addEventListener('click', () => {
-                //     that.loadDetails(teams);
-                // });
-
-                // (document.querySelector(TEAMS_WITH_REPO)).addEventListener('click', () => {
-                //     that.loadDetails(teamsWithRepo);
-                // });
-
-                // (document.querySelector(TEAMS_WITHOUT_REPO)).addEventListener('click', () => {
-                //     that.loadDetails(teamsWithoutRepo);
-                // });
-
-                // (document.querySelector(GENERATE_TEAMS_ACTION)).addEventListener('click', () => {
-                //     // that.generateTeams(); // ENABLE after respective Team provision / team repo views loading.
-                // });
-
-                // (document.querySelector(TEAMS_ALLOWED).firstChild as HTMLElement).innerHTML = teamsAllowed === true ? 'Yes' : 'No';
-                // (document.querySelector(CLASS_SIZE).firstChild as HTMLElement).innerHTML = classSize.toString();
-                // (document.querySelector(STUDENTS_WITH_TEAM).firstChild as HTMLElement).innerHTML = studentsWithTeam.length.toString();
-                // (document.querySelector(STUDENTS_WITHOUT_TEAM).firstChild as HTMLElement).innerHTML = studentsWithoutTeam.length.toString();
-                // (document.querySelector(TEAMS).firstChild as HTMLElement).innerHTML = numOfTeams.toString();
-                // (document.querySelector(TEAMS_WITH_REPO).firstChild as HTMLElement).innerHTML = teamsWithRepo.length.toString();
-                // (document.querySelector(TEAMS_WITHOUT_REPO).firstChild as HTMLElement).innerHTML = teamsWithoutRepo.length.toString();
-
-                UI.hideModal();
+                return this.fetchDelivTeamOverview()
+                    .then((data: ProvisionHealthCheckContainer) => {
+                        // we need this data for validation later
+                        that.provisionHealthCheck = data.response;
+                        return that.initView(data.response);
+                    });
         });
     }
 
-    public loadDetails(data: object[]) {
-        console.log('ProvisionTeamsDetailsView::loadDetails(..) - start - data: ' + JSON.stringify(data));
-
+    private confirmRepoGeneration(payload: TeamGenerationPayload) {
         let that = this;
-        UI.showModal();
+        let numOfCurrentTeams: number = this.provisionHealthCheck.numOfTeamsWithoutRepo.length;
+        let classSize: number = this.provisionHealthCheck.classSize;
+        let numWithTeam: number = this.provisionHealthCheck.studentTeamStatus.studentsWithTeam.length;
+        let numWithoutTeam: number = this.provisionHealthCheck.studentTeamStatus.studentsWithoutTeam.length;
 
-        UI.pushPage('html/admin/provisionRepos.html', {data})
-            .then(() => {
+        let warningMessage: string = 'You cannot currently stop repo creation without restarting ClassPortal-Backend. You cannot delete repos without Github Organization Admin permissions. Would you like to proceed?';
 
+        UI.notificationConfirm(warningMessage, function(answer: boolean) {
+            if (answer) {
+                that.provisionRepos(payload);
+            } else {
+                // Do nothing. Let them think about it.
+            }
+        });
+    }
+
+    private isConfirmed(answer: boolean): boolean {
+        if (answer) {
+            return true;
+        }
+        return false;
+    }
+
+    private validateRepoGeneration() {
+        let that = this;
+        let maxTeamSize: number;
+        let teamsInSameLab: boolean;
+        let teamGenerationPayload: TeamGenerationPayload;
+        let isValid: boolean = true;
+        let teamSizeError: string = 'Your team size must be greater than 0 and less than 30 students.';
+        let allStudentsOnTeamError: string = 'You cannot create teams because all of your students are already on a Team';
+
+        try {
+            maxTeamSize = parseInt((document.querySelector(INPUT_MAX_TEAM_SIZE) as HTMLInputElement).value);
+            teamsInSameLab = (document.querySelector(INPUT_IN_SAME_LAB) as HTMLInputElement).checked;
+            teamGenerationPayload = {maxTeamSize, teamsInSameLab, deliverableName: that.deliverable.name}
+        } catch (err) {
+            console.log('ProvisionTeamsView() ERROR: ' + err);
+            UI.notification('Could not read Team Generation options to make a Team. Team generation cancelled.');
+        }
+
+        if (maxTeamSize < 0 && maxTeamSize > 30) {
+            isValid = false;
+            UI.notification('Your team size cannot be 0 or greater than 30 students.');
+        }
+
+        if (isValid) {
+            this.confirmRepoGeneration(teamGenerationPayload);
+        }
+    }
+
+    private repairRepos(payload: RepoRepairPayload) { 
+        console.log('ProvisionReposView::repairRepos() Network payload', payload);
+    }
+
+    private provisionRepos(payload: RepoProvisionPayload) {
+        console.log('ProvisionReposView::generateRepos() Network payload', payload);
+        console.log('generate teams payload', payload);
+        let url = myApp.backendURL + myApp.currentCourseId + '/admin/github/repo/team';
+        Network.httpPost(url, payload)
+            .then((data: any) => {
+                data.json()
+                    .then((container: TeamGenerationResponseContainer) => {
+                        if (typeof container.response !== 'undefined' && container.response.result.ok) {
+                            UI.notification('Successfully inserted ' + container.response.result.n);
+                        } else {
+                            UI.notification('Unable to find students who are not on a team. You must disband student teams before you can create additional student teams.');
+                        }
+                    });
             });
+    }
 
-        UI.hideModal();
+    private addRepoButtonListener() {
+        let that = this;
+        let provisionReposAction = document.querySelector(ACTION_PROVISION_REPOS) as HTMLElement;
+        provisionReposAction.addEventListener('click', () => {
+            that.validateRepoGeneration(); // if Valid, teams will be created 
+        });
+    }
 
-        console.log('ProvisionTeamsDetailsView::loadDetails(..) - end');
+    private initView(provisionHealthCheck: ProvisionHealthCheck) {
+        this.updateTitle();
+        this.updateInfoText();
+        this.addRepoButtonListener();
     }
 }
