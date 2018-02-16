@@ -35,7 +35,7 @@ export class ResultView {
         console.log('global delivs', this.controller.deliverables);
         if (this.controller.deliverables !== null) {
             const delivSelect = document.getElementById('admin-result-deliverable-select') as OnsSelectElement;
-                            console.log('is deliv select null', delivSelect);
+            console.log('is deliv select null', delivSelect);
 
             while (delivSelect.options.length > 0) {
                 delivSelect.remove();
@@ -531,8 +531,14 @@ export class ResultView {
                 } else if (j === 2) {
                     head = 'Last Requested';
                 }
-                const lastAvg = (total[j] / myGrades.length).toFixed(1);
-                const lastMed = myGrades[Math.floor(myGrades.length / 2)].toFixed(1); // floor was ceil
+                let lastAvg = '0';
+                let lastMed = '0';
+                if (myGrades.length > 0) {
+                    lastAvg = (total[j] / myGrades.length).toFixed(1);
+                    lastMed = myGrades[Math.floor(myGrades.length / 2)].toFixed(1); // floor was ceil
+                } else {
+                    // myGrades.length is 0 (for instance if noone has started yet)
+                }
                 footer += '<tr><td><b>' + head + '</b></td><td>' + lastAvg + '</td><td>' + lastMed + '</td></tr>';
                 j++;
             }
