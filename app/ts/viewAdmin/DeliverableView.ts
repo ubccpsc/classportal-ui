@@ -188,7 +188,7 @@ export class DeliverableView {
         regressionTest.checked = deliverable.regressionTest;
 
         let regressionTests: HTMLInputElement = document.querySelector(REGRESSION_TESTS) as HTMLInputElement;
-        regressionTest.value = deliverable.regressionTests;
+        regressionTests.value = deliverable.regressionTests;
 
         let projectCount: HTMLInputElement = document.querySelector(PROJECT_COUNT) as HTMLInputElement;
         projectCount.value = String(deliverable.projectCount);
@@ -300,6 +300,7 @@ export class DeliverableView {
     */
     private isDeliverableValid(): boolean {
 
+        const SPACE_DELIN_REGEX: RegExp = /[^ ]+/g;
         const HTTPS_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
         const NAME_REGEX: RegExp = /^[^_]+([0-9])/;
         const TEAM_SIZE_ERR: string = 'The minimum team size cannot be greater than the maximum team size';
@@ -307,15 +308,43 @@ export class DeliverableView {
         const DELIV_NAME_ERR: string = 'A deliverable name must be all lowercase letters, up to 10 characters, and a combination of [a-z] and [0-9].';
         const GIT_REPO_ERR: string = 'Please make sure your Git repo addresses are valid Https URIs.';
         const OPEN_CLOSE_ERR: string = 'The close date must be greater than the open date.';
+        const REGRESION_TEST_ERR: string = 'One of your regression tests does not exist. Please ensure that a Deliverable exists before it is used as a regression test.';
 
         let minTeamSize: HTMLInputElement = document.querySelector(MIN_TEAM_SIZE) as HTMLInputElement;
         let maxTeamSize: HTMLInputElement = document.querySelector(MAX_TEAM_SIZE) as HTMLInputElement;
         let openDate: HTMLInputElement = document.querySelector(OPEN_DELIV_KEY) as HTMLInputElement;
         let closeDate: HTMLInputElement = document.querySelector(CLOSE_DELIV_KEY) as HTMLInputElement;
         let customJson: HTMLInputElement = document.querySelector(CUSTOM_JSON) as HTMLInputElement;
+        let regressionTests: HTMLInputElement = document.querySelector(REGRESSION_TESTS) as HTMLInputElement;
         let delivName: HTMLInputElement = document.querySelector(DELIV_NAME) as HTMLInputElement;
         let solutionsCodeUrl: HTMLInputElement = document.querySelector(SOLUTIONS_CODE_URL) as HTMLInputElement;
         let starterCodeUrl: HTMLInputElement = document.querySelector(START_CODE_URL) as HTMLInputElement;
+
+        if (regressionTests.value.length > 0) {
+            let testValues = regressionTests.value.match(SPACE_DELIN_REGEX);
+            let allNamesValid: boolean = true;
+
+            testValues.map((testValue: string) => {
+                let testNameValid: boolean = false;
+                this.controller.deliverables.map((deliv: Deliverable) => {
+                    if (testValue === deliv.name) {
+                        console.log('test value', testValue);
+                        console.log('deliv name', deliv.name);
+                        console.log(testValue === deliv.name);
+                        testNameValid = true;
+                    }
+                });
+                if (!testNameValid) {
+                    console.log('invalid', testValue);
+                    allNamesValid = false;
+                }
+            });
+            console.log('allNamesValid', allNamesValid);
+            if (!allNamesValid) {
+                UI.notification(REGRESION_TEST_ERR);
+                return false;
+            }
+        }
 
         if (parseInt(minTeamSize.value) > parseInt(maxTeamSize.value)) {
             UI.notification(TEAM_SIZE_ERR);
