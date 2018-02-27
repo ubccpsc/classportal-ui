@@ -5,8 +5,7 @@ import {DeliverablePayload} from '../Models';
 import {OnsSelectElement} from "onsenui";
 import {Network} from "../util/Network";
 
-const DELIVERABLE_SELECTOR = '#adminUploadGradesPage__deliverable-select';
-const UPLOAD_GRADES = '#adminUploadGradesPage__fileInput';
+const DELIVERABLE_SELECTOR = '#adminGradesView__deliverable-select';
 
 export class GradesView {
     private courseId: string;
@@ -24,12 +23,9 @@ export class GradesView {
         this.configure(data);
     }
 
-    private uploadGrades() {
-        console.log('upload grades hit');
-    }
-
     private configure(data: DeliverablePayload) {
         console.log('DashboardView::configure() - start');
+        let that = this;
         let deliverables = data.response;
         this.controller.deliverables = data.response;
         if (deliverables !== null) {

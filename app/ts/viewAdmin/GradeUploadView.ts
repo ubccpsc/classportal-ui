@@ -3,6 +3,9 @@ import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
 
+const DELIVERABLE_SELECTOR = '#adminUploadGradesPage__deliverable-selector';
+const UPLOAD_BUTTON = '#adminUploadGradesPage__fileInput';
+const FILE_INPUT = '#adminClassListPage__fileInput';
 
 export class GradeUploadView {
 
@@ -13,10 +16,15 @@ export class GradeUploadView {
         this.controller = controller;
     }
 
+    private uploadGrades() {
+        console.log('upload grades hit inside GradeUploadView.ts!');
+    }
+
     public configure() {
         console.log('GradeUploadView::configure() - start');
+        let that = this;
         if (this.controller.deliverables !== null) {
-            const delivSelect = document.getElementById('admin-gradeUpload-deliverable-select') as OnsSelectElement;
+            const delivSelect = document.querySelector(DELIVERABLE_SELECTOR) as OnsSelectElement;
             while (delivSelect.options.length > 0) {
                 delivSelect.remove();
             }
@@ -33,6 +41,12 @@ export class GradeUploadView {
                 (<any>delivSelect).add(option);
             }
         }
+
+        let saveAction = document.querySelector(UPLOAD_BUTTON) as HTMLButtonElement;
+        saveAction.addEventListener('click', () => {
+            that.uploadGrades();
+        });
+
     }
 
     public updateTitle() {

@@ -10,19 +10,21 @@
         <ons-list-header>Grades Instructions</ons-list-header>
         <ons-list-item>
             <p>Grade upload spreadsheet should be a CSV; any grades you upload will overwrite previous values for that deliverable.</p>
-            <p>The first row of the CSV should contain row headers. Any number of rows are allowed, but four are required: CSID, STUDENT NUMBER, GRADE, COMMENTS. Empty values are allowed for any GRADE or COMMENTS cell.</p>
+            <p>The first row of the CSV should contain row headers. Any number of rows are allowed, but four are required: CSID, SNUM, GRADE, COMMENTS. Empty values are allowed for any GRADE or COMMENTS cell.</p>
         </ons-list-item>
         <ons-list-header>Upload Grades:</ons-list-header>
         <ons-list-item style="text-align: center;">
             <ons-row>
                 <ons-col>
                     Deliverable:
-                    <ons-select id="admin-gradeUpload-deliverable-select"
+                    <input id="adminClassListPage__fileInput" type="file"/>
+
+                    <ons-select id="adminUploadGradesPage__deliverable-selector"
                                 style="padding-left: 2em; padding-right: 1em; vertical-align: middle;">
                         <option value="null">Deliv</option>
                     </ons-select>
 
-                    <ons-button onclick="uploadGrades()">Upload Grades</ons-button>
+                    <ons-button id="adminUploadGradesPage__fileInput">Upload Grades</ons-button>
                 </ons-col>
             </ons-row>
         </ons-list-item>
