@@ -7,6 +7,19 @@ export interface StudentWithLab {
   labSection: string;
 }
 
+export interface GradeContainer {
+  response: Grade[];
+}
+
+export interface Grade {
+  course: string;
+  deliverable: string;
+  csid: string;
+  snum: string;
+  grade: number;
+  comments: string;
+}
+
 export interface StudentWithLabContainer {
   response: StudentWithLab[];
 }

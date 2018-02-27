@@ -82,25 +82,25 @@ export class ClassListView {
     }
 
     public save(fileList: FileList) {
-        console.log('ClassListView::save() - start');
-        let that = this;
-        let url = this.app.backendURL + this.courseId + '/admin/classList';
-        const formData = new FormData();
-        formData.append(API_CLASS_LIST_PROPERTY, fileList[0]); // The CSV is fileList[0]
-        Network.httpPostFile(url, formData)
-          .then((data: any) => {
-            if (data.status >= 200 && data.status < 300) {
-              data.json()
-                .then((response: StudentWithLabContainer) => {
-                  console.log('ClassListView RESPONSE: ' + JSON.stringify(response));
-                  UI.notification('ClassList Successfully Updated!');
-                  that.render();
-                  UI.hideModal();
-                });
-            } else {
-              UI.notification('There was an issue updating your Class List! Please check the CSV format.');
-            }
-          });
-        console.log('ClassListView::save() - end');
+      console.log('ClassListView::save() - start');
+      let that = this;
+      let url = this.app.backendURL + this.courseId + '/admin/classList';
+      const formData = new FormData();
+      formData.append(API_CLASS_LIST_PROPERTY, fileList[0]); // The CSV is fileList[0]
+      Network.httpPostFile(url, formData)
+        .then((data: any) => {
+          if (data.status >= 200 && data.status < 300) {
+            data.json()
+              .then((response: StudentWithLabContainer) => {
+                console.log('ClassListView RESPONSE: ' + JSON.stringify(response));
+                UI.notification('ClassList Successfully Updated!');
+                that.render();
+                UI.hideModal();
+              });
+          } else {
+            UI.notification('There was an issue updating your Class List! Please check the CSV format.');
+          }
+        });
+      console.log('ClassListView::save() - end');
     }
 }
