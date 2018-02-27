@@ -180,7 +180,7 @@ export class AdminController {
         Network.handleRemote(url, this.deliverableView, UI.handleError);
     }
 
-    public adminGitHubManageGradesPage(delivId?: string) {
+    public adminUploadGradesPage(delivId?: string) {
         console.log('AdminController::adminGitHubManageGradesPage( ' + delivId + ' ) - start');
         this.authHelper.checkUserrole(this.REQ_USERROLE);
         this.resultView.updateTitle();

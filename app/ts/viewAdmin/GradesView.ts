@@ -5,7 +5,8 @@ import {DeliverablePayload} from '../Models';
 import {OnsSelectElement} from "onsenui";
 import {Network} from "../util/Network";
 
-const DELIVERABLE_SELECTOR = '#admin-grades-view__deliverable-select';
+const DELIVERABLE_SELECTOR = '#adminUploadGradesPage__deliverable-select';
+const UPLOAD_GRADES = '#adminUploadGradesPage__fileInput';
 
 export class GradesView {
     private courseId: string;
@@ -21,6 +22,10 @@ export class GradesView {
     public render(data: DeliverablePayload) {
         console.log('ViewGrades::render() - start');
         this.configure(data);
+    }
+
+    private uploadGrades() {
+        console.log('upload grades hit');
     }
 
     private configure(data: DeliverablePayload) {

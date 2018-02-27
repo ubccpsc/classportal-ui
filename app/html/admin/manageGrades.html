@@ -1,16 +1,16 @@
-<ons-page id="adminGitHubManageGradesPage">
+<ons-page id="adminUploadGradesPage">
     <ons-toolbar>
         <div class="left"><ons-back-button></ons-back-button></div>
         <div class="center">Manage Grades</div>
     </ons-toolbar>
 
-    <h2 style="text-align:center;">Grade Submit button NOT IMPLEMENTED</h2>
+    <h2 style="text-align:center;">Grade Submissions</h2>
 
     <ons-list>
         <ons-list-header>Grades Instructions</ons-list-header>
         <ons-list-item>
             <p>Grade upload spreadsheet should be a CSV; any grades you upload will overwrite previous values for that deliverable.</p>
-            <p>The first row of the CSV should contain row headers. Any number of rows are allowed, but four are required: csid, student#, finalGrade, comments. Empty values are allowed for any finalGrade or comments cell.</p>
+            <p>The first row of the CSV should contain row headers. Any number of rows are allowed, but four are required: CSID, STUDENT NUMBER, GRADE, COMMENTS. Empty values are allowed for any GRADE or COMMENTS cell.</p>
         </ons-list-item>
         <ons-list-header>Upload Grades:</ons-list-header>
         <ons-list-item style="text-align: center;">
@@ -22,21 +22,9 @@
                         <option value="null">Deliv</option>
                     </ons-select>
 
-                    <ons-button onclick="doTheUploadThing">Upload Grades</ons-button>
+                    <ons-button onclick="uploadGrades()">Upload Grades</ons-button>
                 </ons-col>
             </ons-row>
         </ons-list-item>
     </ons-list>
-
-    <!--
-    <ons-list id="admin-github-list">
-        <ons-list-header>Create Project</ons-list-header>
-        <ons-list-item>Some fields</ons-list-item>
-        <ons-list-header>Create Teams</ons-list-header>
-        <ons-list-item>Some fields</ons-list-item>
-        <ons-list-header>Assign grades</ons-list-header>
-        <ons-list-item>Some fields</ons-list-item>
-    </ons-list>
-    -->
-
 </ons-page>
