@@ -8,9 +8,11 @@ import {Network} from "../util/Network";
 
 const API_GRADES_FILE_PROPERTY = 'gradesFile';
 const DELIVERABLE_SELECTOR = '#adminUploadGradesPage__deliverable-selector';
-const UPLOAD_BUTTON = '#adminUploadGradesPage__fileInput';
-const FILE_INPUT = '#adminClassListPage__fileInput';
+const UPLOAD_BUTTON = '#adminUploadGradesPage__fileInput-button';
+const FILE_INPUT = '#adminUploadGradesPage__fileInput-input';
 const DEFAULT_SELECTION = 'select';
+
+enum REQUIRED_HEADERS_ENUM {CSID = "CSID", SNUM = "SNUM", GRADE = "GRADE", COMMENTS = 'COMMENTS'};
 
 export class GradeUploadView {
 
@@ -25,7 +27,23 @@ export class GradeUploadView {
         this.courseId = courseId;
     }
 
-    private validateGrades(fileInput: HTMLInputElement, selectedDeliv: string): boolean {
+    private async getCSVHeaders(fileInput: HTMLInputElement): Promise<any> {
+      return new Promise((fulfill, reject) => {
+          let csvFile = fileInput.files[0];
+          let reader = new FileReader();
+          reader.onload = function (event) {
+              let text = reader.result;
+              let headers = text.split('\n').shift().split(',');
+              fulfill(headers);
+          };
+
+          reader.readAsText(csvFile, 'UTF-8');
+      });
+    }
+
+    private async validateGrades(fileInput: HTMLInputElement, selectedDeliv: string): Promise<boolean> {
+      const CSV_HEADERS: string[] = await this.getCSVHeaders(fileInput);
+
       if (fileInput.value.length > 0) {
         console.log('GradeUploadView::validateGrades() - validation passed');
       } else {
@@ -38,14 +56,17 @@ export class GradeUploadView {
           return false;
       }
 
+      if (CSV_HEADERS.indexOf(REQUIRED_HEADERS_ENUM.CSID) < 0 || CSV_HEADERS.indexOf(REQUIRED_HEADERS_ENUM.SNUM) < 0 
+          || CSV_HEADERS.indexOf(REQUIRED_HEADERS_ENUM.GRADE) < 0 || CSV_HEADERS.indexOf(REQUIRED_HEADERS_ENUM.COMMENTS) < 0) {
+          UI.notification('You must include the required CSV headers.');
+          return false;
+      }
+
       return true;
     }
 
     private uploadGrades(fileList: FileList, delivName: string) {
-      console.log('upload grades hit inside GradeUploadView.ts!');
-      console.log(fileList);
-      console.log(delivName);
-      console.log('ClassListView::save() - start');
+      console.log('GradeUploadView::uploadGrades() - start');
       let that = this;
       let url = this.app.backendURL + this.courseId + '/admin/grades/' + delivName;
       const formData = new FormData();
@@ -93,10 +114,12 @@ export class GradeUploadView {
         saveAction.addEventListener('click', () => {
             let fileInput = document.querySelector(FILE_INPUT) as HTMLInputElement;
             let selectedDeliv: string = delivSelect.options[delivSelect.options.selectedIndex].value;
-            let isValid: boolean = that.validateGrades(fileInput, selectedDeliv);
-            if (isValid) {
-                that.uploadGrades(fileInput.files, selectedDeliv);
-            }
+            that.validateGrades(fileInput, selectedDeliv)
+                .then((isValid: boolean) => {
+                    if (isValid) {
+                        that.uploadGrades(fileInput.files, selectedDeliv);
+                    }
+                });
         });
 
     }
