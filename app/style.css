@@ -15,6 +15,31 @@
     font-weight: 900;
 }
 
+.classportal-row-headers-container-theme {
+    width: 95%;
+    margin: auto;
+    margin-top: 35px;
+}
+
+.classportal-page-theme ons-row:first-of-type ons-col {
+    background-color: rgba(24, 103, 194, .81);
+    border: 0;
+    color: white;
+    border-right: 1px solid;
+}
+
+#classportal-page-theme {
+  background-color: #f6f;
+  padding: 8px;
+}
+
+#classportal-page-theme h3 {
+  color: #666;
+  padding-left: 10px;
+  font-size: 17px;
+}
+
+
 /*******************
 
 # ADMIN PROVISION REPOS.HTML
@@ -57,33 +82,12 @@
 
 */
 
-#adminClassListPage .adminClassListPage-uploadListContainer {
-    width: 95%;
-    margin: auto;
-    margin-top: 25px;
-    margin-bottom: 20px;
-}
-
-#adminClassListPage-uploadWarningContainer span {
-    font-weight: 900;
-}
-
 #adminClassListPage ons-col {
   border: 1px solid #ccc;
   background: #fff;
   overflow: hidden;
   padding: 4px;
   color: #999;
-}
-
-#adminClassListPage #adminClassListPage-listContainer {
-    width: 95%;
-    margin: auto;
-    margin-top: 35px;
-}
-
-#adminClassListPage ons-row:first-of-type {
-
 }
 
 #adminClassListPage ons-row:first-of-type ons-col {
@@ -93,20 +97,11 @@
     border-right: 1px solid;
 }
 
-#adminClassListPage {
-  background-color: #f6f;
-  padding: 8px;
-}
+/*******************
 
-#adminClassListPage h3 {
-  color: #666;
-  padding-left: 10px;
-  font-size: 17px;
-}
+# END: ADMIN CLASS LIST PAGE
 
-
-
-
+*/
 
 .settingIcon {
     min-width: 0;

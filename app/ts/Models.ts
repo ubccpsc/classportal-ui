@@ -1,3 +1,4 @@
+export enum REQUIRED_HEADERS_ENUM {CSID = "CSID", SNUM = "SNUM", GRADE = "GRADE", COMMENTS = 'COMMENTS'};
 
 export interface StudentWithLab {
   fname: string;

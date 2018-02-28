@@ -1,6 +1,6 @@
 import {UI} from "../util/UI";
 import {App} from "../App";
-import {Grade, GradeContainer} from '../models';
+import {Grade, GradeContainer, REQUIRED_HEADERS_ENUM} from '../models';
 import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
@@ -11,8 +11,6 @@ const DELIVERABLE_SELECTOR = '#adminUploadGradesPage__deliverable-selector';
 const UPLOAD_BUTTON = '#adminUploadGradesPage__fileInput-button';
 const FILE_INPUT = '#adminUploadGradesPage__fileInput-input';
 const DEFAULT_SELECTION = 'select';
-
-enum REQUIRED_HEADERS_ENUM {CSID = "CSID", SNUM = "SNUM", GRADE = "GRADE", COMMENTS = 'COMMENTS'};
 
 export class GradeUploadView {
 

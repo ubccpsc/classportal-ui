@@ -16,7 +16,7 @@ export class StudentController {
     private courseId: string;
     private data: any;
     private summaryView = new SummaryView();
-    private gradeView = new GradeView();
+    private gradeView: GradeView;
     private teamView: TeamView;
     private deliverableView = new DeliverableView();
     private app: App;
@@ -26,6 +26,7 @@ export class StudentController {
         this.app = app;
         this.teamView = new TeamView(app, courseId);
         this.courseId = courseId;
+        this.gradeView = new GradeView(this, courseId, app);
     }
 
     public studentTabsPage() {
@@ -68,16 +69,8 @@ export class StudentController {
 
     public studentGradePage() {
         console.log('StudentController::studentGradePage - start');
-
-        if (this.courseId === 'cpsc210') {
-            const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.gradeView, UI.handleError);
-        } else if (this.courseId === 'cpsc310') {
-            const url = 'https://FILLMEIN/student/210/rtholmes';
-            Network.handleRemote(url, this.gradeView, UI.handleError);
-        } else {
-            console.log('StudentController::studentGradePage - unknown course: ' + this.courseId);
-        }
+        const url = this.app.backendURL + this.courseId + '/grades/released';
+        Network.handleRemote(url, this.gradeView, UI.handleError);
     }
 
     public populateStudentTabs(data: any) {

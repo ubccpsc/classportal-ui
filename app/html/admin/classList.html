@@ -1,4 +1,4 @@
-<ons-page id="adminClassListPage">
+<ons-page id="adminClassListPage" class="classportal-page-theme">
 
     <ons-toolbar>
         <div class="left">
@@ -8,8 +8,8 @@
     </ons-toolbar>
 
     <ons-list-header>Add/Update Class List</ons-list-header>
-    <div class="adminClassListPage-uploadListContainer" class="classPortal-global-businessLogicExplanationContainer">
-    	<div id="adminClassListPage-uploadWarningContainer" class="classPortal-global-businessLogicExplanation">
+    <div class="classportal-info-container">
+    	<div id="uploadClassListPage-warning-text">
 	    	<p><span>Warning:</span> Uploading a Class List will overwrite pre-existing Class List and Lab Section information</p>
 	    	<p>The necessary format includes <span>FIRST</span>, <span>LAST</span>, <span>SNUM</span>, <span>CSID</span>, and <span>CWL</span> headers in CSV format. A <span>LAB</span> header is optional.</p>
 	    	<p>All pre-existing Users, Teams, Github Repos, and other Courses <span>WILL NOT</span> be affected.</p>
@@ -19,7 +19,7 @@
     	<ons-button id="adminClassListPage-uploadButton" modifier="medium">Upload</ons-button>
     </div>
 	<ons-list-header>Current Class List</ons-list-header>
-	    <div id="adminClassListPage-listContainer">
+	    <div id="adminClassListPage-listContainer" class="classportal-row-headers-container-theme">
 	    	<!-- Where updated class list user information is placed !-->
 		<div>
     <ons-list id="uploadClassListPage-list">
