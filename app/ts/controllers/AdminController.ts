@@ -15,7 +15,7 @@ import {GitHubView} from "../viewAdmin/GitHubView";
 import {GradesView} from "../viewAdmin/GradesView";
 import {AddDeliverableView} from "../viewAdmin/AddDeliverableView";
 import {App} from "../App";
-import {GradeUploadView} from "../viewAdmin/GradeUploadView";
+import {GradesUploadView} from "../viewAdmin/GradesUploadView";
 
 // * First loaded controller method should put Deliverables in global variable.
 // Currently adminGradesView.ts
@@ -28,7 +28,7 @@ export class AdminController {
     private courseId: string;
     private deliverableSelectorView: DeliverableSelectorView;
     private gradesView: GradesView;
-    private gradeUploadView: GradeUploadView;
+    private gradesUploadView: GradesUploadView;
     private teamView = new TeamView(this);
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
@@ -51,7 +51,7 @@ export class AdminController {
         this.authHelper.checkUserrole(this.REQ_USERROLE);
         this.gradesView = new GradesView(courseId, app, this);
         this.deliverableView = new DeliverableView(this, app);
-        this.gradeUploadView = new GradeUploadView(this, courseId, app);
+        this.gradesUploadView = new GradesUploadView(this, courseId, app);
         this.courseId = courseId;
     }
 
@@ -189,7 +189,7 @@ export class AdminController {
         if (typeof delivId === 'undefined' || delivId === null || delivId === 'null' || Object.keys(delivId).length === 0 || typeof (<any>delivId).delivId === 'undefined') {
             console.log('AdminController::adminGitHubManageGradesPage - skipped; select deliverable.');
             // configure selects
-            this.gradeUploadView.configure();
+            this.gradesUploadView.configure();
             return;
         }
     }

@@ -12,7 +12,7 @@ const UPLOAD_BUTTON = '#adminUploadGradesPage__fileInput-button';
 const FILE_INPUT = '#adminUploadGradesPage__fileInput-input';
 const DEFAULT_SELECTION = 'select';
 
-export class GradeUploadView {
+export class GradesUploadView {
 
     private controller: AdminController;
     private app: App;

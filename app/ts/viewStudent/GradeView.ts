@@ -40,10 +40,7 @@ export class GradeView {
             '</ons-row>';
 
           studentGradeContainer.appendChild(UI.ons.createElement(row));
-        })
-
-
-
+        });
     }
 
 }
