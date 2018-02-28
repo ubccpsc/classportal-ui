@@ -1,7 +1,7 @@
 import {UI} from "../util/UI";
 import {App} from "../App";
 import {Network} from "../util/Network";
-import {GradeContainer, Grade} from '../models';
+import {GradeContainer, Grade} from '../Models';
 import {StudentController} from "../controllers/StudentController";
 
 const GRADE_ROW_HEADERS_CONTAINER = '#studentGradePage-listContainer';

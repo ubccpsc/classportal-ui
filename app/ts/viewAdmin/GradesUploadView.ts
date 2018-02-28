@@ -1,6 +1,6 @@
 import {UI} from "../util/UI";
 import {App} from "../App";
-import {Grade, GradeContainer, REQUIRED_HEADERS_ENUM} from '../models';
+import {Grade, GradeContainer, REQUIRED_HEADERS_ENUM} from '../Models';
 import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
