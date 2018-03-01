@@ -30,8 +30,6 @@ export class GradeView {
         let rowHeaders = document.querySelector(GRADE_ROW_HEADERS) as HTMLElement;
         studentGradeContainer.innerHTML = '';
         studentGradeContainer.appendChild(rowHeaders);
-
-        // this.addModalEventListener();
         
         studentGradeContainer.appendChild(UI.ons.createElement('<p>'));
 
@@ -39,7 +37,11 @@ export class GradeView {
 
           let row = '<ons-row>' + 
             '<ons-col>' + grade.deliverable + '</ons-col>' +
-            '<ons-col><a title="Grade comment info." href="#" id="test" data-comment="' + grade.comments + '">' + grade.grade + '</a></ons-col>' +
+            '<ons-col>' +
+                '<a title="Grade comment info." ' + 
+                'href="#" id="test" data-comment="' + grade.comments + '">' 
+                    + grade.grade + 
+                '</a></ons-col>' +
             '</ons-row>';
           let htmlRow = UI.ons.createElement(row);  
                         console.log(htmlRow.childNodes[1].firstChild);
@@ -49,7 +51,6 @@ export class GradeView {
               UI.showPopover(e, popoverMessage);
           });
 
-          console.log(htmlRow.childNodes[1].firstChild.dataset.comment);
           studentGradeContainer.appendChild(htmlRow);
         });
     }

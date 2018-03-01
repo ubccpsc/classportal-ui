@@ -33,7 +33,6 @@ export class AdminController {
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
     private dashboardView = new DashboardView(this);
-
     private authHelper: AuthHelper;
     private readonly REQ_USERROLE = 'admin';
 
@@ -49,7 +48,7 @@ export class AdminController {
         this.app = app;
         this.authHelper = new AuthHelper(app.backendURL);
         this.authHelper.checkUserrole(this.REQ_USERROLE);
-        this.gradesView = new GradesView(courseId, app, this);
+        this.gradesView = new GradesView(this, courseId, app);
         this.deliverableView = new DeliverableView(this, app);
         this.gradesUploadView = new GradesUploadView(this, courseId, app);
         this.courseId = courseId;

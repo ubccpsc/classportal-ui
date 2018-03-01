@@ -28,6 +28,7 @@ export class ClassListView {
         UI.notification('You must select a Class List before you click "Upload".');
         return false;
       } 
+            console.log('ClassListView:: Header Validation: ', CSV_HEADERS);
 
       // Due to an unknown issue, if we perform this test with the CWL, it always fails.
       // Bug needs a fix, but not high priority.
@@ -49,7 +50,6 @@ export class ClassListView {
         reader.onload = function (event) {
             let text = reader.result;
             let headers = text.split('\n').shift().split(',');
-            console.log('ClassListView:: Header Validation: ', headers);
             fulfill(headers);
           };
 

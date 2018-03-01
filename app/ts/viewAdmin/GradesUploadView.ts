@@ -95,8 +95,12 @@ export class GradesUploadView {
                 UI.hideModal();
               });
           } else {
-            UI.notification('There was an issue updating your Grades. Please see the console.log() output.');
-            console.error('GradeUploadView:: uploadGrades() ERROR + API ERROR Status: ' + data.status);
+            console.log('GradeUploadView:: uploadGrades() ERROR + API ERROR Status: ' + data.status);
+            data.json()
+              .then((data: any) => {
+                UI.notification('There was an issue updating your Grades: ' + data.err);
+                console.log('GradeUploadView:: uploadGrades() ERROR + Error message: ' + JSON.stringify(data));
+              });
           }
         });
     }
