@@ -1,7 +1,7 @@
 /**
  * Created by rtholmes on 2017-10-04.
  */
-import {OnsModalElement} from "onsenui";
+import {OnsModalElement, OnsPopoverElement} from "onsenui";
 import {Team} from '../Models';
 
 const OPEN_DELIV_KEY = 'open';
@@ -9,6 +9,10 @@ const CLOSE_DELIV_KEY = 'close';
 const MAX_TEAM_DELIV_KEY = 'maxTeamSize';
 const MIN_TEAM_DELIV_KEY = 'minTeamSize';
 const MONGO_DB_ID_KEY = '_id';
+const POPOVER = '#ons-popover';
+const POPOVER_CLOSE_BUTTON = '#ons-popover-close-button';
+const POPOVER_MESSAGE = '#ons-popover-message';
+
 
 // import * as ons from 'onsenui'; // for dev
 declare var ons: any; // for release (or webpack bundling gets huge)
@@ -141,6 +145,26 @@ export class UI {
             '</ons-list-header>') as HTMLElement;
 
         return taskHeader;
+    }
+
+
+    public static showPopover(e: MouseEvent, message: string) {
+        console.log('/student/GradeView:: showModal() -- start');
+        let that = this;
+        let modal = document.querySelector(POPOVER) as OnsPopoverElement;
+        let modalMessage = document.querySelector(POPOVER_MESSAGE) as HTMLElement;
+        let closeButton = document.querySelector(POPOVER_CLOSE_BUTTON) as HTMLElement;
+        modalMessage.innerText = message;
+        closeButton.addEventListener('click', () => {
+            that.hidePopover(modal);
+        });
+
+        modal.show(e.target);
+    }
+
+    public static hidePopover(modal: OnsPopoverElement) {
+        console.log('/student/GradeView::hideModal() -- start');
+        modal.hide();
     }
 
     public static showModal(text?: string) {

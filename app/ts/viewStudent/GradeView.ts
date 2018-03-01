@@ -7,9 +7,6 @@ import {StudentController} from "../controllers/StudentController";
 
 const GRADE_ROW_HEADERS_CONTAINER = '#studentGradePage__listContainer';
 const GRADE_ROW_HEADERS = '#studentGradePage__rowHeaders';
-const POPOVER = '#ons-popover';
-const POPOVER_CLOSE_BUTTON = '#ons-popover-close-button';
-const POPOVER_MESSAGE = '#ons-popover-message';
 
 // ### STUDENT GRADE VIEW ### 
 
@@ -42,38 +39,19 @@ export class GradeView {
 
           let row = '<ons-row>' + 
             '<ons-col>' + grade.deliverable + '</ons-col>' +
-            '<ons-col><a href="#" id="test" data-comment="' + grade.comments + '">' + grade.grade + '</a></ons-col>' +
+            '<ons-col><a title="Grade comment info." href="#" id="test" data-comment="' + grade.comments + '">' + grade.grade + '</a></ons-col>' +
             '</ons-row>';
           let htmlRow = UI.ons.createElement(row);  
                         console.log(htmlRow.childNodes[1].firstChild);
 
           htmlRow.childNodes[1].firstChild.addEventListener('click', (e: MouseEvent) => {
               let popoverMessage: string = htmlRow.childNodes[1].firstChild.dataset.comment;
-              that.showModal(e, popoverMessage);
+              UI.showPopover(e, popoverMessage);
           });
 
           console.log(htmlRow.childNodes[1].firstChild.dataset.comment);
           studentGradeContainer.appendChild(htmlRow);
         });
-    }
-
-    public showModal(e: MouseEvent, message: string) {
-        console.log('/student/GradeView:: showModal() -- start');
-        let that = this;
-        let modal = document.querySelector(POPOVER) as OnsPopoverElement;
-        let modalMessage = document.querySelector(POPOVER_MESSAGE) as HTMLElement;
-        let closeButton = document.querySelector(POPOVER_CLOSE_BUTTON) as HTMLElement;
-        modalMessage.innerText = message;
-        closeButton.addEventListener('click', () => {
-            that.hideModal(modal);
-        });
-
-        modal.show(e.target);
-    }
-
-    public hideModal(modal: OnsPopoverElement) {
-        console.log('/student/GradeView::hideModal() -- start');
-        modal.hide();
     }
 
 }
