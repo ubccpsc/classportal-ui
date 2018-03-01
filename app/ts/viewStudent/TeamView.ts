@@ -27,6 +27,10 @@ interface InSameLabData {
     inSameLab: boolean;
 }
 
+interface InSameLabDataContainer {
+    response: InSameLabData;
+}
+
 interface CreateTeamPayload {
     members: string[];
     deliverableName: string;
@@ -85,8 +89,9 @@ export class TeamView {
 
 
                     that.validateUsername()
-                        .then((inSameLabData: InSameLabData) => {
-
+                        .then((inSameLabDataCon: InSameLabDataContainer) => {
+                            let inSameLabData: InSameLabData = inSameLabDataCon.response;
+                            console.log('inSameLabData', inSameLabDataCon.response);
                             if (that.isTeamTooBig(deliv)) {
                                 that.rejectTeamSizeNumber(deliv);
                             } else if (inSameLabData.inSameLab) {
@@ -113,10 +118,15 @@ export class TeamView {
                     if (!isTooBig) {
                     Network.httpPut(url, createTeamPayload)
                         .then((data: any) => {
-                            console.log('TeamView:: Network.createTeam() Response: ', data);
-                            if (typeof data !== 'undefined' && data.response.insertedCount === 1) {
-                                that.successTeamCreationMsg();
-                                UI.popPage();
+                            if (data.status >= 200 && data.status < 300) {
+                                data.json().then((data: any) => {
+                                    console.log('log the data', data);
+                                if (typeof data !== 'undefined' && data.response.insertedCount === 1) {
+                                    that.successTeamCreationMsg();
+                                    UI.popPage();
+                                }
+
+                                });
                             } else {
                                 that.failedTeamCreationMsg();
                             }
@@ -377,7 +387,7 @@ export class TeamView {
         usernameSearchField.value = '';
     }
 
-    public async validateUsername(): Promise<InSameLabData> {
+    public async validateUsername(): Promise<InSameLabDataContainer> {
         console.log('validateUsername() clicked');
         let url = this.app.backendURL + this.courseId + '/students/isInSameLab';
         const usernameSearchField = document.querySelector(USERNAME_SEARCH_FIELD) as HTMLInputElement;
@@ -386,7 +396,9 @@ export class TeamView {
 
         return Network.httpPost(url, {username: username})
             .then((data: any) => {
-                return data.response;
+                if (data.status >= 200 || data.status < 200) {
+                    return data.json();
+                }
             });
     }
 
