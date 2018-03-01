@@ -4,8 +4,8 @@ import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
 import {App} from "../App";
 
-const GRADE_TABLE = '#adminGradesView__deliverable-select';
 const DELIV_SELECT = 'adminGradesView__deliverable-select';
+const GRADE_TABLE = '#adminGradesView__grade-table';
 const UPDATE_BUTTON = '#adminGradesView__deliverable-submit-button';
 
 export interface GradePayloadContainer {
@@ -109,7 +109,6 @@ export class GradesView {
 
     public configure() {
         console.log('GradeView::configure() - start');
-        console.log('running?');
         let that = this;
         if (this.controller.deliverables !== null) {
             const delivSelect = document.getElementById(DELIV_SELECT) as OnsSelectElement;
@@ -136,11 +135,11 @@ export class GradesView {
             console.log(selectedDeliv);
         getGradesAction.addEventListener('click', () => {
             let selectedDeliv: string = delivSelect.options[delivSelect.options.selectedIndex].value;
-            that.renderGradesData(selectedDeliv);
+            that.renderByDelivSelect(selectedDeliv);
         });
     }
 
-    public renderGradesData(delivName: string) {
+    public renderByDelivSelect(delivName: string) {
         console.log('GradeView::renderGradesData() - start, delivName: ' + delivName);
 
 
@@ -148,10 +147,12 @@ export class GradesView {
 
     private render(data: any) {
         console.log('GradeView::render(..) - start');
-
         // ### IMPORTANT ###
         // As this is the first view that loads, data should be entered into controller as a global.
         this.controller.deliverables = data.response;
+
+        // Configure Select Deliv menu
+        this.configure();
 
         // console.log('GradeView::render(..) - data: ' + JSON.stringify(data));
         this.data = data;
