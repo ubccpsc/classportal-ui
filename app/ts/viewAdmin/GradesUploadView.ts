@@ -1,6 +1,6 @@
 import {UI} from "../util/UI";
 import {App} from "../App";
-import {Grade, GradeContainer, REQUIRED_HEADERS_ENUM} from '../Models';
+import {Grade, GradeContainer, GRADES_HEADERS_ENUM} from '../Models';
 import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
@@ -29,21 +29,26 @@ export class GradesUploadView {
       return new Promise((fulfill, reject) => {
           let csvFile = fileInput.files[0];
           let reader = new FileReader();
-          reader.onload = function (event) {
-              let text = reader.result;
-              let headers = text.split('\n').shift().split(',');
-              fulfill(headers);
-          };
-
+          try {
+            reader.onload = function (event) {
+            let text = reader.result;
+            let headers = text.split('\n').shift().split(',');
+            fulfill(headers);
+            };
+          } catch (err) {
+            reject('Error getting CSV Headers ' + err);
+          }
           reader.readAsText(csvFile, 'UTF-8');
+      })
+      .catch((err) => {
+        console.log('GradesUploadView:: ' + err);
       });
     }
 
     private async validateGrades(fileInput: HTMLInputElement, selectedDeliv: string): Promise<boolean> {
       const CSV_HEADERS: string[] = await this.getCSVHeaders(fileInput);
-
+      console.log(CSV_HEADERS);
       if (fileInput.value.length > 0) {
-        console.log('GradeUploadView::validateGrades() - validation passed');
       } else {
         UI.notification('You must select a CSV list of grades to upload.');
         return false;
@@ -54,11 +59,22 @@ export class GradesUploadView {
           return false;
       }
 
-      if (CSV_HEADERS.indexOf(REQUIRED_HEADERS_ENUM.CSID) < 0 || CSV_HEADERS.indexOf(REQUIRED_HEADERS_ENUM.SNUM) < 0 
-          || CSV_HEADERS.indexOf(REQUIRED_HEADERS_ENUM.GRADE) < 0 || CSV_HEADERS.indexOf(REQUIRED_HEADERS_ENUM.COMMENTS) < 0) {
-          UI.notification('You must include the required CSV headers.');
-          return false;
-      }
+      if (CSV_HEADERS.indexOf(GRADES_HEADERS_ENUM.CSID) < 0) {
+        UI.notification('Your CSV is missing the header ' + GRADES_HEADERS_ENUM.CSID + '.');
+        return false;
+      } 
+
+      if (CSV_HEADERS.indexOf(GRADES_HEADERS_ENUM.SNUM) < 0) {
+        UI.notification('Your CSV is missing the header ' + GRADES_HEADERS_ENUM.SNUM + '.');
+        return false;
+      } 
+
+      if (CSV_HEADERS.indexOf(GRADES_HEADERS_ENUM.GRADE) < 0) {
+        UI.notification('Your CSV is missing the header ' + GRADES_HEADERS_ENUM.GRADE + '.');
+        return false;
+      } 
+
+      console.log('GradeUploadView::validateGrades() - validation passed');
 
       return true;
     }

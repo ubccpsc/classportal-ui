@@ -43,6 +43,10 @@ export class UI {
         }
     }
 
+    public static createPopover() {
+        ons.createPopover('tets');
+    }
+
     public static popPage() {
         const nav = document.querySelector('#myNavigator') as any;// as ons.OnsNavigatorElement;
         if (nav !== null) {

@@ -28,6 +28,14 @@
     border-right: 1px solid;
 }
 
+.classportal-page-theme ons-col {
+  border: 1px solid #ccc;
+  background: #fff;
+  overflow: hidden;
+  padding: 4px;
+  color: #999;
+}
+
 #classportal-page-theme {
   background-color: #f6f;
   padding: 8px;
@@ -38,6 +46,8 @@
   padding-left: 10px;
   font-size: 17px;
 }
+
+
 
 
 /*******************
@@ -81,14 +91,6 @@
 # ADMIN CLASS LIST PAGE
 
 */
-
-#adminClassListPage ons-col {
-  border: 1px solid #ccc;
-  background: #fff;
-  overflow: hidden;
-  padding: 4px;
-  color: #999;
-}
 
 #adminClassListPage ons-row:first-of-type ons-col {
     background-color: rgba(24, 103, 194, .81);

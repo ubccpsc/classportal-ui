@@ -1,5 +1,6 @@
 import {App} from "../App";
 import {UI} from "../util/UI";
+import {CLASS_LIST_HEADERS_ENUM} from '../Models';
 import {StudentWithLabContainer, StudentWithLab, Student, LabSection} from '../Models';
 import {Network} from "../util/Network";
 
@@ -17,18 +18,43 @@ export class ClassListView {
     private studentsWithLabs: StudentWithLab[];
 
     constructor(courseId: string, app: App) {
-        this.courseId = courseId;
-        this.app = app;
+      this.courseId = courseId;
+      this.app = app;
     }
 
-    private validate(fileInput: HTMLInputElement) {
-      if (fileInput.value.length > 0) {
-        console.log('ClassListView::save() - validation passed');
-        return true;
-      } else {
+    private async validate(fileInput: HTMLInputElement) {
+      const CSV_HEADERS = await this.getCSVHeaders(fileInput);
+      if (fileInput.value.length === 0) {
         UI.notification('You must select a Class List before you click "Upload".');
         return false;
+      } 
+
+      // Due to an unknown issue, if we perform this test with the CWL, it always fails.
+      // Bug needs a fix, but not high priority.
+      if (CSV_HEADERS.indexOf(CLASS_LIST_HEADERS_ENUM.CSID) < 0 || CSV_HEADERS.indexOf(CLASS_LIST_HEADERS_ENUM.SNUM) < 0 
+          || CSV_HEADERS.indexOf(CLASS_LIST_HEADERS_ENUM.FIRST) < 0 || CSV_HEADERS.indexOf(CLASS_LIST_HEADERS_ENUM.LAST) < 0) {
+          UI.notification('You must include the required CSV headers.');
+          return false;
       }
+      
+      console.log('ClassListView::save() - validation passed');
+      return true;
+
+    }
+
+    private async getCSVHeaders(fileInput: HTMLInputElement): Promise<any> {
+      return new Promise((fulfill, reject) => {
+        let csvFile = fileInput.files[0];
+        let reader = new FileReader();
+        reader.onload = function (event) {
+            let text = reader.result;
+            let headers = text.split('\n').shift().split(',');
+            console.log('ClassListView:: Header Validation: ', headers);
+            fulfill(headers);
+          };
+
+          reader.readAsText(csvFile, 'UTF-8');
+      });
     }
 
     private async getClassList(): Promise<any> {
@@ -74,10 +100,12 @@ export class ClassListView {
         let uploadButton: HTMLElement = document.querySelector(UPLOAD_BUTTON) as HTMLElement;
 
         uploadButton.addEventListener('click', () => {
-          let isValid: boolean = this.validate(fileInput);
-          if (isValid) {
-            that.save(fileInput.files);
-          }
+          this.validate(fileInput)
+            .then((isValid: boolean) => {
+              if (isValid) {
+                that.save(fileInput.files);
+              }
+            });
         });
     }
 
