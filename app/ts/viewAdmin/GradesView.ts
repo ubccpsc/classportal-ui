@@ -1,12 +1,14 @@
 import {UI} from "../util/UI";
+import {App} from "../App";
 import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
-import {App} from "../App";
+import {Network} from '../util/Network';
 
 const DELIV_SELECT = 'adminGradesView__deliverable-select';
 const GRADE_TABLE = '#adminGradesView__grade-table';
 const UPDATE_BUTTON = '#adminGradesView__deliverable-submit-button';
+const ALL_OPTION = 'all';
 
 export interface GradePayloadContainer {
     response: GradeRow[];
@@ -107,6 +109,10 @@ export class GradesView {
         this.app = app;
     }
 
+    /**
+    * Will  setup the Deliv Selector and add an Event Listener to the Submit button.
+    * Must run before most render functions.
+    **/
     public configure() {
         console.log('GradeView::configure() - start');
         let that = this;
@@ -118,7 +124,7 @@ export class GradesView {
 
             let option = document.createElement("option");
             option.text = 'All';
-            option.value = 'all';
+            option.value = ALL_OPTION;
             (<any>delivSelect).add(option);
 
             for (let deliv of this.controller.deliverables) {
@@ -135,24 +141,44 @@ export class GradesView {
             console.log(selectedDeliv);
         getGradesAction.addEventListener('click', () => {
             let selectedDeliv: string = delivSelect.options[delivSelect.options.selectedIndex].value;
-            that.renderByDelivSelect(selectedDeliv);
+
+            // Loads the specified Grade data based on the drop-down menu.
+            if (selectedDeliv === ALL_OPTION) {
+                that.getAllGradeData(this.courseId);
+            } else {
+                that.getGradeDataByDeliv(this.courseId, selectedDeliv);
+            }
         });
     }
 
-    public renderByDelivSelect(delivName: string) {
-        console.log('GradeView::renderGradesData() - start, delivName: ' + delivName);
-
+    private async getGradeDataByDeliv(courseId: string, delivName: string) {
+        console.log('GradeView::getGradeDataByDeliv() - start, delivName: ' + delivName);
+        let url = this.app.backendURL + this.courseId + '/admin/grades/' + delivName;
+        Network.httpGet(url)
+            .then((data: any) => {
+                console.log(data);
+            })
+            .catch((err) => {
+                UI.notification('There was an error retrieving the Deliverable Data for Course ' + this.courseId + ' and Deliverable ' + delivName);
+            });
 
     }
 
-    private render(data: any) {
-        console.log('GradeView::render(..) - start');
-        // ### IMPORTANT ###
-        // As this is the first view that loads, data should be entered into controller as a global.
-        this.controller.deliverables = data.response;
+    private async getAllGradeData(courseNum: string) {
+        console.log('GradeView::getAllGradeData() - start, course: ' + courseNum);
+        let url = this.app.backendURL + this.courseId + '/admin/grades';
+        Network.httpGet(url)
+            .then((data: any) => {
+                console.log('success data in getAllGradeData() ', data);
+            })
+            .catch((err) => {
+                UI.notification('There was an error retrieving the Deliverable Data for Course ' + this.courseId + '.');
+            });
 
-        // Configure Select Deliv menu
-        this.configure();
+    }
+
+    public async renderGradeData(data: any, delivName: string) {
+        console.log('GradeView::renderGradesData() - start, delivName: ' + delivName);
 
         // console.log('GradeView::render(..) - data: ' + JSON.stringify(data));
         this.data = data;
@@ -237,6 +263,17 @@ export class GradesView {
             table.generate();
         }
         UI.hideModal();
+
+    }
+
+    private render(data: any) {
+        console.log('GradeView::render(..) - start');
+        // ### IMPORTANT ###
+        // As this is the first view that loads, data should be entered into controller as a global.
+        this.controller.deliverables = data.response;
+
+        // Configure Select Deliv menu
+        this.configure();
     }
 
     public update() {

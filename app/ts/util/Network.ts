@@ -168,9 +168,6 @@ export class Network {
             } else {
                 throw 'Could not fetch data from ' + url;
             }
-        })
-        .catch((err) => {
-            console.log('Network::httpGet() ERROR ' + err);
         });
     }
 
