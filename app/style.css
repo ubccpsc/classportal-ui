@@ -52,7 +52,7 @@
 
 /*******************
 
-# ADMIN PROVISION REPOS.HTML
+# ADMIN PROVISION /admin/repos.html
 
 */
 
@@ -70,7 +70,17 @@
 
 /*******************
 
-# ADMIN PROVISION TEAMS.HTML
+# ADMIN GRADES VIEW /admin/grades.html
+
+*/
+#adminGradesView__grade-table {
+    width: 100%;
+}
+
+
+/*******************
+
+# ADMIN PROVISION /admin/teams.html
 
 */
 

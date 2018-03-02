@@ -10,31 +10,24 @@ const GRADE_TABLE = '#adminGradesView__grade-table';
 const UPDATE_BUTTON = '#adminGradesView__deliverable-submit-button';
 const ALL_OPTION = 'all';
 
-export interface GradePayloadContainer {
-    response: GradeRow[];
+export interface AdminGradePayloadContainer {
+    response: AdminGradeRow[];
 }
 
-export interface GradeContainer {
+export interface AdminGradeContainer {
     headers: string[];
-    grades: GradeRow[];
+    grades: AdminGradeRow[];
 }
 
-export interface GradeRow {
-    userName: string; // cwl
-    userUrl: string;
-    sNum: string; // may be removed in future
-    fName: string; // may be removed in future
-    lName: string; // may be removed in future
-    projectUrl: string; // full URL to project
-    projectName: string; // string name for project (e.g., cpsc310_team22)
-
-    timeStamp: number; // Date.getTime()
-    commitUrl: string; // full URL to commit corresponding to the row
-    delivId: string; // deliverable name
-    gradeKey: string; // deliverable name (e.g., d0last)
-    gradeValue: string; // score for deliverable key (use string rep for flexibility)
-    gradeRequested: boolean; // was the result explicitly requested by the student
-    gradeDetails: GradeDetail[];
+export interface AdminGradeRow {
+    username: string; // cwl
+    snum: string; // may be removed in future
+    cwl: string;
+    fname: string; // may be removed in future
+    lname: string; // may be removed in future
+    deliverable: string;
+    comments: string;
+    grade: string; // score for deliverable key (use string rep for flexibility)
 }
 
 /**
@@ -66,22 +59,22 @@ export interface TestEntry {
     gradeKey: string; // deliverable name (e.g., d0last)
     gradeValue: string; // score for deliverable key (use string rep for flexibility)
     gradeRequested: boolean; // was the result explicitly requested by the student
-    gradeDetails: GradeDetail[];
+    gradeDetails: AdminGradeDetail[];
 }
 
 /**
  * Proposed grade record.
  */
-export interface GradeRecord {
+export interface AdminGradeRecord {
     userName: string;       // cwl
     userUrl: string;
     sNum: string;
     fName: string;
     lName: string;
-    delivId: string;
+    deliverable: string;
     projectName: string;    // shouldn't be here, but this handles teams & individuals
     projectUrl: string;
-    gradeDetails: GradeDetail[]
+    gradeDetails: AdminGradeDetail[]
 }
 
 /**
@@ -89,7 +82,7 @@ export interface GradeRecord {
  *
  * Will probably be useful for future grade extensions.
  */
-export interface GradeDetail {
+export interface AdminGradeDetail {
     key: string;
     value: string;
 }
@@ -111,7 +104,7 @@ export class GradesView {
 
     /**
     * Will  setup the Deliv Selector and add an Event Listener to the Submit button.
-    * Must run before most render functions.
+    * Must run before most render() function.
     **/
     public configure() {
         console.log('GradeView::configure() - start');
@@ -157,6 +150,7 @@ export class GradesView {
         Network.httpGet(url)
             .then((data: any) => {
                 console.log(data);
+                this.renderGradeData(data, delivName);
             })
             .catch((err) => {
                 UI.notification('There was an error retrieving the Deliverable Data for Course ' + this.courseId + ' and Deliverable ' + delivName);
@@ -170,6 +164,7 @@ export class GradesView {
         Network.httpGet(url)
             .then((data: any) => {
                 console.log('success data in getAllGradeData() ', data);
+                this.renderGradeData(data, ALL_OPTION);
             })
             .catch((err) => {
                 UI.notification('There was an error retrieving the Deliverable Data for Course ' + this.courseId + '.');
@@ -186,6 +181,7 @@ export class GradesView {
         data = data.response;
 
         let processedData = this.processResponse(data);
+        console.log('processedData', processedData);
 
         var gradeList = document.querySelector(GRADE_TABLE);
         if (gradeList !== null) {
@@ -209,33 +205,28 @@ export class GradesView {
 
             for (let key of Object.keys(processedData)) {
                 if (key !== '_index') {
-                    if (typeof processedData[key] !== 'undefined' && typeof processedData[key].cwl !== 'undefined') {
+                    if (typeof processedData[key] !== 'undefined' && typeof processedData[key].username !== 'undefined') {
                         let row = processedData[key];
+                        console.log('row', row);
 
                         let r: TableCell[] = [];
 
                         r.push({
-                            value: row.cwl,
-                            html:  '<a href="https://github.ubc.ca/' + row.cwl + '">' + row.cwl + '</a>'
+                            value: row.username,
+                            html:  '<a href="https://github.ubc.ca/' + row.username + '">' + row.username + '</a>'
                         });
                         r.push({
                             value: row.snum,
                             html:  row.snum
                         });
                         r.push({
-                            value: row.fName,
-                            html:  row.fName
+                            value: row.fname,
+                            html:  row.fname
                         });
                         r.push({
-                            value: row.lName,
-                            html:  row.lName
+                            value: row.lname,
+                            html:  row.lname
                         });
-                        if (this.delivId !== 'all') {
-                            r.push({
-                                value: row.projectName,
-                                html:  '<a href="' + row.projectUrl + '">' + row.projectName + '</a>'
-                            });
-                        }
 
                         for (let i = 0; i < numCells; i++) {
                             let html = '';
@@ -295,60 +286,62 @@ export class GradesView {
         }
     }
 
-    private processResponse(data: GradeRow[]) {
+    private processResponse(data: AdminGradeRow[]) {
 
         let students = {};
         let delivNamesMap = {};
 
+        // FIRST: Conglomerate entries based on 'username'
         for (var row of data) {
-            const userName = row.userName;
-            const delivKey = row.gradeKey;
-            if (typeof students[userName] === 'undefined') {
-                students[userName] = []; // get ready for grades
+            const username = row.username;
+            const deliverable = row.deliverable;
+            const grade = row.grade;
+            if (typeof students[username] === 'undefined') {
+                students[username] = []; // get ready for grades
             }
             if (this.includeRecord(row)) {
                 // not captured yet
-                if (typeof delivNamesMap[delivKey] === 'undefined') {
-                    delivNamesMap[delivKey] = delivKey;
+                if (typeof delivNamesMap[deliverable] === 'undefined') {
+                    delivNamesMap[deliverable] = deliverable;
                 }
             }
         }
 
         const customSort = function (a: any, b: any) {
-            return (Number(a.match(/(\d+)/g)[0]) - Number((b.match(/(\d+)/g)[0])));
+            return (Number(a) - Number(b));
         };
         let delivKeys = Object.keys(delivNamesMap).sort(customSort);
 
-        let headers = ['CWL', 'Student #', 'First', 'Last'];
+        let headers = ['CWL', 'SNUM', 'First', 'Last'];
         if (this.delivId !== 'all') {
             headers.push('Project');
         }
+
         headers = headers.concat(delivKeys);
+
         students['_index'] = headers;
+
+        // UPDATE: At this point, we have all the headers in the Array that will be appended to the Table
 
         for (var row of data) {
             if (this.includeRecord(row)) {
-                const userName = row.userName;
-                const delivKey = row.gradeKey;
+                const username = row.username;
+                const deliverable = row.deliverable;
+                const student = students[username];
+                const index = delivKeys.indexOf(deliverable);
 
-                const student = students[userName];
-                const index = delivKeys.indexOf(delivKey);
-
-                student.timeStamp = row.timeStamp;
-                student.cwl = row.userName;
-                student.snum = row.sNum;
-                student.fName = row.fName;
-                student.lName = row.lName;
-                student.projectName = row.projectName;
-                student.projectUrl = row.projectUrl;
+                student.snum = row.snum;
+                student.fname = row.fname;
+                student.lname = row.lname;
+                student.username = row.username;
 
                 if (typeof student.grades === 'undefined') {
                     student.grades = [];
                 }
 
                 student.grades[index] = {
-                    value: row.gradeValue,
-                    html:  '<a href="' + row.commitUrl + '">' + row.gradeValue + '</a>'
+                    value: row.grade,
+                    html:  row.grade
                 };
 
                 // row.delivDetails // UNUSED right now
@@ -359,9 +352,9 @@ export class GradesView {
         return students;
     }
 
-    private includeRecord(row: GradeRow): boolean {
-        if ((this.delivId === 'all' || this.delivId === row.delivId) && typeof row.sNum !== 'undefined') { // test rows don't have snums
-            if (this.lastOnly === false || row.gradeKey.indexOf('Last') >= 0) { // HACK: checking this string is a bad idea
+    private includeRecord(row: AdminGradeRow): boolean {
+        if ((this.delivId === 'all' || this.delivId === row.deliverable) && typeof row.snum !== 'undefined') { // test rows don't have snums
+            if (this.lastOnly === false || row.deliverable.indexOf('Last') >= 0) { // HACK: checking this string is a bad idea
                 return true;
             }
         }
