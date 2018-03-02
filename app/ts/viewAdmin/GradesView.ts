@@ -344,6 +344,7 @@ export class GradesView {
                 const username = row.username;
                 const deliverable = row.deliverable;
                 const student = students[username];
+                const grade = row.grade === null ? '' : row.grade;
                 const index = delivKeys.indexOf(deliverable);
 
                 student.snum = row.snum;
@@ -356,12 +357,12 @@ export class GradesView {
                 }
 
                 // Gets an action-clickable-comment if a comment exists in the Grade object.
-                let htmlNoComment: string = row.grade;
-                let htmlComment: string = '<a class="adminGradesView__comment" href="#" data-comment="' + row.comments + '">' + row.grade + '</a>';
+                let htmlNoComment: string = grade;
+                let htmlComment: string = '<a class="adminGradesView__comment" href="#" data-comment="' + row.comments + '">' + grade + '</a>';
                 let html: string = row.comments === '' ? htmlNoComment : htmlComment;
 
                 student.grades[index] = {
-                    value: row.grade === null ? '' : row.grade,
+                    value: grade,
                     html:  html
                 };
 
