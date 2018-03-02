@@ -8,6 +8,7 @@ import {Network} from '../util/Network';
 const DELIV_SELECT = 'adminGradesView__deliverable-select';
 const GRADE_TABLE = '#adminGradesView__grade-table';
 const UPDATE_BUTTON = '#adminGradesView__deliverable-submit-button';
+const COMMENT_ACTIONS = 'adminGradesView__comment';
 const ALL_OPTION = 'all';
 
 export interface AdminGradePayloadContainer {
@@ -213,7 +214,7 @@ export class GradesView {
 
                         r.push({
                             value: row.username,
-                            html:  '<a href="https://github.ubc.ca/' + row.username + '">' + row.username + '</a>'
+                            html:  '<a href="https://github.ugrad.cs.ubc.ca/' + row.username + '">' + row.username + '</a>'
                         });
                         r.push({
                             value: row.snum,
@@ -252,9 +253,23 @@ export class GradesView {
                 }
             }
             table.generate();
+            this.addCommentEvents();
+
         }
         UI.hideModal();
 
+    }
+
+    private addCommentEvents() {
+        console.log('GradeView::addCommentEvents(..) - start');
+        let commentLinks = document.getElementsByClassName(COMMENT_ACTIONS) as HTMLCollectionOf<Element>;
+        for (let i = 0; i < commentLinks.length; i++) {
+            commentLinks[i].addEventListener(('click'), (e: MouseEvent) => {
+                e.preventDefault();
+                let comment = (e.target as HTMLElement).dataset.comment;
+                UI.showPopover(e, comment);
+            });
+        }
     }
 
     private render(data: any) {
@@ -296,6 +311,7 @@ export class GradesView {
             const username = row.username;
             const deliverable = row.deliverable;
             const grade = row.grade;
+
             if (typeof students[username] === 'undefined') {
                 students[username] = []; // get ready for grades
             }
@@ -339,9 +355,14 @@ export class GradesView {
                     student.grades = [];
                 }
 
+                // Gets an action-clickable-comment if a comment exists in the Grade object.
+                let htmlNoComment: string = row.grade;
+                let htmlComment: string = '<a class="adminGradesView__comment" href="#" data-comment="' + row.comments + '">' + row.grade + '</a>';
+                let html: string = row.comments === '' ? htmlNoComment : htmlComment;
+
                 student.grades[index] = {
                     value: row.grade,
-                    html:  row.grade
+                    html:  html
                 };
 
                 // row.delivDetails // UNUSED right now

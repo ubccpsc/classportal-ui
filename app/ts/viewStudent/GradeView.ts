@@ -35,7 +35,15 @@ export class GradeView {
 
         data.response.map((grade: Grade) => {
 
-          let row = '<ons-row>' + 
+            // NOTE: If a grade comment is not an empty string, add the data-comments attribute and the 
+            // event listener for a pop-up.
+
+          let rowNoComment = '<ons-row>' + 
+            '<ons-col>' + grade.deliverable + '</ons-col>' +
+            '<ons-col>' + grade.grade + '</ons-col>' +
+            '</ons-row>';
+
+          let rowComment = '<ons-row>' + 
             '<ons-col>' + grade.deliverable + '</ons-col>' +
             '<ons-col>' +
                 '<a title="Grade comment info." ' + 
@@ -43,13 +51,16 @@ export class GradeView {
                     + grade.grade + 
                 '</a></ons-col>' +
             '</ons-row>';
-          let htmlRow = UI.ons.createElement(row);  
-                        console.log(htmlRow.childNodes[1].firstChild);
 
-          htmlRow.childNodes[1].firstChild.addEventListener('click', (e: MouseEvent) => {
-              let popoverMessage: string = htmlRow.childNodes[1].firstChild.dataset.comment;
-              UI.showPopover(e, popoverMessage);
-          });
+          let htmlRow = grade.comments === '' ? UI.ons.createElement(rowNoComment) : UI.ons.createElement(rowComment);
+
+          if (grade.comments !== '') {
+              htmlRow.childNodes[1].firstChild.addEventListener('click', (e: MouseEvent) => {
+                  let popoverMessage: string = htmlRow.childNodes[1].firstChild.dataset.comment;
+                  UI.showPopover(e, popoverMessage);
+              });
+          }
+
 
           studentGradeContainer.appendChild(htmlRow);
         });
