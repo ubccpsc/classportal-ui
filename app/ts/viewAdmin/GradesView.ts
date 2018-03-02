@@ -361,7 +361,7 @@ export class GradesView {
                 let html: string = row.comments === '' ? htmlNoComment : htmlComment;
 
                 student.grades[index] = {
-                    value: row.grade,
+                    value: row.grade === null ? '' : row.grade,
                     html:  html
                 };
 
