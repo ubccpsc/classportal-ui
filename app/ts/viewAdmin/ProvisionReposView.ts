@@ -205,7 +205,8 @@ export class ProvisionReposView {
                                         '</li>'
                                     );
             errorListItemHtml.addEventListener('click', (e: MouseEvent) => {
-                UI.showPopover(e, 'Error JSON Details: ' + JSON.stringify(error, null, 2));
+                let w = window.open('', '', 'width=400,height=400,resizeable,scrollbars');
+                w.document.write('Error JSON Details: ' + JSON.stringify(JSON.parse(error), null, 2));
             });
             knownIssuesList.appendChild(errorListItemHtml);
         });

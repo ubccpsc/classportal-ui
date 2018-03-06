@@ -300,7 +300,7 @@ export interface GithubState {
 }
 
 export interface CreationRecord {
-  error: Object;
+  error: string;
 }
 
 export interface GithubTeam {
