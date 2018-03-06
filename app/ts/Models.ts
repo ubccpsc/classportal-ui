@@ -70,7 +70,15 @@ export interface Student {
 // If there are any errors encountered during the Repo creation process, we can re-run adding team members, etc., to fix the issues.
 export interface RepoRepairPayload {
   deliverableName: string;
-  githubOrg: string;
+}
+
+export interface RepoRepairResponseContainer {
+  response: RepoRepairResponse;
+}
+
+export interface RepoRepairResponse {
+  repairCount: number;
+  teamsForRepair: Team[];
 }
 
 // RepoTeamUnlink is for Endpoint /:courseId/admin/github/repo/team/unlink

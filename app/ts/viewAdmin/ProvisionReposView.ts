@@ -1,7 +1,8 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {Deliverable, DeliverablePayload, RepoRepairPayload, RepoProvisionPayload,
-        RepoProvisionResponse, RepoTeamUnlinkPayload, RepoTeamUnlinkResponseContainer} from "../Models";
+        RepoProvisionResponse, RepoTeamUnlinkPayload, RepoTeamUnlinkResponseContainer,
+        RepoRepairResponse, RepoRepairResponseContainer} from "../Models";
 import {ProvisionHealthCheck, ProvisionHealthCheckContainer, Team} from "../Models";
 import {Network} from "../util/Network";
 import {OnsModalElement} from "onsenui";
@@ -14,6 +15,7 @@ const ACTION_PROVISION_REPOS = '#adminProvisionReposPage__provision-repos-action
 const ACTION_UNLINK_REPOS = '#adminProvisionReposPage__unlink-repos-action';
 const CURRENT_DELIV_NAME = '#adminProvisionReposPage__error-manager-deliverable';
 const KNOWN_ISSUES_LIST = '#adminProvisionReposPage__known-issues-list';
+const REPAIR_REPO_BUTTON = '#adminProvisionReposPage__repair-repo-button';
 
 declare var myApp: App;
 
@@ -63,7 +65,6 @@ export class ProvisionReposView {
 
     private confirmRepoGeneration(payload: RepoProvisionPayload) {
         let that = this;
-
         let warningMessage: string = 'The Repo Provisioning process, once underway, cannot be stopped. Would you like to proceed?';
 
         UI.notificationConfirm(warningMessage, function(answer: boolean) {
@@ -77,12 +78,24 @@ export class ProvisionReposView {
 
     private confirmUnlinkRepos(payload: RepoProvisionPayload) {
         let that = this;
-
         let warningMessage: string = 'Unlinking repos will erase Github State information from the Teams for the deliverable ' + this.deliverable.name + '. Would you like to proceed?';
 
         UI.notificationConfirm(warningMessage, function(answer: boolean) {
             if (answer) {
                 that.unlinkRepos(payload);
+            } else {
+                // Do nothing. Let them think about it.
+            }
+        });
+    }
+
+    private confirmRepairRepo(payload: RepoRepairPayload) {
+        let that = this;
+        let warningMessage: string = 'Are you sure you want to repair repos for ' + (this.deliverable.name).toUpperCase() + '?';
+
+        UI.notificationConfirm(warningMessage, function(answer: boolean) {
+            if (answer) {
+                that.repairRepos(payload);
             } else {
                 // Do nothing. Let them think about it.
             }
@@ -108,6 +121,18 @@ export class ProvisionReposView {
         }
     }
 
+    private validateRepairRepo() {
+        let that = this;
+        let repoRepairPayload: RepoRepairPayload = {deliverableName: that.deliverable.name}
+        let isValid: boolean = true;
+
+        // No validation required as of yet.
+
+        if (isValid) {
+            this.confirmRepairRepo(repoRepairPayload);
+        }
+    }
+
     private validateUnlinkRepos() {
         let that = this;
         let repoProvisionPayload: RepoTeamUnlinkPayload = {deliverableName: that.deliverable.name};
@@ -122,6 +147,19 @@ export class ProvisionReposView {
 
     private repairRepos(payload: RepoRepairPayload) { 
         console.log('ProvisionReposView::repairRepos() Network payload', payload);
+        let url = myApp.backendURL + myApp.currentCourseId + '/admin/github/repair';
+        Network.httpPut(url, payload)
+            .then((data: any) => {
+                data.json()
+                    .then((container: RepoRepairResponseContainer) => {
+                        if (typeof container.response !== 'undefined') {
+                            UI.notification('Beginning repair process for ' + container.response.teamsForRepair + ' Teams.');
+                        } else {
+                            console.log('ProvisionReposView::provisionRepos() ERROR', container);
+                            UI.notification('Unable to Provision Repos. Please see console and ClassPortal-Backend logs for more information.');
+                        }
+                    });
+            });
     }
 
     private provisionRepos(payload: RepoProvisionPayload) {
@@ -168,25 +206,29 @@ export class ProvisionReposView {
         let that = this;
         let provisionReposAction = document.querySelector(ACTION_PROVISION_REPOS) as HTMLElement;
         let unlinkReposAction = document.querySelector(ACTION_UNLINK_REPOS) as HTMLElement;
+        let repairReposAction = document.querySelector(REPAIR_REPO_BUTTON) as HTMLElement;
         provisionReposAction.addEventListener('click', () => {
             that.validateRepoGeneration(); // if Valid, teams will be created 
         });
         unlinkReposAction.addEventListener('click', () => {
             that.validateUnlinkRepos(); // if Valid, teams will be created 
         });
+        repairReposAction.addEventListener('click', () => {
+            that.validateRepairRepo(); // if Valid, repos will be repaired.
+        })
     }
 
     private getErroredTeams(): Team[] {
         console.log('ProvisionReposView::getErroredTeams() - start');
         let erroredTeams: Team[] = [];
         this.provisionHealthCheck.teams.map((team) => {
+            console.log('debug', team);
             if (team.githubState.creationRecord.error !== null) {
                 let errorKeys = Object.keys(team.githubState.creationRecord.error);
                 if (errorKeys.length > 0) {
                     erroredTeams.push(team);
                 }
             }
-
         });
         return erroredTeams;
     }
