@@ -296,6 +296,11 @@ export interface Team {
 export interface GithubState {
     team: GithubTeam;
     repo: GithubRepo;
+    creationRecord: CreationRecord;
+}
+
+export interface CreationRecord {
+  error: Object;
 }
 
 export interface GithubTeam {

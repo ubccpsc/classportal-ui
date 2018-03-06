@@ -2,7 +2,7 @@ import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {Deliverable, DeliverablePayload, RepoRepairPayload, RepoProvisionPayload,
         RepoProvisionResponse, RepoTeamUnlinkPayload, RepoTeamUnlinkResponseContainer} from "../Models";
-import {ProvisionHealthCheck, ProvisionHealthCheckContainer} from "../Models";
+import {ProvisionHealthCheck, ProvisionHealthCheckContainer, Team} from "../Models";
 import {Network} from "../util/Network";
 import {OnsModalElement} from "onsenui";
 import {App} from "../App";
@@ -13,6 +13,7 @@ const INPUT_IN_SAME_LAB = '#adminProvisionReposPage__option-inSameLab';
 const ACTION_PROVISION_REPOS = '#adminProvisionReposPage__provision-repos-action';
 const ACTION_UNLINK_REPOS = '#adminProvisionReposPage__unlink-repos-action';
 const CURRENT_DELIV_NAME = '#adminProvisionReposPage__error-manager-deliverable';
+const KNOWN_ISSUES_LIST = '#adminProvisionReposPage__known-issues-list';
 
 declare var myApp: App;
 
@@ -33,7 +34,7 @@ export class ProvisionReposView {
     }
 
     private updateInfoText() {
-        document.querySelector(CURRENT_DELIV_NAME).innerHTML = String(this.deliverable.name);
+        document.querySelector(CURRENT_DELIV_NAME).innerHTML = String(this.deliverable.name).toUpperCase();
     }
 
     private fetchDelivTeamOverview() {
@@ -149,7 +150,7 @@ export class ProvisionReposView {
             .then((data: any) => {
                 data.json()
                     .then((container: RepoTeamUnlinkResponseContainer) => {
-                        console.log('unlink repos response', container);
+                        console.log('ProvisionReposView:: unlinkRepos() Network response:', container);
                         if (typeof container.response !== 'undefined' && container.response.ok && container.response.nModified > 0) {
                             UI.notification('Successfully removed Github references from ' + container.response.nModified + ' Teams on ' + String(this.deliverable.name).toUpperCase() + '.');
                         } else if (typeof container.response !== 'undefined' && container.response.ok && container.response.nModified === 0) {
@@ -175,9 +176,46 @@ export class ProvisionReposView {
         });
     }
 
+    private getErroredTeams(): Team[] {
+        console.log('ProvisionReposView::getErroredTeams() - start');
+        let erroredTeams: Team[] = [];
+        this.provisionHealthCheck.teams.map((team) => {
+            if (team.githubState.creationRecord !== null) {
+                let errorKeys = Object.keys(team.githubState.creationRecord.error);
+                if (errorKeys.length > 0) {
+                    erroredTeams.push(team);
+                }
+            }
+
+        });
+        return erroredTeams;
+    }
+
+    private renderKnownIssues() {
+        console.log('ProvisionReposView::renderKnownIssues() - start');
+        let erroredTeams: Team[] = this.getErroredTeams();
+        let knownIssuesList = document.querySelector(KNOWN_ISSUES_LIST) as HTMLElement;
+
+        erroredTeams.map((team: Team) => {
+            let error = team.githubState.creationRecord.error;
+            let teamName = this.deliverable.name + '_' + team.name;
+            let errorListItemHtml = UI.ons.createElement(
+                                        '<li class="list-item list-item--tappable">' +
+                                            '<div class="list-item__center">' + teamName + '</div>' +
+                                        '</li>'
+                                    );
+            errorListItemHtml.addEventListener('click', (e: MouseEvent) => {
+                UI.showPopover(e, 'Error JSON Details: ' + JSON.stringify(error, null, 2));
+            });
+            knownIssuesList.appendChild(errorListItemHtml);
+        });
+        console.log('ProvisionReposView::renderKnownIssues() - complete');
+    }
+
     private initView(provisionHealthCheck: ProvisionHealthCheck) {
         this.updateTitle();
         this.updateInfoText();
         this.addButtonClickListeners();
+        this.renderKnownIssues();
     }
 }
