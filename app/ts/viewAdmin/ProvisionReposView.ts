@@ -180,7 +180,7 @@ export class ProvisionReposView {
         console.log('ProvisionReposView::getErroredTeams() - start');
         let erroredTeams: Team[] = [];
         this.provisionHealthCheck.teams.map((team) => {
-            if (team.githubState.creationRecord !== null) {
+            if (team.githubState.creationRecord.error !== null) {
                 let errorKeys = Object.keys(team.githubState.creationRecord.error);
                 if (errorKeys.length > 0) {
                     erroredTeams.push(team);
