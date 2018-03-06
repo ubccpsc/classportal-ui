@@ -32,7 +32,7 @@ export class ProvisionTeamsView {
     }
 
     private updateInfoText() {
-        document.querySelector(CURRENT_DELIV_NAME).innerHTML = String(this.deliverable.name);
+        document.querySelector(CURRENT_DELIV_NAME).innerHTML = String(this.deliverable.name).toUpperCase();
     }
 
     private fetchDelivTeamOverview() {

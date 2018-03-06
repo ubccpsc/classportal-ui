@@ -65,7 +65,13 @@ export class ProvisionReposView {
 
     private confirmRepoGeneration(payload: RepoProvisionPayload) {
         let that = this;
-        let warningMessage: string = 'The Repo Provisioning process, once underway, cannot be stopped. Would you like to proceed?';
+        let provisionCount: number = 0;
+        this.provisionHealthCheck.teams.map((teams) => {
+            if (teams.githubState.repo.url !== '') {
+                provisionCount++;
+            }
+        });
+        let warningMessage: string = provisionCount + ' Teams exist without a Repo. This will provision ' + provisionCount +' Repos. Would you like to proceed?';
 
         UI.notificationConfirm(warningMessage, function(answer: boolean) {
             if (answer) {
@@ -147,13 +153,20 @@ export class ProvisionReposView {
 
     private repairRepos(payload: RepoRepairPayload) { 
         console.log('ProvisionReposView::repairRepos() Network payload', payload);
-        let url = myApp.backendURL + myApp.currentCourseId + '/admin/github/repair';
+        let url = myApp.backendURL + myApp.currentCourseId + '/admin/github/repo/team/repair';
         Network.httpPut(url, payload)
             .then((data: any) => {
                 data.json()
                     .then((container: RepoRepairResponseContainer) => {
                         if (typeof container.response !== 'undefined') {
-                            UI.notification('Beginning repair process for ' + container.response.teamsForRepair + ' Teams.');
+                            console.log('response', container.response);
+                            let repairCount = container.response.repairCount;
+                            if (repairCount > 0) {
+                                UI.notification('Beginning repair process for ' + container.response.repairCount + ' Teams.');
+                            } else {
+                                UI.notification('You cannot repair any Teams because repos have not been provisioned.');
+                            }
+
                         } else {
                             console.log('ProvisionReposView::provisionRepos() ERROR', container);
                             UI.notification('Unable to Provision Repos. Please see console and ClassPortal-Backend logs for more information.');
@@ -247,8 +260,8 @@ export class ProvisionReposView {
                                         '</li>'
                                     );
             errorListItemHtml.addEventListener('click', (e: MouseEvent) => {
-                let w = window.open('', '', 'width=400,height=400,resizeable,scrollbars');
-                w.document.write('Error JSON Details: ' + JSON.stringify(JSON.parse(error), null, 2));
+                let w = window.open('', '', 'width=800,height=800,resizeable,scrollbars');
+                w.document.write('<bold>Error JSON Details:</bold><pre>' + JSON.stringify(JSON.parse(error), null, 2)) + '</pre>';
             });
             knownIssuesList.appendChild(errorListItemHtml);
         });
