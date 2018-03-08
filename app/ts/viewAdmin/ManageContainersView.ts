@@ -197,7 +197,7 @@ export class ManageContainersView {
     private refreshDelivInitTimer() {
         let that = this;
         let backButton = document.querySelector(CONTAINER_PAGE_ONS_BACK_BUTTON) as HTMLElement;
-        let timers = [];
+        let timers: any[] = [];
         for (let i = 0; i < 30; i++) {
             let timer = setTimeout(function() {
                if (that.deliverable.buildingContainer && this === 'undefined') {
