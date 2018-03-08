@@ -31,6 +31,10 @@ export interface LabSection {
   users: Student[];
 }
 
+export interface BuildContainerPayload {
+  deliverableName?: string;
+}
+
 /**
 * Maps to the /:courseId/admin/teamGeneration ClassPortal-Backend Endpoint
 */ 
