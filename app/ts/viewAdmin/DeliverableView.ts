@@ -25,12 +25,13 @@ const GRADES_RELEASED = '#adminEditDeliverablePage-gradesReleased';
 const BUILDING_REPOS = '#adminEditDeliverablePage-buildingRepos';
 const PROJECT_COUNT = '#adminEditDeliverablePage-projectCount';
 const DOCKER_IMAGE = '#adminEditDeliverablePage-dockerImage';
-const DOCKER_BUILD = '#adminEditDeliverablePage-dockerBuild';
 const CUSTOM_HTML = '#adminEditDeliverablePage-customHtml';
 const CUSTOM_JSON = '#adminEditDeliverablePage-custom';
 const WHITELISTED_SERVERS = '#adminEditDeliverablePage-whitelistedServers';
 const REQUEST_RATE = '#adminEditDeliverablePage-rate';
 const DOCKER_OVERRIDE = '#adminEditDeliverablePage-dockerOverride';
+const DOCKER_REPO = '#adminEditDeliverablePage-dockerRepo';
+const DOCKER_KEY = '#adminEditDeliverablePage-dockerKey';
 const REQUEST_MINUTES = '#duration-minutes';
 const REQUEST_SECONDS = '#duration-seconds';
 const REQUEST_HOURS = '#duration-hours';
@@ -90,7 +91,7 @@ export class DeliverableView {
                     deliverableList.appendChild(UI.createListHeader(deliverable.id));
                     let text = "Open: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString() + "; Close: " + close.toLocaleDateString() + ' @ ' + close.toLocaleTimeString();
                     let subtext: string;
-                    deliverable.dockerOverride === true ? subtext = deliverable.dockerImage + ':' + deliverable.dockerBuild : '';
+                    deliverable.dockerOverride === true ? subtext = deliverable.dockerImage + ':master' : '';
                     let elem = UI.createListItem(text, subtext, true);
                     elem.onclick = function () {
                         that.editDeliverable(deliverable);
@@ -199,14 +200,17 @@ export class DeliverableView {
         let dockerImage: HTMLInputElement = document.querySelector(DOCKER_IMAGE) as HTMLInputElement;
         dockerImage.value = deliverable.dockerImage;
 
-        let dockerBuild: HTMLInputElement = document.querySelector(DOCKER_BUILD) as HTMLInputElement;
-        dockerBuild.value = deliverable.dockerBuild;
-
         let whitelistedServers: HTMLInputElement = document.querySelector(WHITELISTED_SERVERS) as HTMLInputElement;
         whitelistedServers.value = deliverable.whitelistedServers;
 
         let dockerOverride: HTMLInputElement = document.querySelector(DOCKER_OVERRIDE) as HTMLInputElement;
         dockerOverride.checked = deliverable.dockerOverride;
+
+        let dockerRepo: HTMLInputElement = document.querySelector(DOCKER_REPO) as HTMLInputElement;
+        dockerRepo.value = deliverable.dockerRepo;
+
+        let dockerKey: HTMLInputElement = document.querySelector(DOCKER_KEY) as HTMLInputElement;
+        dockerKey.value = deliverable.dockerKey;
 
         let customHtml: HTMLInputElement = document.querySelector(CUSTOM_HTML) as HTMLInputElement;
         customHtml.checked = deliverable.customHtml;
@@ -277,10 +281,13 @@ export class DeliverableView {
                 open: new Date(open.value).getTime(),
                 close: new Date(close.value).getTime(),
                 dockerImage: dockerImage.value,
-                dockerBuild: dockerBuild.value,
                 rate: rateInMs,
                 whitelistedServers: whitelistedServers.value,
                 dockerOverride: dockerOverride.checked,
+                dockerRepo: dockerRepo.value,
+                dockerKey: dockerKey.value,
+                dockerLogs: undefined, // Handled by classportal-backend
+                buildingContainer: undefined, // Handled by classportal-backend
                 customHtml: customHtml.checked,
                 custom: JSON.parse(customJson.value)
             }

@@ -209,6 +209,33 @@
                     <ons-switch id="adminEditDeliverablePage-dockerOverride"></ons-switch>
                 </div>
             </ons-list-item>
+
+            <ons-list-header>Docker Repo</ons-list-header>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span title="Turn on this Deliverable repository image for marking if built.">Override Enabled</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-switch id="adminEditDeliverablePage-dockerRepo"></ons-switch>
+                </div>
+            </ons-list-item>
+
+            <ons-list-header>Docker Key</ons-list-header>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span title="Turn on this Deliverable repository image for marking if built.">Override Enabled</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-switch id="adminEditDeliverablePage-dockerKey"></ons-switch>
+                </div>
+            </ons-list-item>
+
             <ons-list-item style="display: flex;">
                 <div class="left settingIcon">
                     <ons-icon icon="ion-ios-speedometer"></ons-icon>
@@ -221,18 +248,7 @@
                     To drop and re-build these repos, the tag name must remain consistent.">Docker Image</span>
                 </div>
                 <div class="right settingRight">
-                    <ons-input id="adminEditDeliverablePage-dockerImage"></ons-input>
-                </div>
-            </ons-list-item>
-            <ons-list-item style="display: flex;">
-                <div class="left settingIcon">
-                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
-                </div>
-                <div class="center settingLabel">
-                    <span title="The commit of the built and tagged Docker Image (likely 'master' or 'latest' by default).">Docker Build</span>
-                </div>
-                <div class="right settingRight">
-                    <ons-input id="adminEditDeliverablePage-dockerBuild"></ons-input>
+                    <ons-input disabled id="adminEditDeliverablePage-dockerImage"></ons-input>
                 </div>
             </ons-list-item>
 

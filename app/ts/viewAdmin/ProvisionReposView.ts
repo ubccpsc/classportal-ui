@@ -160,8 +160,8 @@ export class ProvisionReposView {
                     .then((container: RepoRepairResponseContainer) => {
                         if (typeof container.response !== 'undefined') {
                             console.log('response', container.response);
-                            let repairCount = container.response.repairCount;
-                            if (repairCount > 0) {
+                            console.log('ProvisionReposView:: repairRepos - Repos for repair: ', container.response.teamsForRepair);
+                            if (container.response.repairCount > 0) {
                                 UI.notification('Beginning repair process for ' + container.response.repairCount + ' Teams.');
                             } else {
                                 UI.notification('You cannot repair any Teams because repos have not been provisioned.');

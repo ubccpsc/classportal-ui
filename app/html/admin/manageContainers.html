@@ -1,0 +1,116 @@
+<ons-page id="adminManageContainers">
+    <ons-toolbar>
+        <div class="left">
+            <ons-back-button></ons-back-button>
+        </div>
+        <h2 id="adminManageContainers__toolbar-title" class="center">Manage Containers</h2>
+    </ons-toolbar>
+
+        <section id="adminManageContainers-assigned-teams">
+
+            <ons-list-header>Build Manager</ons-list-header>
+
+            <div id="adminManageContainers__team-generation-container">
+
+            <div id="adminManageContainers__team-generation-info" class="classportal-info-container" >
+                <p><span>Info: </span>Docker containers may be built on the basis of a Deliverable. A switch that overrides the Course container exists on each Deliverable under the "Configure Deliverables" view.</p>
+                <p><span>Dockerfile Requirements: </span></p>
+                <div id="adminManageContainers__necessary-requirements-container">
+                	<ol>
+                		<li>
+                			<span>
+                				<a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">Dockerfile</a>
+                			</span> must be included in the base-level of Git Repository.
+                		</li>
+                		<li>Dockerfile must run from start-to-end without error.</li>
+                	</ol>
+                </div>
+            </div>
+
+            <!-- Build in Progress Status -->
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Docker Build in Progress: </span>
+                </div>
+                <div class="right settingRight" id="adminManageContainers-build-status-container">
+                    <p style="width: 162.22px"><span id="adminManageContainers-build-status" style="font-weight: 900;"></span></p>
+                </div>
+            </ons-list-item>
+
+            <ons-button id="adminManageContainer__build-container-button" modifier="large" modifier='cta'>Build Container</ons-button>
+        </div>
+    </section>
+
+    <section id="adminManageContainers-docker-logs-section">
+        <ons-list-header>Docker Build Logs</ons-list-header>
+        <div id="adminManageContainers-docker-logs-container" class="classportal-info-container">
+        	<p><span>No build history to display.<span></p>
+        </div>
+        <div class="adminManageContainers__docker-logs-container">
+        	<!--Failed and successful logs will be inserted here-->
+        </div>
+    </section>
+    <section id="adminManageContainers-build-interface-section"">
+        <ons-list-header>AutoTest Build Environment Info</ons-list-header>
+    	<div id="adminManageContainers--build-interface-container" class="classportal-info-container">
+    		ClassPortal will inject the three Environment Variables into your container that are <span>required by AutoTest</span>.
+
+        	<ol>
+        		<li><span>isContainerLive</span> - Boolean for Staging versus Production; '1' if in Production.
+        		<li><span>deliverable</span> - Deliverable that container is built for; '0' if Course container.</li>
+        		<li><span>githubKey</span> - Github key that allows you to access student repositories.</li>
+        	</ol>
+
+        	<ons-list-header>Code Snippet - <a href="https://github.com/ubccpsc/classportal-backend/blob/master/app/scripts/docker-build-helper.sh" >Source Code</a></ons-list-header>
+        	<ons-card>
+	        	<code>
+	        		<p>docker build -f ${dockerFilePath}/Dockerfile --tag ${tagName} \ </p>
+						<p> --build-arg isContainerLive="${isContainerLive}" \ </p>
+						<p> --build-arg deliverable="${deliverable}" \ </p>
+						<p> --build-arg githubKey="${githubKey}" \ </p>
+						<p> --no-cache \ </p>
+						<p> "${dockerDir}" </p>
+	        	</code>
+        	</ons-card>
+
+        	<p>The current-level of the cloned Dockerfile repository is specified above to ensure that repository files are accessible by the Docker script.</p>
+    	</div>
+        <ons-list id="adminManageContainers__list">
+
+        </ons-list>
+    </section>
+
+    <section id="adminManageContainers-run-interface-section"">
+        <ons-list-header>AutoTest Run Environment Info</ons-list-header>
+    	<div id="adminManageContainers-run-interface-container" class="classportal-info-container">
+    		AutoTest will run your container with <span>NET_ADMIN</span> docker privileges that allow you to customize Internet network connectivity. A list of DNS Whitelisted servers is injected in your Docker Container on each test-run based on the configuration under the "Configure Deliverable" view.
+
+        	<ol>
+        		<li><span>isContainerLive</span> - Boolean for Staging versus Production; '1' if in Production.
+        		<li><span>deliverable</span> - Deliverable that container is built for; '0' if Course container.</li>
+        		<li><span>githubKey</span> - Github key that allows you to access student repositories.</li>
+        	</ol>
+
+        	<ons-list-header>Code Snippet</ons-list-header>
+        	<ons-card>
+	        	<code>
+					<p>docker run --cap-add=NET_ADMIN \</p>
+				        <p>   --volume "${tempDir}":/output \</p>
+				        <p>   ${containerLive} \</p>
+				        <p>   --rm \</p>
+				        <p>   ${testImage}</p>
+	        	</code>
+        	</ons-card>
+
+        	<p>The current-level of the cloned Dockerfile repository is specified above to ensure that repository files are accessible by the Docker script.</p>
+    	</div>
+        <ons-list id="adminManageContainers__list">
+
+        </ons-list>
+    </section>
+
+
+</ons-page>

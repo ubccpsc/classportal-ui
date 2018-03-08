@@ -184,11 +184,13 @@ export interface Deliverable {
   minTeamSize: number;
   maxTeamSize: number;
   buildingRepos: boolean;
+  dockerRepo: string;
+  dockerLogs: DockerLogs;
+  dockerImage: string;
+  dockerKey: string;
   projectCount: number;
   teamsInSameLab: boolean;
   dockerOverride: boolean;
-  dockerImage: string;
-  dockerBuild: string;
   whitelistedServers: string;
   solutionsUrl: string;
   solutionsKey: string;
@@ -223,9 +225,7 @@ export interface Deliverable {
     studentsMakeTeams: boolean;
     buildingRepos: boolean;
     projectCount: number;
-    // dockerImage and dockerBuild being deprecated, as one Contaienr per Course will exist
     dockerImage: string;
-    dockerBuild: string;
     customHtml: boolean;
     solutionsUrl: string;
     whitelistedServers: string;
@@ -233,8 +233,22 @@ export interface Deliverable {
     regressionTest: boolean;
     regressionTests: string;
     deliverableKey: string;
+    dockerRepo: string;
+    dockerKey: string;
+    buildingContainer: boolean;
+    dockerLogs: DockerLogs;
     rate: number;
     gradesReleased: boolean;
+}
+
+export interface DockerLogs {
+  buildHistory: Logs;
+  destroyHistory: Logs;
+}
+
+export interface Logs {
+  stdout: string;
+  stderr: string;
 }
 
 // TODO: lots of fields missing here

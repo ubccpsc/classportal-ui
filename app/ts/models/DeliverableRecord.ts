@@ -15,12 +15,15 @@ export default class DeliverableRecord {
   private minTeamSize: boolean;
   private maxTeamSize: number;
   private buildingRepos: boolean;
+  private buildingContainer: boolean;
+  private dockerOverride: boolean;
   private projectCount: number;
   private regressionTest: boolean;
   private regressionTests: string;
   private teamsInSameLab: false;
   private dockerImage: string;
-  private dockerBuild: string;
+  private dockerRepo: string;
+  private dockerKey: string;
   private customHtml: true;
   private solutionsUrl: string;
   private whitelistedServers: string;
@@ -51,9 +54,12 @@ export default class DeliverableRecord {
           teamsInSameLab:     true,
           customHtml:         false,
           buildingRepos:      false,
+          dockerRepo:         '',
+          dockerKey:          '',
+          dockerLogs:         undefined, // Handled by classportal-backend
+          buildingContainer:  false, // Handled by classportal-backend
           dockerOverride:     false,
           dockerImage:        '',
-          dockerBuild:        '',
           solutionsUrl:       '',
           whitelistedServers: 'portal.cs.ubc.ca:1210 portal.cs.ubc.ca:1310',
           solutionsKey:       '',

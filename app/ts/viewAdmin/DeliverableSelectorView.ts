@@ -6,6 +6,7 @@ import {ProvisionReposView} from "../viewAdmin/ProvisionReposView";
 import {ProvisionTeamsView} from "../viewAdmin/ProvisionTeamsView";
 import {DeliverableView} from "../viewAdmin/DeliverableView";
 import {AssignGradesView} from "../viewAdmin/AssignGradesView";
+import {ManageContainersView} from "../viewAdmin/ManageContainersView";
 import {RawTeamPayload} from "../Models";
 import {Network} from "../util/Network";
 import {App} from "../App";
@@ -22,7 +23,8 @@ export enum ForwardOptions {
     CREATE_TEAMS = 'CREATE_TEAMS',
     TEAM_HEALTH = 'TEAM_HEALTH',
     ASSIGN_GRADES = 'ASSIGN_GRADES',
-    MANAGE_DELIVERABLES = 'MANAGE_DELIVERABLES'
+    MANAGE_DELIVERABLES = 'MANAGE_DELIVERABLES',
+    MANAGE_CONTAINERS = 'MANAGE_CONTAINERS',
 }
 
 declare var myApp: App;
@@ -34,6 +36,7 @@ export class DeliverableSelectorView {
     private provisionReposView: ProvisionReposView;
     private deliverableView: DeliverableView;
     private provisionTeamsView: ProvisionTeamsView;
+    private manageContainersView: ManageContainersView;
     private forwardTo: string;
     private header: string;
 
@@ -78,7 +81,7 @@ export class DeliverableSelectorView {
                     deliverableList.appendChild(UI.createListHeader(deliverable.id));
                     let text = "Open: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString() + "; Close: " + close.toLocaleDateString() + ' @ ' + close.toLocaleTimeString();
                     let subtext: string;
-                    deliverable.dockerOverride === true ? subtext = deliverable.dockerImage + ':' + deliverable.dockerBuild : '';
+                    deliverable.dockerOverride === true ? subtext = deliverable.dockerImage + ':master' : '';
                     let elem = UI.createListItem(text, subtext, true);
                     elem.onclick = function (event) {
 
@@ -95,7 +98,6 @@ export class DeliverableSelectorView {
                             }
                             case (ForwardOptions.TEAM_HEALTH): {
                                 that.teamHealthView = new TeamHealthView(that.controller, deliverable);
-                                console.log('showteamhealttest');
                                 that.showTeamHealthInfo(deliverable);
                                 break;
                             }
@@ -107,6 +109,11 @@ export class DeliverableSelectorView {
                             case (ForwardOptions.MANAGE_DELIVERABLES): {
                                 that.deliverableView = new DeliverableView(that.controller, myApp);
                                 that.deliverableView.editDeliverable(deliverable);
+                                break;
+                            }
+                            case (ForwardOptions.MANAGE_CONTAINERS): {
+                                that.manageContainersView = new ManageContainersView(that.controller, deliverable);
+                                that.manageContainersView.render();
                                 break;
                             }
                             default: {
