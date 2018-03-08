@@ -268,13 +268,8 @@ export interface Deliverable {
 }
 
 export interface DockerLogs {
-  buildHistory: Logs;
-  destroyHistory: Logs;
-}
-
-export interface Logs {
-  stdout: string;
-  stderr: string;
+  buildHistory: string;
+  destroyHistory: string;
 }
 
 // TODO: lots of fields missing here
