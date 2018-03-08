@@ -1,16 +1,20 @@
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
-import {Deliverable, DeliverablePayload, BuildContainerPayload} from "../Models";
+import {Deliverable, DeliverablePayload, BuildContainerPayload, BuildContainerContainer, 
+        DestroyContainerPayload, DestroyContainerContainer, IsContainerBuiltContainer, 
+        IsContainerBuiltPayload} from "../Models";
 import {Network} from "../util/Network";
 import {OnsModalElement} from "onsenui";
 import {App} from "../App";
 
-const BUILD_STATUS = '#adminManageContainers-build-status';
-const DOCKER_LOGS_FAIL = '#adminManageContainers__docker-logs-fail';
-const DOCKER_LOGS_SUCCESS = '#adminManageContainers__docker-logs-success';
+const BUILD_STATUS = '#adminManageContainers-building-container-status-input';
+const CONTAINER_STATUS = '#adminManageContainers-build-container-status-input';
 const BUILD_CONTAINER_BUTTON = '#adminManageContainer__build-container-button';
-const BUILD_LOGS_CONTAINER = '#adminManageContainers-docker-logs-container';
-const NO_HISTORY_CONTAINER = '#adminManageContainers-docker-logs-container';
+const DESTROY_CONTAINER_BUTTON = '#adminManageContainer__destroy-container-button';
+const DOCKER_BUILD_LOGS_CONTAINER = '#adminManageContainers__docker-build-logs-container';
+const DOCKER_DESTROY_LOGS_CONTAINER = '#adminManageContainers__docker-destroy-logs-container';
+const NO_DESTROY_HISTORY_CONTAINER = '#adminManageContainers__docker-no-destroy-history-section';
+const NO_BUILD_HISTORY_CONTAINER = '#adminManageContainers__docker-no-build-history-section';
 
 declare var myApp: App;
 
@@ -24,11 +28,39 @@ export class ManageContainersView {
         console.log('ManageContainersView:: Deliverable: ', this.deliverable);
     }
 
-    private updateFields() {
-        console.log('ManageContainersView::updateFields(..) - start');
+    private updateDelivInputs() {
+        console.log('ManageContainersView::updateDelivInputs(..) - start');
         let buildStatus = document.querySelector(BUILD_STATUS) as HTMLElement;
 
         buildStatus.innerHTML = this.deliverable.buildingContainer === true ? 'In Progress' : 'Idle';
+    }
+
+    private updateContainerStatus() {
+        console.log('ManageContainersView::updateDelivInputs(..) - start');
+        let that = this;
+        let url = myApp.backendURL + myApp.currentCourseId + '/admin/isContainerBuilt';
+        let payload: IsContainerBuiltPayload = {deliverableName: that.deliverable.name};
+        Network.httpPut(url, payload)
+            .then((data: any) => {
+                data.json()
+                    .then((isContainerBuiltContainer: IsContainerBuiltContainer) => {
+                        console.log('ManageContainersView::updateContainerStatus() isContainerBuiltContainer response', isContainerBuiltContainer);
+                        let destroyButton = document.querySelector(DESTROY_CONTAINER_BUTTON) as HTMLElement;
+                        let containerStatus = document.querySelector(CONTAINER_STATUS) as HTMLElement;
+                        // Cannot click destroy if the container does not exist and updates build status
+                        if (isContainerBuiltContainer.response === false) {
+                            destroyButton.setAttribute('disabled', 'true');
+                            containerStatus.innerHTML = 'Container Not Built';
+                        } else {
+                            containerStatus.innerHTML = 'Container Built';
+                            destroyButton.addEventListener('click', () => {
+                                that.confirmDestroyContainer();
+                            });
+                        }
+
+                    });
+            });
+
     }
 
     private initBuildButton() {
@@ -39,73 +71,134 @@ export class ManageContainersView {
             buildButton.setAttribute('disabled', 'true');
         } else {
             buildButton.addEventListener('click', () => {
-                that.confirmContainerBuild();
+                that.confirmBuildContainer();
             });
         }
     }
 
-    // private initDestroyLogs() {
-    //     console.log('ManageContainersView::initDockerLogs(..) - start');
-    //     let failedDestroyLogCard = '<ons-card id="adminManageContainers__docker-logs-destroy-failed">' + 
-    //                                     this.deliverable.dockerLogs.buildHistory + 
-    //                                 '</ons-card>';
-    //     let successDestroyLogCard = '<ons-card id="adminManageContainers__docker-logs-destroy-success">' + 
-    //                                     this.deliverable.dockerLogs.buildHistory + 
-    //                                 '</ons-card>';
-    // }
+    private initDestroyLogs() {
+        console.log('ManageContainersView::initDestroyLogs(..) - start');
+        let stdoutDestroy: string = this.deliverable.dockerLogs.destroyHistory.stdout;
+        let stderrDestroy: string = this.deliverable.dockerLogs.destroyHistory.stderr;
+        let destroyLogsContainer = document.querySelector(DOCKER_DESTROY_LOGS_CONTAINER) as HTMLElement;
+        let noDestroyHistoryContainer = document.querySelector(NO_DESTROY_HISTORY_CONTAINER) as HTMLElement;
+
+        // Clear Build History by Default for Re-init and then Render
+        noDestroyHistoryContainer.innerHTML = '';
+
+        let failedDestroyLogCard = '<ons-card id="adminManageContainers__docker-logs-build-failed" style="background-color: #B8513A; color: #fff">' + 
+                                     '<h5>FAILURE DESTROY RECORD:</h5><p><p><pre>' + stderrDestroy || '' +  '</pre>' +
+                                 '</ons-card>';
+        let successDestroyLogCard = '<ons-card id="adminManageContainers__docker-logs-build-success" style="background-color: #3A70B8; color: #fff">' + 
+                                     '<h5>SUCCESS DESTROY RECORD:</h5><p><p><pre>' + stdoutDestroy || '' + '</pre>' + 
+                                  '</ons-card>';
+        let successDestroyHTML = UI.ons.createElement(successDestroyLogCard);
+        let failedDestroyHTML = UI.ons.createElement(failedDestroyLogCard);
+
+        if (stdoutDestroy !== '') {
+            destroyLogsContainer.appendChild(successDestroyHTML);
+        }
+        if (stderrDestroy !== '') {
+            destroyLogsContainer.appendChild(failedDestroyHTML);
+        }
+
+        if (stdoutDestroy === '' && stderrDestroy === '') {
+            let noHistoryHtml = UI.ons.createElement('<span>No destroy history to display.</span>')
+            noDestroyHistoryContainer.appendChild(noHistoryHtml);
+        }
+
+    }
 
     private initBuildLogs() {
         console.log('ManageContainersView::initDockerLogs(..) - start');
-        let stderr: string = this.deliverable.dockerLogs.buildHistory.stderr;
-        let stdout: string = this.deliverable.dockerLogs.buildHistory.stdout;
-        let buildLogsContainer = document.querySelector(BUILD_LOGS_CONTAINER) as HTMLElement;
-        let noHistoryContainer = document.querySelector(NO_HISTORY_CONTAINER) as HTMLElement;
+        let stderrBuild: string = this.deliverable.dockerLogs.buildHistory.stderr;
+        let stdoutBuild: string = this.deliverable.dockerLogs.buildHistory.stdout;
+
+        let buildLogsContainer = document.querySelector(DOCKER_BUILD_LOGS_CONTAINER) as HTMLElement;
+        let noBuildHistoryContainer = document.querySelector(NO_BUILD_HISTORY_CONTAINER) as HTMLElement;
+
+        // Clear Build History by Default for Re-init and then Render
+        noBuildHistoryContainer.innerHTML = '';
 
         let failedBuildLogCard = '<ons-card id="adminManageContainers__docker-logs-build-failed" style="background-color: #B8513A; color: #fff">' + 
-                                     '<pre>' + stderr || '' +  '</pre>' +
+                                     '<h5>FAILURE BUILD RECORD:</h5><p><p><pre>' + stderrBuild || '' +  '</pre>' +
                                  '</ons-card>';
         let successBuildLogCard = '<ons-card id="adminManageContainers__docker-logs-build-success" style="background-color: #3A70B8; color: #fff">' + 
-                                     '<pre>' + stdout || '' + '</pre>' + 
+                                     '<h5>SUCCESS BUILD RECORD:</h5><p><p><pre>' + stdoutBuild || '' + '</pre>' + 
                                   '</ons-card>';
+        let failedBuildHTML = UI.ons.createElement(failedBuildLogCard);
+        let successBuildHTML = UI.ons.createElement(successBuildLogCard);
 
-        let failedHTML = UI.ons.createElement(failedBuildLogCard);
-        let successHTML = UI.ons.createElement(successBuildLogCard);
 
-        if (stderr !== '') {
-            buildLogsContainer.appendChild(failedHTML);
+        if (stderrBuild !== '') {
+            buildLogsContainer.appendChild(failedBuildHTML);
         }
-        if (stdout !== '') {
-            buildLogsContainer.appendChild(successHTML);
+        if (stdoutBuild !== '') {
+            buildLogsContainer.appendChild(successBuildHTML);
         }
-        if (stdout === '' && stderr === '') {
+
+        if (stdoutBuild === '' && stderrBuild === '') {
             let noHistoryHtml = UI.ons.createElement('<span>No build history to display.</span>')
-            noHistoryContainer.appendChild(noHistoryHtml);
+            noBuildHistoryContainer.appendChild(noHistoryHtml);
         }
     }
 
     private buildContainer() {
-        console.log('ManageContainersView::buidlContainer(..) - start');
+        console.log('ManageContainersView::buildContainer(..) - start');
         let that = this;
         let url = myApp.backendURL + myApp.currentCourseId + '/admin/buildContainer';
         let payload: BuildContainerPayload = {deliverableName: that.deliverable.name};
 
         Network.httpPut(url, payload)
             .then((data: any) => {
-                data.json()
-                    .then((response: any) => {
-                        console.log('the response back frm build contianer', response);
+                return data.json()
+                    .then((buildContainerContainer: BuildContainerContainer) => {
+                        console.log('ManageContainersView::buildContainer(..) Network response: ', buildContainerContainer);
+                        // Surprisingly nice UI message:
+                        UI.notification(buildContainerContainer.response);
+                    });
+            });
+    }
+
+    private destroyContainer() {
+        console.log('ManageContainersView::destroyContainer(..) - start');
+        let that = this;
+        let url = myApp.backendURL + myApp.currentCourseId + '/admin/destroyContainer';
+        let payload: DestroyContainerPayload = {deliverableName: that.deliverable.name};
+
+        Network.httpPut(url, payload)
+            .then((data: any) => {
+                return data.json()
+                    .then((destroyContainerContainer: DestroyContainerContainer) => {
+                        console.log('ManageContainersView::destroyContainer(..) Netowrk response: ', destroyContainerContainer);
+                        that.deliverable = destroyContainerContainer.response;
+                        that.initView();
+                        UI.notification('Container successfully desotroyed');
                     });
             });
 
     }
 
-    private confirmContainerBuild() {
+    private confirmBuildContainer() {
         let that = this;
         let warningMessage: string = 'Are you sure you want to build a container for ' + (this.deliverable.name).toUpperCase() + '?';
 
         UI.notificationConfirm(warningMessage, function(answer: boolean) {
             if (answer) {
                 that.buildContainer();
+            } else {
+                // Do nothing. Let them think about it.
+            }
+        });
+    }
+
+    private confirmDestroyContainer() {
+        let that = this;
+        let warningMessage: string = 'WARNING: Destroying a container can have detrimental course effects. Are you sure you want to destroy a container for ' + (this.deliverable.name).toUpperCase() + '?';
+
+        UI.notificationConfirm(warningMessage, function(answer: boolean) {
+            if (answer) {
+                that.destroyContainer();
             } else {
                 // Do nothing. Let them think about it.
             }
@@ -130,8 +223,12 @@ export class ManageContainersView {
     }
 
     private initView() {
-        this.updateFields();
+        UI.showModal();
+        this.updateContainerStatus();
+        this.updateDelivInputs();
         this.initBuildButton();
         this.initBuildLogs();
+        this.initDestroyLogs();
+        UI.hideModal();
     }
 }

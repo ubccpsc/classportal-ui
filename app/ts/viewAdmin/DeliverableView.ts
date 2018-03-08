@@ -376,10 +376,10 @@ export class DeliverableView {
             return false;
         }
 
-        if (starterCodeUrl.value.search(HTTPS_REGEX) === -1 || solutionsCodeUrl.value.search(HTTPS_REGEX) === -1) {
-            UI.notification(GIT_REPO_ERR);
-            return false;
-        }
+        // if (starterCodeUrl.value.search(HTTPS_REGEX) === -1 || solutionsCodeUrl.value.search(HTTPS_REGEX) === -1) {
+        //     UI.notification(GIT_REPO_ERR);
+        //     return false;
+        // }
 
         return true;
     }

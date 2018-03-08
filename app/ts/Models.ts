@@ -35,6 +35,28 @@ export interface BuildContainerPayload {
   deliverableName?: string;
 }
 
+export interface DestroyContainerPayload {
+  deliverableName?: string;
+}
+
+export interface IsContainerBuiltPayload {
+  deliverableName?: string;
+}
+
+export interface IsContainerBuiltContainer {
+  response: boolean; // true if container exists
+}
+
+export interface DestroyContainerContainer {
+  response: Deliverable;
+}
+
+export interface BuildContainerContainer {
+  response: string;
+}
+
+
+
 /**
 * Maps to the /:courseId/admin/teamGeneration ClassPortal-Backend Endpoint
 */ 
