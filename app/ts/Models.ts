@@ -9,6 +9,15 @@ export interface StudentWithLab {
   labSection: string;
 }
 
+export interface GradeUploadResponseContainer {
+  response: GradeUploadResponse;
+}
+
+export interface GradeUploadResponse {
+  cannotUpdate: object[];
+  updatedGrades: Grade[];
+}
+
 export interface GradeContainer {
   response: Grade[];
 }

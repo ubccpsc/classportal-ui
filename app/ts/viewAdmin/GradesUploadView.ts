@@ -1,6 +1,6 @@
 import {UI} from "../util/UI";
 import {App} from "../App";
-import {Grade, GradeContainer, GRADES_HEADERS_ENUM} from '../Models';
+import {GradeUploadResponse, GradeUploadResponseContainer, GRADES_HEADERS_ENUM} from '../Models';
 import {AdminController} from "../controllers/AdminController";
 import {SortableTable, TableCell, TableHeader} from "../util/SortableTable";
 import {OnsCheckboxElement, OnsSelectElement} from "onsenui";
@@ -11,6 +11,8 @@ const DELIVERABLE_SELECTOR = '#adminUploadGradesPage__deliverable-selector';
 const UPLOAD_BUTTON = '#adminUploadGradesPage__fileInput-button';
 const FILE_INPUT = '#adminUploadGradesPage__fileInput-input';
 const DEFAULT_SELECTION = 'select';
+const CANNOT_UPDATE_CONTAINER = '#adminUploadGradesPage__cannot-update-container';
+const CANNOT_UPDATE_CARD = '#adminUploadGradesPage__cannot-update-card';
 
 export class GradesUploadView {
 
@@ -79,9 +81,14 @@ export class GradesUploadView {
         .then((data: any) => {
           if (data.status >= 200 && data.status < 300) {
             data.json()
-              .then((data: GradeContainer) => {
-                console.log('GradeUploadView RESPONSE: ' + JSON.stringify(data));
-                UI.notification(data.response.length + ' grades successfully updated.');
+              .then((data: GradeUploadResponseContainer) => {
+                console.log('GradeUploadView GradeUploadResponseContainer data: ' + JSON.stringify(data));
+                if (data.response.cannotUpdate.length > 0) {
+                  UI.notification(data.response.updatedGrades.length + ' grades successfully updated. Could not update ' + data.response.cannotUpdate.length + ' grades.');
+                  that.showCannotUpdateObjects(data.response);
+                } else {
+                  UI.notification(data.response.updatedGrades.length + ' grades successfully updated.');
+                }
                 UI.hideModal();
               });
           } else {
@@ -93,6 +100,21 @@ export class GradesUploadView {
               });
           }
         });
+    }
+
+    private showCannotUpdateObjects(gradeUploadResponse: GradeUploadResponse) {
+      let container = document.querySelector(CANNOT_UPDATE_CONTAINER) as HTMLElement;
+      let cannotUpdateList = document.querySelector(CANNOT_UPDATE_CARD) as HTMLElement;
+      cannotUpdateList.innerHTML = '';
+      gradeUploadResponse.cannotUpdate.map((user: any) => {
+        let columns = '';
+        Object.keys(user).forEach((key) => {
+          columns += '<ons-col>' + user[key] + '</ons-col>'
+        });
+          cannotUpdateList.appendChild(UI.ons.createElement('<ons-row>' + columns + '</ons-row>'));
+      });
+
+      container.style.display = 'block';
     }
 
     public configure() {
