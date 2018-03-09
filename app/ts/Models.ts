@@ -1,4 +1,4 @@
-export enum GRADES_HEADERS_ENUM {CSID = "CSID", SNUM = "SNUM", GRADE = "GRADE"};
+export enum GRADES_HEADERS_ENUM {CSID = "CSID", SNUM = "SNUM", CWL = 'CWL', GRADE = "GRADE"};
 export enum CLASS_LIST_HEADERS_ENUM {FIRST = "FIRST", LAST = "LAST", SNUM = "SNUM", CWL = "CWL", CSID = "CSID"};
 
 export interface StudentWithLab {

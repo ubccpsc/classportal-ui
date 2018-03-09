@@ -59,18 +59,8 @@ export class GradesUploadView {
           return false;
       }
 
-      if (CSV_HEADERS.indexOf(GRADES_HEADERS_ENUM.CSID) < 0) {
-        UI.notification('Your CSV is missing the header ' + GRADES_HEADERS_ENUM.CSID + '.');
-        return false;
-      } 
-
-      if (CSV_HEADERS.indexOf(GRADES_HEADERS_ENUM.SNUM) < 0) {
-        UI.notification('Your CSV is missing the header ' + GRADES_HEADERS_ENUM.SNUM + '.');
-        return false;
-      } 
-
-      if (CSV_HEADERS.indexOf(GRADES_HEADERS_ENUM.GRADE) < 0) {
-        UI.notification('Your CSV is missing the header ' + GRADES_HEADERS_ENUM.GRADE + '.');
+      if (CSV_HEADERS.indexOf(GRADES_HEADERS_ENUM.CSID) < 0 && CSV_HEADERS.indexOf(GRADES_HEADERS_ENUM.SNUM) < 0 && CSV_HEADERS.indexOf(GRADES_HEADERS_ENUM.CWL) < 0) {
+        UI.notification('Your CSV is missing at least one of the student identifiers: CSID, SNUM, or CWL.');
         return false;
       } 
 
@@ -135,6 +125,7 @@ export class GradesUploadView {
             that.validateGrades(fileInput, selectedDeliv)
                 .then((isValid: boolean) => {
                     if (isValid) {
+                        console.log(fileInput.files);
                         that.uploadGrades(fileInput.files, selectedDeliv);
                     }
                 });
