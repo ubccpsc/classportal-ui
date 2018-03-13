@@ -5,7 +5,7 @@ const path = require('path');
 const http = require('http');
 const https = require('https');
 const config = require('./config');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const PORT = process.env.NODE_ENV === 'production' ? 443 : 3000;
 
 // configure express app
@@ -52,25 +52,27 @@ let httpServer = http.createServer(redirectApp);
 let httpsServer = https.createServer(options, app);
 
 // ## SOCKET IO - Adds Client interface to index.html through <script> tag ##
-const io = require('socket.io')(httpsServer);
+// DISABLED BECAUSE NOT ENOUGH TIME TO IMPLEMENT. YOU MAY SUBSTITUTE SOCKET IO WITH 
+// THE CURRENT LOGGING THAT SAVES TO THE DATABASE IN MONGODB.
+// const io = require('socket.io')(httpsServer);
 
-io.use(function(socket, next) {
-    console.log(socket);
-    console.log('query', socket.handshake.query);
-    console.log('token', socket.handshake.query.token);
-    jwt.verify(socket.handshake.query, 'mystery key', function(err, decoded) {
-        if (err) { 
-            console.log ('run.js::socket.io ERROR;' + err);
-            return next(new Error('Authentication error: ' + err));
-        }
-        console.log('decoded socket', socket.decoded);
-    });
-})
+// io.use(function(socket, next) {
+//     console.log(socket);
+//     console.log('query', socket.handshake.query);
+//     console.log('token', socket.handshake.query.token);
+//     jwt.verify(socket.handshake.query, 'mystery key', function(err, decoded) {
+//         if (err) { 
+//             console.log ('run.js::socket.io ERROR;' + err);
+//             return next(new Error('Authentication error: ' + err));
+//         }
+//         console.log('decoded socket', socket.decoded);
+//     });
+// })
 
-io.on('connection', (socket) => {
-    console.log('user connected');
-    console.log('socket connected;', socket.handshake.query);
-});
+// io.on('connection', (socket) => {
+//     console.log('user connected');
+//     console.log('socket connected;', socket.handshake.query);
+// });
 // ##
 
 // start servers

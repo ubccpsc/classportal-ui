@@ -9,6 +9,38 @@ export interface StudentWithLab {
   labSection: string;
 }
 
+export interface Course {
+  courseId: string; // ie. '310', '210'.
+  githubOrg: string; // Github Enterprise Organization where student repos are located.
+  dockerRepo: string; // The Repo where Dockerfile builds image from
+  dockerKey: string; // Github auth token key if Repo is not public
+  labSections: LabSection[]; // Array that holds the lab sections with the students
+  urlWebhook: string; // The Portal address and port that a ResultRecord should be sent to after internal Docker Grading.
+  admins: User[]; // Mongo Object ID / Professors only. TAs with staff priviledges must go under staff list. Only SuperAdmin can add admins
+  staffList: User[]; // Mongo Object ID / TAs who can do unlimited Grade Requests and access areas of ClassPortal
+  classList: User[]; // Mongo Object ID / Every student who is enrolled in the course should be in this list
+  dockerLogs: DockerLogs; // Latest Docker build and drop logs for this Course
+  buildingContainer: boolean; // If currently building a container, this should be true.
+}
+
+export interface User {
+    _id?: string;
+    fname: string;
+    lname: string;
+    csid: string;
+    snum: string;
+    userrole: string;
+    username: string;
+}
+
+export interface CoursesResponseContainer {
+  response: CoursesResponse;
+}
+
+export interface CoursesResponse {
+    courses: Course[];
+}
+
 export interface GradeUploadResponseContainer {
   response: GradeUploadResponse;
 }

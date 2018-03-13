@@ -1,4 +1,84 @@
 <ons-page id="superadminCoursesPage">
-    <ons-list id="superadmin-courses-list">
-    </ons-list>
+
+    <ons-toolbar>
+        <div class="left">
+            <ons-back-button></ons-back-button>
+        </div>
+        <div id="superadminCoursesPage-header" class="center">Create Course</div>
+    </ons-toolbar>
+    
+        <ons-list id="superadminCoursesPage__course-fields-list">
+            <input type="hidden" id="superadminCoursesPage-__course-fields-id"/>
+            <ons-list-header>Course Information</ons-list-header>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span title="The course number identifier. ie. '310'.">Course ID</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="superadminCoursesPage-__course-fields-courseId"></ons-input>
+                </div>
+            </ons-list-item>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span title="The Github Organization Course, Semester, and Term namespace. ie. 'CPSC310-2017W-T2'.">Github Organization</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="superadminCoursesPage__course-fields-githubOrg"></ons-input>
+                </div>
+            </ons-list-item>
+
+            <ons-list-header>Docker Container</ons-list-header>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Dockerfile Repo URL</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="superadminCoursesPage__course-fields-dockerRepo"></ons-input>
+                </div>
+            </ons-list-item>
+
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span>Docker Repo Key</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input id="superadminCoursesPage-course-fields-dockerKey"></ons-input>
+                </div>
+            </ons-list-item>
+
+            <ons-list-header>AutoTest Integration</ons-list-header>
+            <ons-list-item style="display: flex;">
+                <div class="left settingIcon">
+                    <ons-icon icon="ion-ios-speedometer"></ons-icon>
+                </div>
+                <div class="center settingLabel">
+                    <span title="A repo webhook is placed on every repository that is created by ClassPortal. A payload that triggers AutoTest is always sent back to the specified webhook based on Github's commit comment and push models.
+
+                    WARNING: If AutoTest does not receive the webhook, then it will be unable to grade pushes or listen to commit comments for grading renquests.'">Repo Webhook URL</span>
+                </div>
+                <div class="right settingRight">
+                    <ons-input disabled id="superadminCoursesPage-course-fields-urlWebhook"></ons-input>
+                </div>
+            </ons-list-item>
+
+        </ons-list>
+
+    </script>
+
+    <ons-fab id="superadminCoursesPage-save-action" position="bottom right">
+        <ons-icon icon="md-save"></ons-icon>
+    </ons-fab>
+
 </ons-page>

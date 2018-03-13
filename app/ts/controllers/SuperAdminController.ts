@@ -4,16 +4,20 @@
 
 import {UI} from '../util/UI';
 import {Network} from '../util/Network';
-// import {CourseView} from "../viewSuperAdmin/CourseView";
+// import {AddCourseView} from "../viewSuperAdmin/AddCourseView";
+// import {EditCourseView} from "../viewSuperAdmin/EditCourseView";
 // import {UserView} from "../viewSuperAdmin/UserView";
-import {DeliverableView} from "../viewStudent/DeliverableView";
+import CourseSelector from "../viewSuperAdmin/CourseSelector";
 import {TeamView} from "../viewStudent/TeamView";
 import {App} from "../App";
 
-export class StudentController {
+export class SuperAdminController {
 
     private courseId: string;
     private data: any;
+
+    // Bit of a hack: FIRST SuperAdminView should load the Courses list.
+    public courses: any = null;
 
     // private userView = new UserView();
     // private gradeView = new GradeView();
@@ -24,15 +28,6 @@ export class StudentController {
         this.app = app;
         this.courseId = courseId;
     }
-
-    // public populateStudentTabs(data: any) {
-    //     // myApp.studentControllers.studentData = data; // HACK: global
-    //     // this.data = data; // HACK!
-    //     document.querySelector('#studentTabsHeader').innerHTML = data.course;
-
-    //     // this.updateStudentData(data);
-    // }
-
 
 }
 
