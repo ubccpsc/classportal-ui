@@ -1,6 +1,6 @@
 import {UI} from "../util/UI";
 import {SuperAdminController} from "../controllers/SuperAdminController";
-import {CoursesResponse, CoursesResponseContainer, Course} from "../Models";
+import {CoursesResponse, Course} from "../Models";
 import {App} from "../App";
 import {Network} from "../util/Network";
 import FlatPicker from "../helpers/FlatPicker";
@@ -30,7 +30,7 @@ export default class CourseView {
         this.course = course;
     }
 
-    public render(data: CoursesResponseContainer) {
+    public render(data: CoursesResponse) {
         console.log("CourseView::render(..) - start");
 
         if (typeof data === 'undefined') {
@@ -39,7 +39,7 @@ export default class CourseView {
         }
         console.log('CourseView::render(..) - data: ' + JSON.stringify(data));
 
-        let courses = data.response.courses;
+        let courses = data.response;
         const customSort = function (a: Course, b: Course) {
             return (Number(a.courseId) - Number(b.courseId));
         };
@@ -56,13 +56,24 @@ export default class CourseView {
 
     public initAddView() {
         console.log('CourseView::initAddView() - start');
-
+        UI.showModal();
+        UI.pushPage('html/superadmin/course.html')
+            .then(() => {
+                console.log('SUCCESS: html/admin/editDeliverable.html pushPage loaded');
+                UI.hideModal();
+            });
     }
 
 
     public initEditView() {
+        if (this.course === null) {
+            throw 'CourseView::Course cannot be null in EditView mode.';
+        }
         console.log('CourseView::initEditView( ' + this.course.courseId + ' ) - start');
         let that = this;
+
+
+
 
         // let mongoId: HTMLInputElement = document.querySelector(MONGO_ID) as HTMLInputElement;
         // mongoId.value = deliverable._id;

@@ -92,16 +92,17 @@ export class App {
 
     public createCourseButton(courseId: string): HTMLElement {
         let that = this;
-        let button = `<ons-list-item>
-                          <div style="display:flex; align-items:center; justify-content: center; width: 100%">
-                              <ons-button>CPSC ${courseId}</ons-button>
-                          </div>
-                      </ons-list-item>`
-        let buttonHtml = UI.ons.createElement(button);
-        buttonHtml.addEventListener('click', () => {
+        let buttonContainer = `<ons-list-item>
+                                  <div style="display:flex; align-items:center; justify-content: center; width: 100%">
+                                      <ons-button>CPSC ${courseId}</ons-button>
+                                  </div>
+                              </ons-list-item>`
+        let buttonContainerHtml = UI.ons.createElement(buttonContainer);
+        // A HACK to get deep into the weird UI of onsen to the button that we just created:
+        buttonContainerHtml.lastChild.childNodes[1].childNodes[1].addEventListener('click', () => {
             this.handleMainPageClick({courseId: courseId})
         });
-        return buttonHtml;
+        return buttonContainerHtml;
     }
 
     private login() {
@@ -165,7 +166,7 @@ export class App {
                 const AUTHORIZED_STATUS: string = 'authorized';
 
                 console.log('App::main()::authCheck - starting main.html with auth check');
-                
+
                 that.initCourseSelections();
                 that.toggleLoginButton();
 

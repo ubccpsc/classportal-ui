@@ -37,12 +37,8 @@ export interface CourseIdsResponse {
   response: string[];
 }
 
-export interface CoursesResponseContainer {
-  response: CoursesResponse;
-}
-
 export interface CoursesResponse {
-    courses: Course[];
+  response: Course[];
 }
 
 export interface GradeUploadResponseContainer {

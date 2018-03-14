@@ -1,17 +1,17 @@
 import {UI} from "../util/UI";
 import {SuperAdminController} from "../controllers/SuperAdminController";
-import {Course, CoursesResponseContainer, CoursesResponse} from "../Models";
+import {Course, CoursesResponse} from "../Models";
 import CourseView from "../viewSuperAdmin/CourseView"
 import {Network} from "../util/Network";
 import {App} from "../App";
 
-const COURSE_LIST = '#superAdminDeliverableSelector__course-list'
-const ADD_COURSE_BUTTON = 'superAdminDeliverableSelector-add-course-button';
+const COURSE_LIST = '#superAdminCourseSelector__course-list'
+const ADD_COURSE_BUTTON = '#superAdminCourseSelector__course-add-button';
 
 export enum ForwardOptions {
-    EDIT_COURSE = 'EDIT_COURSE',
-    BUILD_COURSE_CONTAINER = 'EDIT_COURSE_CONTAINER',
-    MANAGE_USERS = 'MANAGE_USERS'
+    COURSES = 'COURSES',
+    CONTAINERS = 'CONTAINERS',
+    USERS = 'USERS'
 }
 
 declare var myApp: App;
@@ -28,12 +28,22 @@ export default class CourseSelectorView {
         this.header = header;
     }
 
-    public render(data: CoursesResponseContainer) {
+    private addNewCourseAction() {
+        console.log('ProvisionTeamsDeliverableView::addNewCourseAction(..) - start');
+        let that = this;
+        let addCourseButton = document.querySelector(ADD_COURSE_BUTTON) as HTMLElement;
+        addCourseButton.addEventListener('click', () => {
+          let courseView = new CourseView(that.controller, myApp, null);
+          courseView.initAddView();
+        });
+    }
+
+    public render(data: CoursesResponse) {
         console.log('ProvisionTeamsDeliverableView::render(..) - start - data: ' + JSON.stringify(data));
         let that = this;
-        let courses = data.response.courses;
+        let courses = data.response;
         const customSort = function (a: Course, b: Course) {
-            return (Number(a.courseId.match(/(\d+)/g)[0]) - Number((b.courseId.match(/(\d+)/g)[0])));
+            return (Number(a.courseId) - Number(b.courseId));
         };
         courses = courses.sort(customSort);
 
@@ -46,30 +56,30 @@ export default class CourseSelectorView {
         //     that.toggleAddDelivButton('hide');
         // }
 
-        // deliverables
-        const deliverableList = document.querySelector(COURSE_LIST);
-        if (deliverableList !== null) {
-            deliverableList.innerHTML = '';
+        // courses
+        const courseList = document.querySelector(COURSE_LIST);
+        if (courseList !== null) {
+            courseList.innerHTML = '';
             if (courses.length > 0) {
                 for (let course of courses) {
-                    deliverableList.appendChild(UI.createListHeader(course.courseId));
-                    let text = "Github Organization: " + course.githubOrg;
+                    courseList.appendChild(UI.createListHeader(course.courseId));
+                    let text = "Github Org: " + course.githubOrg + '; Course Webhook: ' + course.urlWebhook;
                     let subtext: string;
                     let elem = UI.createListItem(text, subtext, true);
                     elem.onclick = function (event) {
 
                         switch (that.forwardTo) {
-                            case (ForwardOptions.EDIT_COURSE): {
+                            case (ForwardOptions.COURSES): {
                                 that.courseView = new CourseView(that.controller, myApp, course);
                                 that.courseView.initEditView();
                                 break;
                             }
-                            case (ForwardOptions.BUILD_COURSE_CONTAINER): {
+                            case (ForwardOptions.CONTAINERS): {
                               // 
                               console.log('should forward to build course container view');
                               break;
                             }
-                            case (ForwardOptions.MANAGE_USERS): {
+                            case (ForwardOptions.USERS): {
                               //
                               console.log('should forward to manage users view');
                             }
@@ -79,10 +89,11 @@ export default class CourseSelectorView {
                         }
 
                     };
-                    deliverableList.appendChild(elem);
+                    courseList.appendChild(elem);
                 }
             } else {
-                deliverableList.appendChild(UI.createListItem("No deliverable data returned from server."));
+                courseList.appendChild(UI.createListItem("No Courses exist. Please create a Course."));
+                that.toggleAddCourseButton('show');
             }
         } else {
             console.log('DeliverableView::render() - element is null');
@@ -90,7 +101,7 @@ export default class CourseSelectorView {
         UI.hideModal();
     }
 
-    private toggleAddDelivButton(action: string) {
+    private toggleAddCourseButton(action: string) {
         let hiddenMenu = document.querySelector(ADD_COURSE_BUTTON) as HTMLElement;
         if (hiddenMenu !== null && hiddenMenu.style.display  === 'none' && action === 'show') {
             hiddenMenu.style.display = 'block';

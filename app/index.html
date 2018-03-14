@@ -37,7 +37,6 @@
 <ons-navigator id="myNavigator" page="main.html">
 </ons-navigator>
 
-
 <!-- Second navigation component: Splitter. This will disappear if the first component changes its content. -->
 <template id="main.html">
     <ons-page id="main">
@@ -129,8 +128,8 @@
         </ons-modal>
 
         <ons-tabbar id="superAdminTabbar" position="auto">
-            <ons-tab page="html/superAdmin/courses.html" label="Courses" icon="ion-ios-paper-outline" active></ons-tab>
-            <ons-tab page="html/superAdmin/users.html" label="Users" icon="ion-ios-people"></ons-tab>
+            <ons-tab page="html/superAdmin/superAdminInfo.html" label="Courses" icon="ion-ios-paper-outline" onclick="myApp.pushPage('html/superadmin/courseSelector.html', {forward: 'COURSES', header: 'Select Courses'})" active></ons-tab>
+            <ons-tab page="html/superAdmin/users.html" label="Users" icon="ion-ios-people" onclick="myApp.pushPage('html/superadmin/courseSelector.html', {forward: 'USERS', header: 'Manage Users'})"></ons-tab>
         </ons-tabbar>
     </ons-page>
 </template>
