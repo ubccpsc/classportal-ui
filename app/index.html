@@ -52,22 +52,8 @@
             </div>
         </ons-toolbar>
 
-        <ons-list>
-            <ons-list-item>
-                <div style="display:flex; align-items:center; justify-content: center; width: 100%">
-                    <ons-button onclick="myApp.handleMainPageClick({courseId: '210'})">CPSC 210</ons-button>
-                </div>
-            </ons-list-item>
-            <ons-list-item>
-                <div style="display:flex; align-items:center; justify-content: center; width: 100%">
-                    <ons-button onclick="myApp.handleMainPageClick({courseId: '310'})">CPSC 310</ons-button>
-                </div>
-            </ons-list-item>
-            <ons-list-item>
-                <div style="display:flex; align-items:center; justify-content: center; width: 100%">
-                    <ons-button onclick="myApp.handleMainPageClick({courseId: '311'})">CPSC 311</ons-button>
-                </div>
-            </ons-list-item>
+        <ons-list id="main-course-selection">
+            <!--Course Buttons that lead to Login Authentication go here-->
         </ons-list>
     </ons-page>
 </template>
@@ -124,9 +110,9 @@
 
 
 <template id="superadmin.html">
-    <ons-page id="superadminTabsPage">
+    <ons-page id="superAdminTabsPage">
         <ons-toolbar>
-            <div class="center" id="superadminTabsHeader">Admin Tabs</div>
+            <div class="center" id="superAdminTabsHeader">Admin Tabs</div>
             <div class="right">
                 <ons-toolbar-button onclick="myApp.logout();">
                     <ons-icon icon="ion-android-exit"></ons-icon>
@@ -135,16 +121,16 @@
             </div>
         </ons-toolbar>
 
-        <ons-modal id="superadminProgress">
+        <ons-modal id="superAdminProgress">
             <div style="display:flex; flex-direction:column; align-items: center;">
                 <div id="modalText" style="padding-top: 1em; padding-bottom: 1em;">Data is being retrieved.</div>
                 <ons-progress-circular indeterminate></ons-progress-circular>
             </div>
         </ons-modal>
 
-        <ons-tabbar id="superadminTabbar" position="auto">
-            <ons-tab page="html/superadmin/courses.html" label="Courses" icon="ion-ios-paper-outline" active></ons-tab>
-            <ons-tab page="html/superadmin/users.html" label="Users" icon="ion-ios-people"></ons-tab>
+        <ons-tabbar id="superAdminTabbar" position="auto">
+            <ons-tab page="html/superAdmin/courses.html" label="Courses" icon="ion-ios-paper-outline" active></ons-tab>
+            <ons-tab page="html/superAdmin/users.html" label="Users" icon="ion-ios-people"></ons-tab>
         </ons-tabbar>
     </ons-page>
 </template>

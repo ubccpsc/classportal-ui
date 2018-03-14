@@ -4,11 +4,17 @@
 
 import {AdminController} from "./controllers/AdminController";
 import {StudentController} from "./controllers/StudentController";
+import {SuperAdminController} from "./controllers/SuperAdminController";
 import {AuthHelper} from "./util/AuthHelper";
+import {CourseIdsResponse} from "./Models";
 import {UI} from "./util/UI";
 import 'whatwg-fetch';
 import {OnsButtonElement, OnsPageElement} from "onsenui";
 import {Network} from "./util/Network";
+
+const COURSE_SELECTION_LIST = '#main-course-selection';
+const AUTH_STATUS = 'authorized';
+const UNAUTH_STATUS = 'unauthorized';
 
 declare var classportal: any;
 
@@ -16,7 +22,7 @@ export class App {
 
     private studentController: StudentController = null;
     private adminController: AdminController = null;
-
+    private superAdminController: SuperAdminController = null;
     private AUTH_STATUS = 'authorized';
     private UNAUTH_STATUS = 'unauthenticated';
     private backendDEV = 'https://localhost:5000/';
@@ -24,6 +30,7 @@ export class App {
     private frontendDEV = 'https://localhost:3000/';
     private frontendPROD = 'https://portal.cs.ubc.ca/';
     private authHelper: AuthHelper;
+    private courseIds: string[] = null;
     public currentCourseId: number;
     public readonly backendURL = this.backendDEV;
     public readonly frontendURL = this.frontendDEV;
@@ -44,10 +51,69 @@ export class App {
         console.log('App::<init> - backend: ' + this.backendURL);
     }
 
+    /**
+    * In case of no Courses, set Course 000 for superadmin login potential;
+    * requires valid oauth for superadmin role.
+    */
+    private initCourseSelections() {
+        console.log('App::initCourses() - start');
+        let that = this;
+        let courseSelections = document.querySelector(COURSE_SELECTION_LIST) as HTMLElement;
+
+        if (this.courseIds === null) {
+        this.getRunningCourseIds()
+            .then((courseIds: string[]) => {
+                console.log('App::initCourseSelections() CourseIds: ', courseIds);
+                courseIds.map((courseId) => {
+                    let courseOption = that.createCourseButton(courseId);
+                    courseSelections.appendChild(courseOption);
+                });
+
+                // As a workaround, we will force authentication if there are no buttons to click to login.
+                if (courseIds.length === 0) {
+                    // If no courses, then init Course 000 for SuperAdmin on condition of valid authentication
+                    let courseOption = that.createCourseButton('000');
+                    courseSelections.appendChild(courseOption);
+                }
+            });
+        }
+    }
+
+    private getRunningCourseIds(): Promise<string[]> {
+        console.log('App::getRunningCourseIds() - start');
+        let that = this;
+        let url = this.backendURL + '/courses';
+
+        return Network.httpGet(url)
+            .then((data: CourseIdsResponse) => {
+                return data.response;
+            });
+    }
+
+    public createCourseButton(courseId: string): HTMLElement {
+        let that = this;
+        let button = `<ons-list-item>
+                          <div style="display:flex; align-items:center; justify-content: center; width: 100%">
+                              <ons-button>CPSC ${courseId}</ons-button>
+                          </div>
+                      </ons-list-item>`
+        let buttonHtml = UI.ons.createElement(button);
+        buttonHtml.addEventListener('click', () => {
+            this.handleMainPageClick({courseId: courseId})
+        });
+        return buttonHtml;
+    }
+
+    private login() {
+        console.log('App::login() - start');
+        window.location.replace(this.backendURL + 'auth/login');
+    }
+
     public init() {
         console.log('App::init() - start');
         var that = this;
         document.addEventListener('init', function (event) {
+
             const page = event.target as OnsPageElement;
 
 
@@ -62,7 +128,6 @@ export class App {
 
             console.log('App::init()::init - page: ' + pageName);
 
-
             if (pageName === 'adminTabsPage') {
                 // initializing tabs page for the first time
                 that.adminController = new AdminController(that, courseId);
@@ -71,6 +136,11 @@ export class App {
             if (pageName === 'studentTabsPage') {
                 // initializing tabs page for the first time
                 that.studentController = new StudentController(that, courseId);
+            }
+
+            if (pageName === 'superAdminTabsPage') {
+                // initalizing tabs page for the first time
+                that.superAdminController = new SuperAdminController(that, courseId);
             }
 
             /*
@@ -95,7 +165,8 @@ export class App {
                 const AUTHORIZED_STATUS: string = 'authorized';
 
                 console.log('App::main()::authCheck - starting main.html with auth check');
-
+                
+                that.initCourseSelections();
                 that.toggleLoginButton();
 
                 const URL = that.backendURL + 'currentUser';
@@ -130,7 +201,7 @@ export class App {
 
                 (document.querySelector('#loginButton') as OnsButtonElement).onclick = function () {
                     console.log('App::init()::init - login pressed for: ' + courseId);
-                    window.location.replace(that.backendURL + 'auth/login');
+                    that.login();
                 };
             }
         });
@@ -159,6 +230,11 @@ export class App {
                     that.adminController[pageName](options);
                 }
             }
+            if (that.superAdminController !== null) {
+                if (typeof that.superAdminController[pageName] === 'function') {
+                    that.superAdminController[pageName](options);
+                }
+            }
         });
     }
 
@@ -172,9 +248,6 @@ export class App {
     }
 
     public handleMainPageClick(courseId: object) {
-        const AUTH_STATUS = 'authorized';
-        const UNAUTH_STATUS = 'unauthorized';
-
         let userrole = typeof localStorage.userrole === 'undefined' ? null : localStorage.userrole;
         let authStatus = typeof localStorage.authStatus === 'undefined' ? 'unauthorized' : AUTH_STATUS;
 

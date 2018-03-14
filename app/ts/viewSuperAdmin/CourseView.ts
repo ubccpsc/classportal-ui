@@ -15,7 +15,7 @@ import HTMLTags from '../helpers/HTMLTags';
 
 declare var myApp: App;
 
-const SAVE_ACTION = '#superadminEditCourse-save-button';
+const SAVE_ACTION = '#superAdminEditCourse-save-button';
 
 export default class CourseView {
     private controller: SuperAdminController;
@@ -37,7 +37,7 @@ export default class CourseView {
             console.log('EditCoursesView::render(..) - data is undefined');
             return;
         }
-        console.log('EditCoursesView::render(..) - data: ' + JSON.stringify(data));
+        console.log('CourseView::render(..) - data: ' + JSON.stringify(data));
 
         let courses = data.response.courses;
         const customSort = function (a: Course, b: Course) {

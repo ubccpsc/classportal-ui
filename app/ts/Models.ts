@@ -33,6 +33,10 @@ export interface User {
     username: string;
 }
 
+export interface CourseIdsResponse {
+  response: string[];
+}
+
 export interface CoursesResponseContainer {
   response: CoursesResponse;
 }

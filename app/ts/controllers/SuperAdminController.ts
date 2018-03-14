@@ -29,5 +29,9 @@ export class SuperAdminController {
         this.courseId = courseId;
     }
 
+    private superAdminCoursesPage() {
+        console.log('SuperAdminController::superAdminCoursesPage() - start');
+    }
+
 }
 
