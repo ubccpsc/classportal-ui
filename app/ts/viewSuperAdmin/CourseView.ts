@@ -10,7 +10,7 @@ import HTMLTags from '../helpers/HTMLTags';
 
 /**
 * OVERVIEW: CourseView supports ADDING a Course and EDITING a Course. Run initEditView() or initAddView()
-* to init UI for each mode.
+* to init UI for each mode handled by this class.
 */
 
 declare var myApp: App;
@@ -56,8 +56,7 @@ export default class CourseView {
         let saveAction = document.querySelector(SAVE_ACTION) as HTMLElement;
 
         if (that.currentModType === EDIT_COURSE) {
-            console.log(urlWebhook);
-            console.log('dockerRepo', dockerRepo);
+            courseId.setAttribute("disabled", "");
             courseId.value = that.course.courseId;
             githubOrg.value = that.course.githubOrg;
             dockerRepo.value = that.course.dockerRepo;
@@ -85,11 +84,6 @@ export default class CourseView {
                 console.log('CourseView::Course Payload is Valid: ', coursePayload);
                 that.save(coursePayload);
             }
-
-            // console.log('CourseView:: DEBUG All `coursePayload` properties: ' + JSON.stringify(coursePayload));
-            // if (isValid) {
-            //     that.save(coursePayload);
-            // }
         });
 
         UI.hideModal();
@@ -136,11 +130,11 @@ export default class CourseView {
       const COURSE_EXISTS_ERROR: string = 'The course already exists.';
       const COURSE_FORMAT_ERROR: string = 'The Course Id must be a number between 3-4 characters in length.';
       const ORG_FORMAT_ERROR: string = `The Github Organization must meet the required format. ie. 'CPSC210-2017W-T2'. It cannot be left blank.`;
-      const REPO_FORMAT_ERROR: string = 'The Dockerfile Repo must be Https formatted if not blank.';
+      const REPO_FORMAT_ERROR: string = 'The Dockerfile Repo must be Https formatted.';
       const ORG_EXISTS_ERROR: string = 'The Github Organization already exists.';
 
-      // #1. If course exists, invalid:
-      if (!this.isCourseIdValid(this.controller.courses, course)) {
+      // #1. If course exists && in ADD COURSE mode, invalid:
+      if (!this.isCourseIdValid(this.controller.courses, course) && this.currentModType === ADD_COURSE) {
           UI.notification(COURSE_EXISTS_ERROR);
           return false;
       }
@@ -156,7 +150,7 @@ export default class CourseView {
           return false;
       }
 
-      // #2b. Github Orgs must be identical
+      // #2b. Github Orgs must be unique
       if (!this.isGithubOrgUnique(this.controller.courses, course)) {
           UI.notification(ORG_EXISTS_ERROR);
           return false;
@@ -183,11 +177,28 @@ export default class CourseView {
 
     private isGithubOrgUnique(courseList: Course[], course: Course): boolean {
       let orgExists = false;
-      courseList.map((_course: Course) => {
+
+      let courses = courseList.slice();
+
+      // if Course ID matches, eliminate it because you do not want to check against itself.
+      let index: number = null;
+      for (let i = 0; i < courses.length; i++) {
+          if (course.courseId === courses[i].courseId) {
+              index = i;
+          }
+      }
+
+      console.log('index', index);
+      if (index !== null) {
+          courses.splice(index, 1);
+      }
+
+      courses.map((_course: Course) => {
           if (_course.githubOrg === course.githubOrg) {
               orgExists = true;
           }
       });
+
       return !orgExists;
     }
 
@@ -221,16 +232,12 @@ export default class CourseView {
             Network.httpPut(url, course)
                 .then((data: any) => {
                     if (data.status >= 200 && data.status < 300) {
-                        UI.notification('Successfully created Course');
+                        UI.notification('Successfully created Course.');
                         UI.popPage();
                     } else {
                         data.json()
                             .then((response: any) => {
-                                if (response.err.indexOf('duplicate') > -1) {
-                                UI.notification('Deliverable name already exists');
-                                } else {
-                                    UI.notification('There was an error creating the Course: ' + response.response);
-                                }
+                                UI.notification('There was an error creating the Course: ' + response.response + '.');
                             });
                     }
                     console.log('CourseView::save() - end');

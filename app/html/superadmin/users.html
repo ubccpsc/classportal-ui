@@ -1,4 +1,44 @@
-<ons-page id="superAdminUserPage">
-    <ons-list id="superAdmin-users-list">
+<ons-page id="superAdminUsersPage" class="classportal-page-theme">
+
+    <ons-toolbar>
+        <div class="left">
+            <ons-back-button></ons-back-button>
+        </div>
+        <div id="uploadClassListPage-header" class="center">User Manager</div>
+    </ons-toolbar>
+
+    <ons-list-header>Add/Update Admins and Staff</ons-list-header>
+    <div class="classportal-info-container">
+    	<div id="uploadClassListPage-warning-text">
+	    	<p><span>Warning:</span> Uploading an Admin/Staff list will add Users to their respective Course. Pre-existing admin or staff will not be affected.</p>
+	    	<p>The necessary format includes <span>FIRST</span>, <span>LAST</span>, <span>SNUM</span>, <span>CSID</span>, and <span>CWL</span> headers in CSV format. A <span>LAB</span> header is optional.</p>
+	    	<p>All pre-existing Users, Teams, Github Repos, and other Courses <span>WILL NOT</span> be affected.</p>
+    	</div>
+    	<input id="adminClassListPage-fileInput" type="file"/>
+    	<p></p>
+    	<ons-button id="adminClassListPage-uploadButton" modifier="medium">Upload</ons-button>
+    </div>
+	<ons-list-header>Current Class List</ons-list-header>
+	    <div id="adminClassListPage-listContainer" class="classportal-row-headers-container-theme">
+	    	<!-- Where updated class list user information is placed !-->
+		<div>
+    <ons-list id="uploadClassListPage-list">
+
     </ons-list>
+
+    <div style="display: none" id="adminClassListPage-rowHeaderContainer">
+    	<ons-row id="adminClassListPage-rowHeaders">
+			<ons-col>Last Name</ons-col>
+			<ons-col>First Name</ons-col>
+			<ons-col>SNUM</ons-col>
+			<ons-col>CSID</ons-col>
+			<ons-col>Userrole</ons-col>
+		</ons-row>
+    </div>
+
+    <!-- Event listener will trigger the upload after successful validation -->
+    <ons-fab id="uploadClassListPage-action" position="bottom right">
+        <ons-icon icon="md-save"></ons-icon>
+    </ons-fab>
+
 </ons-page>

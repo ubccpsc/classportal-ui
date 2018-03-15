@@ -23,6 +23,10 @@ export interface Course {
   buildingContainer?: boolean; // If currently building a container, this should be true.
 }
 
+export interface AdminList {
+  response: User[];
+}
+
 export interface User {
     _id?: string;
     fname: string;
@@ -31,6 +35,9 @@ export interface User {
     snum: string;
     userrole: string;
     username: string;
+}
+
+export interface Admin extends User {
 }
 
 export interface CourseIdsResponse {

@@ -73,17 +73,6 @@
                 <p><span>WARNING: </span>Destroying a Docker container can have detrimental effects if it is currently being used in a course.
 
                 <p><span>If you are re-building the container</span>, ensure that all Dockerfile dependencies are still valid, by building the container in your test environment, before deleting the active container. Any unknown deprecated dependencies may result in a serious disruption to your course if you cannot successfully re-build your container.</p>
-                <div id="adminManageContainers__build-container-requirements-container">
-                	<ol>
-                		<li>
-                			<span>
-                				<a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">Dockerfile</a>
-                			</span> must be included in the base-level of Git Repository.
-                		</li>
-                		<li>Dockerfile must run from start-to-finish without error.</li>
-                		<li>Dockerfile repository must be publicly accessible with read permissions or a token must be provided to access the repository.</li>
-                	</ol>
-                </div>
             </div>
 
         	<!--Docker Destroy Button Action-->
