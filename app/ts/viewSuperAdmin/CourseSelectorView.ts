@@ -50,12 +50,6 @@ export default class CourseSelectorView {
         console.log('CourseSelector::render(..) - setting courses: ' + JSON.stringify(courses));
         this.controller.courses = courses; // HACK: global
 
-        // if (ForwardOptions.EDIT_COURSE === that.forwardTo) {
-        //     that.toggleAddDelivButton('show');
-        // } else {
-        //     that.toggleAddDelivButton('hide');
-        // }
-
         // courses
         const courseList = document.querySelector(COURSE_LIST);
         if (courseList !== null) {
@@ -63,7 +57,7 @@ export default class CourseSelectorView {
             if (courses.length > 0) {
                 for (let course of courses) {
                     courseList.appendChild(UI.createListHeader(course.courseId));
-                    let text = "Github Org: " + course.githubOrg + '; Course Webhook: ' + course.urlWebhook;
+                    let text = "Github Org: " + course.githubOrg + '; Github Repo Webhooks: ' + course.urlWebhook;
                     let subtext: string;
                     let elem = UI.createListItem(text, subtext, true);
                     elem.onclick = function (event) {
@@ -93,11 +87,13 @@ export default class CourseSelectorView {
                 }
             } else {
                 courseList.appendChild(UI.createListItem("No Courses exist. Please create a Course."));
-                that.toggleAddCourseButton('show');
             }
         } else {
             console.log('DeliverableView::render() - element is null');
         }
+
+        // IMPORTANT: Show Add Course Button
+        that.toggleAddCourseButton('show');
         UI.hideModal();
     }
 

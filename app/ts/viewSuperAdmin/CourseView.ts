@@ -9,85 +9,82 @@ import {Deliverable} from '../Models';
 import HTMLTags from '../helpers/HTMLTags';
 
 /**
-* OVERVIEW: CourseView supports AddView and EditView. Run initEditView() or initAddView()
+* OVERVIEW: CourseView supports ADDING a Course and EDITING a Course. Run initEditView() or initAddView()
 * to init UI for each mode.
 */
 
 declare var myApp: App;
 
-const SAVE_ACTION = '#superAdminEditCourse-save-button';
+const ADD_COURSE = 'ADD_COURSE';
+const EDIT_COURSE = 'EDIT_COURSE';
+const SAVE_ACTION = '#superAdminCoursesPage__save-button';
+const COURSE_ID = '#superAdminCoursesPage__course-fields-courseId';
+const GITHUB_ORG = '#superAdminCoursesPage__course-fields-githubOrg';
+const DOCKER_REPO = '#superAdminCoursesPage__course-fields-dockerRepo';
+const DOCKER_KEY = '#superAdminCoursesPage__course-fields-dockerKey';
+const URL_WEBHOOK = '#superAdminCoursesPage__course-fields-urlWebhook';
 
 export default class CourseView {
     private controller: SuperAdminController;
     private app: App;
     private course: Course;
-    private modTypes = {EDIT_COURSE: 'edit', ADD_COURSE: 'add'};
+    private currentModType: string;
 
     constructor(controller: SuperAdminController, app: App, course: Course) {
         console.log("CourseView::<init> - start");
         this.controller = controller;
         this.app = app;
         this.course = course;
+
+        // Lets everyone explicitly know that we are in editing mode.
+        if (course !== null) {
+            this.currentModType = EDIT_COURSE;
+        } else {
+            this.currentModType = ADD_COURSE;
+        }
     }
 
-    public render(data: CoursesResponse) {
+    public render() {
         console.log("CourseView::render(..) - start");
-
-        if (typeof data === 'undefined') {
-            console.log('EditCoursesView::render(..) - data is undefined');
-            return;
-        }
-        console.log('CourseView::render(..) - data: ' + JSON.stringify(data));
-
-        let courses = data.response;
-        const customSort = function (a: Course, b: Course) {
-            return (Number(a.courseId) - Number(b.courseId));
-        };
-        courses = courses.sort(customSort);
-
-        console.log('CourseView::render(..) - setting deliverables: ' + JSON.stringify(courses));
-        this.controller.courses = courses; // HACK: global
-
-        const that = this;
-        // course
-
-        UI.hideModal();
-    }
-
-    public initAddView() {
-        console.log('CourseView::initAddView() - start');
-        UI.showModal();
-        UI.pushPage('html/superadmin/course.html')
-            .then(() => {
-                console.log('SUCCESS: html/admin/editDeliverable.html pushPage loaded');
-                UI.hideModal();
-            });
-    }
-
-
-    public initEditView() {
-        if (this.course === null) {
-            throw 'CourseView::Course cannot be null in EditView mode.';
-        }
-        console.log('CourseView::initEditView( ' + this.course.courseId + ' ) - start');
         let that = this;
 
-
-
-
-        // let mongoId: HTMLInputElement = document.querySelector(MONGO_ID) as HTMLInputElement;
-        // mongoId.value = deliverable._id;
-
+        let courseId = document.querySelector(COURSE_ID) as HTMLInputElement;
+        let githubOrg = document.querySelector(GITHUB_ORG) as HTMLInputElement;
+        let dockerRepo = document.querySelector(DOCKER_REPO) as HTMLInputElement;
+        let dockerKey = document.querySelector(DOCKER_KEY) as HTMLInputElement;
+        let urlWebhook = document.querySelector(URL_WEBHOOK) as HTMLInputElement;
         let saveAction = document.querySelector(SAVE_ACTION) as HTMLElement;
 
+        if (that.currentModType === EDIT_COURSE) {
+            console.log(urlWebhook);
+            console.log('dockerRepo', dockerRepo);
+            courseId.value = that.course.courseId;
+            githubOrg.value = that.course.githubOrg;
+            dockerRepo.value = that.course.dockerRepo;
+            dockerKey.value = that.course.dockerKey;
+            urlWebhook.value = that.course.urlWebhook;
+        } else if (that.currentModType === ADD_COURSE) {
+            // Blank fields for now.
+        }
+
         saveAction.addEventListener('click', () => {
-            let isValid: boolean = that.isCourseValid();
+            console.log('CourseView::save() Event Listener Hit - start');
 
-            // # NEEDS IMPLEMENTING
+            let coursePayload: Course = {
+                // We will modify these properties:
+                courseId: courseId.value,
+                githubOrg: githubOrg.value,
+                dockerRepo: dockerRepo.value,
+                dockerKey: dockerKey.value,
+                urlWebhook: urlWebhook.value
+            }
 
-            // let coursePayload: Course = {
-            //     // Needs filling in.
-            // }
+            let isValid: boolean = that.isCourseValid(coursePayload);
+
+            if (isValid) {
+                console.log('CourseView::Course Payload is Valid: ', coursePayload);
+                that.save(coursePayload);
+            }
 
             // console.log('CourseView:: DEBUG All `coursePayload` properties: ' + JSON.stringify(coursePayload));
             // if (isValid) {
@@ -98,24 +95,100 @@ export default class CourseView {
         UI.hideModal();
     }
 
+    public initAddView() {
+        console.log('CourseView::initAddView() - start');
+        let that = this;
+        UI.showModal();
+        UI.pushPage('html/superadmin/course.html')
+            .then(() => {
+                that.render();
+                console.log('SUCCESS: html/superadmin/course pushPage loaded in ADD COURSE MODE');
+                UI.hideModal();
+            });
+    }
+
+    public initEditView() {
+        if (this.course === null) {
+            throw 'CourseView::Course cannot be null in EditView mode.';
+        }
+
+        console.log('CourseView::initEditView( ' + this.course.courseId + ' ) - start');
+        let that = this;
+        UI.pushPage('html/superadmin/course.html')
+            .then(() => {
+                that.render();
+                console.log('SUCCESS: html/superadmin/course pushPage loaded in EDIT COURSE MODE');
+                UI.hideModal();
+            });
+
+    }
+
     /**
     * Determines if the Deliverable values loaded on the EditDeliverable view are valid and are ready to be saved.
     *
     * @return boolean true if deliverable properties are valid.
     */
-    private isCourseValid(): boolean {
+    private isCourseValid(course: Course): boolean {
+      const HTTPS_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+      const ORG_REGEX: RegExp = new RegExp('^([A-Z0-9{4}]+-)([A-Z0-9{4}]+-)([A-Z0-9{4}])*$');
+      const DNS_PORT_REGEX: RegExp = new RegExp(/^([^\:]+:[0-9]+\s|[0-9]+.[0-9]+.[0-9]+.[0-9]+:[0-9]\+)+$/g);
+      const COURSE_ID_REGEX: RegExp = new RegExp('(^[0-9]{3,4}$)');
+      const COURSE_EXISTS_ERROR: string = 'The course already exists.';
+      const COURSE_FORMAT_ERROR: string = 'The Course Id must be a number between 3-4 characters in length.';
+      const ORG_FORMAT_ERROR: string = `The Github Organization must meet the required format. ie. 'CPSC210-2017W-T2'. It cannot be left blank.`;
+      const REPO_FORMAT_ERROR: string = 'The Dockerfile Repo must be Https formatted if not blank.';
+      const ORG_EXISTS_ERROR: string = 'The Github Organization already exists.';
 
-        const SPACE_DELIN_REGEX: RegExp = /[^ ]+/g;
-        const HTTPS_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-        const NAME_REGEX: RegExp = /^[^_]+([0-9])/;
-        const TEAM_SIZE_ERR: string = 'The minimum team size cannot be greater than the maximum team size';
-        const CUSTOM_JSON_ERR: string = 'Your custom JSON input should be valid stringified JSON: ';
-        const DELIV_NAME_ERR: string = 'A deliverable name must be all lowercase letters, up to 10 characters, and a combination of [a-z] and [0-9].';
-        const GIT_REPO_ERR: string = 'Please make sure your Git repo addresses are valid Https URIs.';
-        const OPEN_CLOSE_ERR: string = 'The close date must be greater than the open date.';
-        const REGRESION_TEST_ERR: string = 'One of your regression tests does not exist. Please ensure that a Deliverable exists before it is used as a regression test.';
+      // #1. If course exists, invalid:
+      if (!this.isCourseIdValid(this.controller.courses, course)) {
+          UI.notification(COURSE_EXISTS_ERROR);
+          return false;
+      }
 
-        return true;
+      if (!COURSE_ID_REGEX.test(course.courseId)) {
+          UI.notification(COURSE_FORMAT_ERROR);
+          return false;
+      }
+
+      // #2. If Github ORG doesn't meet format. ie. 'CPSC210-2017W-T2';
+      if (!ORG_REGEX.test(course.githubOrg)) {
+          UI.notification(ORG_FORMAT_ERROR);
+          return false;
+      }
+
+      // #2b. Github Orgs must be identical
+      if (!this.isGithubOrgUnique(this.controller.courses, course)) {
+          UI.notification(ORG_EXISTS_ERROR);
+          return false;
+      }
+
+      // #3. Dockerfile repo should at least be valid Https URI
+      if (course.dockerRepo !== '' && !HTTPS_REGEX.test(course.dockerRepo)) {
+          UI.notification(REPO_FORMAT_ERROR);
+          return false;
+      }
+
+      return true;
+    }
+
+    private isCourseIdValid(courseList: Course[], course: Course): boolean {
+      let courseExists = false;
+      courseList.map((_course: Course) => {
+          if (_course.courseId === course.courseId) {
+              courseExists = true;
+          }
+      });
+      return !courseExists;
+    }
+
+    private isGithubOrgUnique(courseList: Course[], course: Course): boolean {
+      let orgExists = false;
+      courseList.map((_course: Course) => {
+          if (_course.githubOrg === course.githubOrg) {
+              orgExists = true;
+          }
+      });
+      return !orgExists;
     }
 
     /**
@@ -123,28 +196,49 @@ export default class CourseView {
     *
     * EditCourseView.ts is used for two different CRUD operations:
     *
-    * If 'Add Course' view, hit PUT: '/:courseId/admin/course'
-    * If 'Edit Course' view, hit POST: '/:courseId/admin/course'
+    * If 'Add Course' view, hit PUT: '/:courseId/superadmin/course'
+    * If 'Edit Course' view, hit POST: '/:courseId/superadmin/course'
     * @return void
     */
-    private save(deliv: Deliverable) {
+    private save(course: Course) {
         console.log('EditCourseView::save() - start');
-        let url = this.app.backendURL + this.app.currentCourseId + '/admin/deliverable';
-        let header = document.querySelector(HTMLTags.EDIT_DELIVERABLE_HEADER) as HTMLElement;
+        let url = this.app.backendURL + '/superadmin/course';
 
-        let deliverablePayload = {deliverable: deliv};
+        if (this.currentModType === EDIT_COURSE) {
+            Network.httpPost(url, course)
+                .then((data: any) => {
+                    if (data.status >= 200 && data.status < 300) {
+                        UI.notification(('Successfully updated Course'));
+                        UI.popPage();
+                    } else {
+                        data.json()
+                            .then((response: any) => {
+                                UI.notification('There was an error updating the Course: ' + response.err);
+                            });
+                    }
+                });
+        } else if (this.currentModType === ADD_COURSE) {
+            Network.httpPut(url, course)
+                .then((data: any) => {
+                    if (data.status >= 200 && data.status < 300) {
+                        UI.notification('Successfully created Course');
+                        UI.popPage();
+                    } else {
+                        data.json()
+                            .then((response: any) => {
+                                if (response.err.indexOf('duplicate') > -1) {
+                                UI.notification('Deliverable name already exists');
+                                } else {
+                                    UI.notification('There was an error creating the Course: ' + response.response);
+                                }
+                            });
+                    }
+                    console.log('CourseView::save() - end');
+                });
+        } else {
+            console.log('CourseView ERROR Could not determine Deliv update/add type');
+        }
 
-        Network.httpPost(url, deliverablePayload)
-            .then((data: any) => {
-                if (data.status >= 200 && data.status < 300) {
-                    UI.notification(('Successfully updated Deliverable'));
-                    UI.popPage();
-                } else {
-                    data.json()
-                        .then((response: any) => {
-                            UI.notification('There was an error updating the Deliverable: ' + response.err);
-                        })
-                }
-                })
+
     }
 }

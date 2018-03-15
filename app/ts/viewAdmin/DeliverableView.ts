@@ -91,7 +91,7 @@ export class DeliverableView {
                     deliverableList.appendChild(UI.createListHeader(deliverable.id));
                     let text = "Open: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString() + "; Close: " + close.toLocaleDateString() + ' @ ' + close.toLocaleTimeString();
                     let subtext: string;
-                    deliverable.dockerOverride === true ? subtext = deliverable.dockerImage + ':master' : '';
+                    deliverable.dockerOverride === true ? subtext = 'Docker Override Enabled' : '';
                     let elem = UI.createListItem(text, subtext, true);
                     elem.onclick = function () {
                         that.editDeliverable(deliverable);
