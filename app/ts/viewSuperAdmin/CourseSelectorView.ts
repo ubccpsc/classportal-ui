@@ -2,6 +2,7 @@ import {UI} from "../util/UI";
 import {SuperAdminController} from "../controllers/SuperAdminController";
 import {Course, CoursesResponse} from "../Models";
 import CourseView from "../viewSuperAdmin/CourseView"
+import UserManagementView from "../viewSuperAdmin/UserManagementView";
 import {Network} from "../util/Network";
 import {App} from "../App";
 
@@ -19,6 +20,7 @@ declare var myApp: App;
 export default class CourseSelectorView {
     private controller: SuperAdminController;
     private courseView: CourseView;
+    private userManagementView: UserManagementView;
     private forwardTo: string;
     private header: string;
 
@@ -74,8 +76,10 @@ export default class CourseSelectorView {
                               break;
                             }
                             case (ForwardOptions.USERS): {
-                              //
-                              console.log('should forward to manage users view');
+                                console.log('CourseSelectorView:: ForwardOptions.USERS hit AdminListView.ts - start');
+                                that.userManagementView = new UserManagementView(that.controller, myApp, course);
+                                that.userManagementView.render();
+                                break;
                             }
                             default: {
                                 UI.notification('DeliverableSelectorView.ts ERROR; No Model has been assigned to this view.');

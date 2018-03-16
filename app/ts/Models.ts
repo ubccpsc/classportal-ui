@@ -23,8 +23,12 @@ export interface Course {
   buildingContainer?: boolean; // If currently building a container, this should be true.
 }
 
-export interface AdminList {
-  response: User[];
+export interface AdminListResponse {
+  response: Admin[];
+}
+
+export interface StaffListResponse {
+  response: Staff[];
 }
 
 export interface User {
@@ -38,6 +42,9 @@ export interface User {
 }
 
 export interface Admin extends User {
+}
+
+export interface Staff extends User {
 }
 
 export interface CourseIdsResponse {
