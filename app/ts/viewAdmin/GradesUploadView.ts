@@ -153,11 +153,12 @@ export class GradesUploadView {
 
       // make the headers
       let headers = '';
-      csvHeaders.map((header) => {
-        if (header !== '') {
-          headers += '<ons-col>' + header + '</ons-col>';
-        }
-      });
+      if (typeof gradeUploadResponse.updatedGrades[0] !== 'undefined' && gradeUploadResponse.updatedGrades[0] !== null) {
+        Object.keys((gradeUploadResponse.updatedGrades[0])).forEach((key) => {
+          headers += '<ons-col>' + key + '</ons-col>';
+        });
+      }
+
       updatedList.appendChild(UI.ons.createElement('<ons-row>' + headers + '</ons-row>'));
       updatedList.appendChild(UI.ons.createElement('<p></p>'));
 
