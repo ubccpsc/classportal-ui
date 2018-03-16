@@ -13,6 +13,13 @@ const FILE_INPUT = '#adminUploadGradesPage__fileInput-input';
 const DEFAULT_SELECTION = 'select';
 const CANNOT_UPDATE_CONTAINER = '#adminUploadGradesPage__cannot-update-container';
 const CANNOT_UPDATE_CARD = '#adminUploadGradesPage__cannot-update-card';
+const UPDATED_CONTAINER ='#adminUploadGradesPage__updated-container';
+const UPDATED_CARD = '#adminUploadGradesPage__updated-card';
+
+/**
+* IMPORTANT : RETURNED User models are different. If they are successfully updated, the User object comes back. If not,
+* then the original CSV row comes back.
+*/
 
 export class GradesUploadView {
 
@@ -35,7 +42,10 @@ export class GradesUploadView {
             reader.onload = function (event) {
             let text = reader.result;
             let headers = text.split('\n').shift().split(',');
-            fulfill(headers);
+            headers.map((header: string) => {
+              header = JSON.stringify(header);
+            })
+            fulfill(headers);  
             };
           } catch (err) {
             reject('Error getting CSV Headers ' + err);
@@ -71,9 +81,11 @@ export class GradesUploadView {
       return true;
     }
 
-    private uploadGrades(fileList: FileList, delivName: string) {
+    private async uploadGrades(fileListElement: HTMLInputElement, delivName: string) {
       console.log('GradeUploadView::uploadGrades() - start');
+      let fileList: FileList = fileListElement.files;
       let that = this;
+      let csvHeaders = await this.getCSVHeaders(fileListElement);
       let url = this.app.backendURL + this.courseId + '/admin/grades/' + delivName;
       const formData = new FormData();
       formData.append(API_GRADES_FILE_PROPERTY, fileList[0]); // The CSV is fileList[0]
@@ -85,7 +97,8 @@ export class GradesUploadView {
                 console.log('GradeUploadView GradeUploadResponseContainer data: ' + JSON.stringify(data));
                 if (data.response.cannotUpdate.length > 0) {
                   UI.notification(data.response.updatedGrades.length + ' grades successfully updated. Could not update ' + data.response.cannotUpdate.length + ' grades.');
-                  that.showCannotUpdateObjects(data.response);
+                  that.showCannotUpdateObjects(data.response, csvHeaders);
+                  that.showUpdatedObjects(data.response, csvHeaders);
                 } else {
                   UI.notification(data.response.updatedGrades.length + ' grades successfully updated.');
                 }
@@ -102,14 +115,30 @@ export class GradesUploadView {
         });
     }
 
-    private showCannotUpdateObjects(gradeUploadResponse: GradeUploadResponse) {
+    private showCannotUpdateObjects(gradeUploadResponse: GradeUploadResponse, csvHeaders: string[]) {
       let container = document.querySelector(CANNOT_UPDATE_CONTAINER) as HTMLElement;
       let cannotUpdateList = document.querySelector(CANNOT_UPDATE_CARD) as HTMLElement;
       cannotUpdateList.innerHTML = '';
+
+      // #FIRST: make the headers
+      let headers = '';
+      csvHeaders.map((header) => {
+        if (header.length !== 0) {
+          headers += '<ons-col>' + header + '</ons-col>';
+        }
+      });
+      cannotUpdateList.appendChild(UI.ons.createElement('<ons-row>' + headers + '</ons-row>'));
+      cannotUpdateList.appendChild(UI.ons.createElement('<p></p>'));
+
+      // #SECOND: make the rows of cannot update users
       gradeUploadResponse.cannotUpdate.map((user: any) => {
         let columns = '';
         Object.keys(user).forEach((key) => {
-          columns += '<ons-col>' + user[key] + '</ons-col>'
+          if (key.length !== 0) {
+            console.log('key will be posted', key.toUpperCase());
+            console.log('key content', user[key]);
+            columns += '<ons-col>' + user[key] + '</ons-col>';
+          }        
         });
           cannotUpdateList.appendChild(UI.ons.createElement('<ons-row>' + columns + '</ons-row>'));
       });
@@ -117,7 +146,35 @@ export class GradesUploadView {
       container.style.display = 'block';
     }
 
-    public configure() {
+    private showUpdatedObjects(gradeUploadResponse: GradeUploadResponse, csvHeaders: string[]) {
+      let container = document.querySelector(UPDATED_CONTAINER) as HTMLElement;
+      let updatedList = document.querySelector(UPDATED_CARD) as HTMLElement;
+      updatedList.innerHTML = '';
+
+      // make the headers
+      let headers = '';
+      csvHeaders.map((header) => {
+        if (header !== '') {
+          headers += '<ons-col>' + header + '</ons-col>';
+        }
+      });
+      updatedList.appendChild(UI.ons.createElement('<ons-row>' + headers + '</ons-row>'));
+      updatedList.appendChild(UI.ons.createElement('<p></p>'));
+
+      // make the rows of updated users
+      gradeUploadResponse.updatedGrades.map((user: any) => {
+        let columns = '';
+        Object.keys(user).forEach((key) => {
+          if (key.length !== 0) {
+            columns += '<ons-col>' + user[key] + '</ons-col>';
+          }
+        });
+          updatedList.appendChild(UI.ons.createElement('<ons-row>' + columns + '</ons-row>'));
+      });
+
+      container.style.display = 'block';
+    }
+    public async configure(): Promise<any> {
         console.log('GradeUploadView::configure() - start');
         let that = this;
         const delivSelect = document.querySelector(DELIVERABLE_SELECTOR) as OnsSelectElement;
@@ -148,7 +205,7 @@ export class GradesUploadView {
                 .then((isValid: boolean) => {
                     if (isValid) {
                         console.log(fileInput.files);
-                        that.uploadGrades(fileInput.files, selectedDeliv);
+                        return that.uploadGrades(fileInput, selectedDeliv);
                     }
                 });
         });
