@@ -78,7 +78,10 @@ export default class CourseSelectorView {
                             case (ForwardOptions.USERS): {
                                 console.log('CourseSelectorView:: ForwardOptions.USERS hit AdminListView.ts - start');
                                 that.userManagementView = new UserManagementView(that.controller, myApp, course);
-                                that.userManagementView.render();
+                                UI.pushPage('html/superadmin/users.html', {})
+                                    .then(() => {
+                                        that.userManagementView.render();
+                                    });
                                 break;
                             }
                             default: {

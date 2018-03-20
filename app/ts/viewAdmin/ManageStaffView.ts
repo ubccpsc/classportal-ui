@@ -45,8 +45,6 @@ export class ManageStaffView {
         UI.notification('You must include the required CSV headers.');
         return false;
       }
-
-
       
       console.log('AdminListView::save() - validation passed');
       return true;

@@ -10,19 +10,13 @@
     <ons-list-header>Add/Update Staff</ons-list-header>
     <div class="classportal-info-container">
         <div id="adminManageStaffPage-warning-text">
-            <p><span>WARNING:</span> Uploading a Staff List will add staff to the selected Course. Pre-existing admin or staff will not be affected.</p>
+            <p><span>WARNING:</span> Uploading a Staff List will overwrite a prior Staff List. Please ensure that prior staff are on the updated staff list before you upload it.</p>
             <p>The necessary format includes <span>FIRST</span>, <span>LAST</span>, <span>SNUM</span>, <span>CSID</span>, and <span>CWL</span> headers in CSV format.</p>
-            <p>Previous userroles <span>WILL NOT</span> be affected. Users must be individually deleted to be removed.</p>
         </div>
         <input id="adminManageStaffPage-fileInput" type="file"/>
         <p></p>
         <ons-button id="adminManageStaffPage-uploadButton" modifier="medium">Upload</ons-button>
     </div>
-    <ons-list-header>Current Admins</ons-list-header>
-        <div id="adminManageStaffPage-adminListContainer" class="classportal-row-headers-container-theme">
-            <!-- Where updated class list user information is placed !-->
-            <blockquote>No admins exist.</blockquote>
-        </div>
 
     <ons-list-header>Current Staff</ons-list-header>
         <div id="adminManageStaffPage-staffListContainer" class="classportal-row-headers-container-theme">

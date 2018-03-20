@@ -5,7 +5,7 @@ import {AdminListResponse, Admin, Staff, StaffListResponse, Course} from '../Mod
 import {Network} from "../util/Network";
 
 const UPLOAD_ADMIN_LIST_CONTAINER = '#superAdminUsersPage-container';
-const ADMIN_LIST_HEADERS = {CSID: "CSID", SNUM: "SNUM", LAST: "LAST", FIRST: "FIRST", CWL: "CWL"};
+const ADMIN_LIST_HEADERS = {CWL: "CWL", LAST: "LAST", FIRST: "FIRST"};
 const UPLOAD_BUTTON = '#superAdminUsersPage-uploadButton';
 const ADMIN_ROW_HEADERS = '#superAdminUsersPage-adminRowHeaders';
 const STAFF_ROW_HEADERS = '#superAdminUsersPage-staffRowHeaders';
@@ -17,10 +17,9 @@ const API_CLASS_LIST_PROPERTY = 'adminList';
 /**
 * OVERVIEW: Upload an Admin List to a Course.
 * 
-* IMPORTANT: Students  heavily influenced the User objects in the design of ClassPortal. The SNUMs and 
-* CSIDs must be unique for students and not an empty string. This has consequences for ADMINS, as they
-* share the User model. Admins must create a faux-CSID and faux-SNUM that are unique and do not change, as
-* if it were a SNUM or CSID. As long as these strings are unique and do not change, there will be no issues.
+* IMPORTANT: Admins may only be admins and never a student in their Course due to user model incompatibilities 
+* that come out of fringe-cases. Their CWL will be added to the required CSID and SNUM fields in the User model
+* on the back-end.
 *
 * Above message applies to 'STAFF' roles as well.
 */
@@ -44,9 +43,9 @@ export default class UserManagementView {
       } 
       console.log('AdminListView:: Header Validation: ', CSV_HEADERS);
 
-      if (CSV_HEADERS.indexOf(ADMIN_LIST_HEADERS.CSID) < 0 || CSV_HEADERS.indexOf(ADMIN_LIST_HEADERS.SNUM) < 0 
-          || CSV_HEADERS.indexOf(ADMIN_LIST_HEADERS.FIRST) < 0 || CSV_HEADERS.indexOf(ADMIN_LIST_HEADERS.LAST) < 0) {
-          UI.notification('You must include the required CSV headers.');
+      if (!this.isHeaderValid(ADMIN_LIST_HEADERS.CWL, CSV_HEADERS) || !this.isHeaderValid(ADMIN_LIST_HEADERS.LAST, CSV_HEADERS)  
+          || !this.isHeaderValid(ADMIN_LIST_HEADERS.FIRST, CSV_HEADERS)) {
+          UI.notification('You must include the required FIRST, LAST, and CWL headers.');
           return false;
       }
       
@@ -54,6 +53,18 @@ export default class UserManagementView {
       return true;
 
     }
+
+    private isHeaderValid(enumHeader: string, csvHeaders: string[]) {
+      console.log('AdminListView:: isHeaderValid() - start test for ' + enumHeader);
+      let isValid: boolean = false;
+      for (let i = 0; i < csvHeaders.length; i++) {
+        if (csvHeaders[i].indexOf(enumHeader) > -1) {
+          isValid = true;
+        }
+      }
+      return isValid;
+    }
+
 
     private getCSVHeaders(fileInput: HTMLInputElement): Promise<any> {
       return new Promise((fulfill, reject) => {
@@ -106,17 +117,13 @@ export default class UserManagementView {
           let adminList = staffAdminList[0].response as Admin[];
           let staffList = staffAdminList[1].response as Staff[];
 
-            UI.pushPage('html/superadmin/users.html')
-              .then(() => {
                 console.log('adminlist', staffAdminList);
                 // #Step 1: Load Lists as rows
                 that.loadAdminRows(adminList);
-                that.loadStaffRows(staffList);
 
                 // #Step 2: Upload Event Listener
                 that.addEventListener();
                 UI.hideModal();
-                });
 
               });
     }
@@ -134,8 +141,6 @@ export default class UserManagementView {
           let row = '<ons-row>' + 
             '<ons-col>' + admin.lname + '</ons-col>' +
             '<ons-col>' + admin.fname + '</ons-col>' +
-            '<ons-col>' + admin.snum + '</ons-col>' +
-            '<ons-col>' + admin.csid + '</ons-col>' +
             '<ons-col>' + admin.username + '</ons-col>' +
             '<ons-col>' + admin.userrole + '</ons-col>' +
             '</ons-row>';
@@ -151,43 +156,17 @@ export default class UserManagementView {
       }
     }
 
-    private loadStaffRows(staffList: Staff[]) {
-      console.log('AdminListView::loadStaffList() - start - data: ', staffList);
-      let rowHeaders = document.querySelector(STAFF_ROW_HEADERS) as HTMLElement;
-      let staffListContainer = document.querySelector(STAFF_LIST_CONTAINER) as HTMLElement;
-
-      try {
-        staffListContainer.innerHTML = '';
-        staffListContainer.appendChild(rowHeaders);
-        staffListContainer.appendChild(UI.ons.createElement('<p>'));
-        staffList.map((staff: Staff) => {
-
-          let row = '<ons-row>' + 
-            '<ons-col>' + staff.lname + '</ons-col>' +
-            '<ons-col>' + staff.fname + '</ons-col>' +
-            '<ons-col>' + staff.snum + '</ons-col>' +
-            '<ons-col>' + staff.csid + '</ons-col>' +
-            '<ons-col>' + staff.username + '</ons-col>' +
-            '<ons-col>' + staff.userrole + '</ons-col>' +
-            '</ons-row>';
-          staffListContainer.appendChild(UI.ons.createElement(row));
-        });
-        if (staffList.length === 0) {
-          staffListContainer.appendChild(UI.ons.createElement('<p>No staff exist.</p>'));
-        }
-        staffListContainer.appendChild(UI.ons.createElement('<p>'));
-      } catch (err) {
-        console.log('AdminListView::loadAdminList() - ' + err);
-      }
-
-    }
     private addEventListener() {
       let that = this;
       let uploadContainer: HTMLElement = document.querySelector(UPLOAD_ADMIN_LIST_CONTAINER) as HTMLElement;
       let fileInput = document.querySelector(FILE_INPUT) as HTMLInputElement;
       let uploadButton: HTMLElement = document.querySelector(UPLOAD_BUTTON) as HTMLElement;
 
-      uploadButton.addEventListener('click', () => {
+      // replace event listener if already added from previous render
+      let new_el = uploadButton.cloneNode(true); // true means a deep copy
+      uploadButton.parentNode.replaceChild(new_el, uploadButton);
+
+      new_el.addEventListener('click', () => {
         this.validate(fileInput)
           .then((isValid: boolean) => {
             if (isValid) {

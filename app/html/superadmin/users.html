@@ -10,9 +10,9 @@
     <ons-list-header>Add/Update Admins</ons-list-header>
     <div class="classportal-info-container">
     	<div id="superAdminUsersPage-warning-text">
-	    	<p><span>INFO:</span> Uploading an Admin List will add admins to the selected Course without removing pre-existing admins.</p>
-	    	<p>The necessary upload includes <span>FIRST</span>, <span>LAST</span>, <span>SNUM</span>, <span>CSID</span>, and <span>CWL</span> headers in CSV format.</p>
-            <p>At this time, Admins cannot be enrolled in any Courses. See back-end Logs in addAdminList().</p>
+	    	<p><span>INFO:</span> Uploading an Admin List will overwrite previous admins in the Course. Please make sure that the CSV has the completeley updated list of Admins before proceeding.</p>
+	    	<p>The necessary upload includes <span>FIRST</span>, <span>LAST</span>, and <span>CWL</span> headers in CSV format.</p>
+            <p>Admins <span>cannot</span> be enrolled in any Courses.</p>
     	</div>
     	<input id="superAdminUsersPage-fileInput" type="file"/>
     	<p></p>
@@ -28,53 +28,13 @@
 
     </ons-list>
 
-    <ons-list-header>Add/Update Staff</ons-list-header>
-    <div class="classportal-info-container">
-        <div id="superAdminUsersPage-warning-text">
-            <p><span>WARNING:</span> Uploading a Staff List will add staff  to the selected Course. Pre-existing admin or staff will not be affected.</p>
-            <p>The necessary format includes <span>FIRST</span>, <span>LAST</span>, <span>SNUM</span>, <span>CSID</span>, and <span>CWL</span> headers in CSV format.</p>
-            <p>Previous userroles <span>WILL NOT</span> be affected. Users must be individually deleted to be removed.</p>
-        </div>
-        <input id="superAdminUsersPage-fileInput" type="file"/>
-        <p></p>
-        <ons-button id="superAdminUsersPage-uploadButton" modifier="medium">Upload</ons-button>
-    </div>
-    <ons-list-header>Current Admins</ons-list-header>
-        <div id="superAdminUsersPage-adminListContainer" class="classportal-row-headers-container-theme">
-            <!-- Where updated class list user information is placed !-->
-            <blockquote>No admins exist.</blockquote>
-        </div>
-
-    <ons-list id="superAdminUsersPage-list">
-
-    </ons-list>
-
-    <ons-list-header>Current Staff</ons-list-header>
-        <div id="superAdminUsersPage-staffListContainer" class="classportal-row-headers-container-theme">
-            <!-- Where updated class list user information is placed !-->
-            <blockquote>No staff exist.</blockquote>
-        </div>
-
-
     <div style="display: none" id="superAdminUsersPage-rowHeaderContainer">
     	<ons-row id="superAdminUsersPage-adminRowHeaders">
 			<ons-col>Last Name</ons-col>
 			<ons-col>First Name</ons-col>
-			<ons-col>SNUM</ons-col>
-			<ons-col>CSID</ons-col>
             <ons-col>CWL</ons-col>
 			<ons-col>Userrole</ons-col>
 		</ons-row>
-
-        <ons-row id="superAdminUsersPage-staffRowHeaders">
-            <ons-col>Last Name</ons-col>
-            <ons-col>First Name</ons-col>
-            <ons-col>SNUM</ons-col>
-            <ons-col>CSID</ons-col>
-            <ons-col>CWL</ons-col>
-            <ons-col>Userrole</ons-col>
-        </ons-row>
-
     </div>
 
 </ons-page>
