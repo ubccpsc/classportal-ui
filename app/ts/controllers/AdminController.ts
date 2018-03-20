@@ -10,6 +10,7 @@ import {ClassListView} from "../viewAdmin/ClassListView";
 import {DeliverableSelectorView} from "../viewAdmin/DeliverableSelectorView";
 import {TeamView} from "../viewAdmin/TeamView";
 import {ResultView} from "../viewAdmin/ResultView";
+import {ManageStaffView} from "../viewAdmin/ManageStaffView";
 import {AuthHelper} from "../util/AuthHelper";
 import {GitHubView} from "../viewAdmin/GitHubView";
 import {GradesView} from "../viewAdmin/GradesView";
@@ -29,6 +30,7 @@ export class AdminController {
     private deliverableSelectorView: DeliverableSelectorView;
     private gradesView: GradesView;
     private gradesUploadView: GradesUploadView;
+    private manageStaffView: ManageStaffView;
     private teamView = new TeamView(this);
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
@@ -51,6 +53,7 @@ export class AdminController {
         this.gradesView = new GradesView(this, courseId, app);
         this.deliverableView = new DeliverableView(this, app);
         this.gradesUploadView = new GradesUploadView(this, courseId, app);
+        this.manageStaffView = new ManageStaffView(this, app, courseId);
         this.courseId = courseId;
     }
 
@@ -205,6 +208,11 @@ export class AdminController {
         console.log('AdminController::adminClassListPage - start; options: ' + JSON.stringify(opts));
         let classListView = new ClassListView(this.courseId, this.app);
         classListView.render();
+    }
+
+    public adminManageStaffPage(opts: any) {
+        console.log('AdminController::adminManageStaffPage - start; options: ' + JSON.stringify(opts));
+        this.manageStaffView.render();
     }
 }
 

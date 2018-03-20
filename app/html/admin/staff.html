@@ -1,0 +1,47 @@
+<ons-page id="adminManageStaffPage" class="classportal-page-theme">
+
+    <ons-toolbar>
+        <div class="left">
+            <ons-back-button></ons-back-button>
+        </div>
+        <div id="adminManageStaffPage-header" class="center">User Manager</div>
+    </ons-toolbar>
+
+    <ons-list-header>Add/Update Staff</ons-list-header>
+    <div class="classportal-info-container">
+        <div id="adminManageStaffPage-warning-text">
+            <p><span>WARNING:</span> Uploading a Staff List will add staff to the selected Course. Pre-existing admin or staff will not be affected.</p>
+            <p>The necessary format includes <span>FIRST</span>, <span>LAST</span>, <span>SNUM</span>, <span>CSID</span>, and <span>CWL</span> headers in CSV format.</p>
+            <p>Previous userroles <span>WILL NOT</span> be affected. Users must be individually deleted to be removed.</p>
+        </div>
+        <input id="adminManageStaffPage-fileInput" type="file"/>
+        <p></p>
+        <ons-button id="adminManageStaffPage-uploadButton" modifier="medium">Upload</ons-button>
+    </div>
+    <ons-list-header>Current Admins</ons-list-header>
+        <div id="adminManageStaffPage-adminListContainer" class="classportal-row-headers-container-theme">
+            <!-- Where updated class list user information is placed !-->
+            <blockquote>No admins exist.</blockquote>
+        </div>
+
+    <ons-list-header>Current Staff</ons-list-header>
+        <div id="adminManageStaffPage-staffListContainer" class="classportal-row-headers-container-theme">
+            <!-- Where updated class list user information is placed !-->
+            <blockquote>No staff exist.</blockquote>
+        </div>
+
+
+    <div style="display: none" id="adminManageStaffPage-rowHeaderContainer">
+
+        <ons-row id="adminManageStaffPage-staffRowHeaders">
+            <ons-col>Last Name</ons-col>
+            <ons-col>First Name</ons-col>
+            <ons-col>SNUM</ons-col>
+            <ons-col>CSID</ons-col>
+            <ons-col>CWL</ons-col>
+            <ons-col>Userrole</ons-col>
+        </ons-row>
+
+    </div>
+
+</ons-page>
