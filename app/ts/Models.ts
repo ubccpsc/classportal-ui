@@ -23,6 +23,10 @@ export interface Course {
   buildingContainer?: boolean; // If currently building a container, this should be true.
 }
 
+export interface CourseContainer {
+  response: Course;
+}
+
 export interface AdminListResponse {
   response: Admin[];
 }

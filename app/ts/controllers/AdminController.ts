@@ -15,6 +15,8 @@ import {AuthHelper} from "../util/AuthHelper";
 import {GitHubView} from "../viewAdmin/GitHubView";
 import {GradesView} from "../viewAdmin/GradesView";
 import {AddDeliverableView} from "../viewAdmin/AddDeliverableView";
+import {ManageContainersView} from "../viewAdmin/ManageContainersView";
+import {CourseView} from "../viewAdmin/CourseView";
 import {App} from "../App";
 import {GradesUploadView} from "../viewAdmin/GradesUploadView";
 
@@ -31,6 +33,8 @@ export class AdminController {
     private gradesView: GradesView;
     private gradesUploadView: GradesUploadView;
     private manageStaffView: ManageStaffView;
+    private manageContainersView: ManageContainersView;
+    private courseView = new CourseView(this);
     private teamView = new TeamView(this);
     private resultView = new ResultView(this);
     private githubView = new GitHubView(this);
@@ -212,7 +216,13 @@ export class AdminController {
 
     public adminManageStaffPage(opts: any) {
         console.log('AdminController::adminManageStaffPage - start; options: ' + JSON.stringify(opts));
-        this.manageStaffView.render();
+        this.manageContainersView = new ManageContainersView(this, null);
+        this.manageContainersView.render();
     }
-}
+
+    public adminCourseConfigPage(opts: any) {
+        console.log('AdminController::adminCourseConfigPage - start; options: ' + JSON.stringify(opts));
+        let url = this.app.backendURL + this.courseId + '/admin/course';
+        Network.handleRemote(url, this.courseView, UI.handleError);
+    }}
 

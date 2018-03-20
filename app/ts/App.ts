@@ -12,6 +12,7 @@ import 'whatwg-fetch';
 import {OnsButtonElement, OnsPageElement} from "onsenui";
 import {Network} from "./util/Network";
 
+// const CONFIG = require('../../config.js');
 const COURSE_SELECTION_LIST = '#main-course-selection';
 const AUTH_STATUS = 'authorized';
 const UNAUTH_STATUS = 'unauthorized';
@@ -27,7 +28,9 @@ export class App {
     private UNAUTH_STATUS = 'unauthenticated';
     private backendDEV = 'https://localhost:5000/';
     private backendPROD = 'https://portal.cs.ubc.ca:5000/';
+    private backendSTAG = 'https://portal-dev.cs.ubc.ca:5000/';
     private frontendDEV = 'https://localhost:3000/';
+    private frontendSTAG = 'https://portal-dev.cs.ubc.ca/'
     private frontendPROD = 'https://portal.cs.ubc.ca/';
     private authHelper: AuthHelper;
     private courseIds: string[] = null;
@@ -40,6 +43,9 @@ export class App {
         if (window.location.href.indexOf('://localhost') > 0) {
             this.backendURL = this.backendDEV;
             this.frontendURL = this.frontendDEV;
+        } else if (window.location.href.indexOf('://portal-dev') > 0) {
+            this.backendURL = this.backendSTAG;
+            this.frontendURL = this.frontendSTAG;
         } else {
             this.backendURL = this.backendPROD;
             this.frontendURL = this.frontendPROD;

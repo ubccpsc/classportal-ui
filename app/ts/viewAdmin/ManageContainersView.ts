@@ -32,7 +32,6 @@ export class ManageContainersView {
     private updateDelivInputs() {
         console.log('ManageContainersView::updateDelivInputs(..) - start');
         let buildStatus = document.querySelector(BUILD_STATUS) as HTMLElement;
-
         buildStatus.innerHTML = this.deliverable.buildingContainer === true ? 'In Progress' : 'Idle';
     }
 
@@ -40,7 +39,14 @@ export class ManageContainersView {
         console.log('ManageContainersView::updateDelivInputs(..) - start');
         let that = this;
         let url = myApp.backendURL + myApp.currentCourseId + '/admin/isContainerBuilt';
-        let payload: IsContainerBuiltPayload = {deliverableName: that.deliverable.name};
+
+        // IMPORTANT: If Deliverable is null, then we are modifying the current course container by leaving
+        // the payload blank.
+        let payload: IsContainerBuiltPayload = {};
+        if (this.deliverable !== null) {
+            payload = {deliverableName: that.deliverable.name};
+        }
+        
         return Network.httpPut(url, payload)
             .then((data: any) => {
                 return data.json()
