@@ -22,13 +22,10 @@ export class SuperAdminController {
     private data: any;
     private courseSelectorView: CourseSelectorView;
     private courseView: CourseView;
+    private app: App;
 
     // Bit of a hack: FIRST SuperAdminView should load the Courses list.
     public courses: any = null;
-
-    // private userView = new UserView();
-    // private gradeView = new GradeView();
-    private app: App;
 
     constructor(app: App, courseId: string) {
         console.log('SuperAdminController::<init> - courseId: ' + courseId);

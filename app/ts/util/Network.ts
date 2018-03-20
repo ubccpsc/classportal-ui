@@ -47,7 +47,14 @@ export class Network {
         return fetch(url, OPTIONS_HTTP_POST).then((data: any) => {
             if (data.status !== 200 && data.status !== 405 && data.status !== 401 ) {
                 console.log('Network::handleRemote() WARNING: Repsonse status: ' + data.status);
-                throw new Error('Network::handleRemote() - API ERROR: ' + data.status);
+                data.json()
+                    .then((data: any) => {
+                        console.log('Network::handleRemote() WARNING: Repsonse status: ', data);
+                    })
+                    .catch((err: any) => {
+                        console.log('Network::handleRemote() WARNING: Repsonse status: ', err);
+                    })
+                // throw new Error('Network::handleRemote() - API ERROR: ' + data.status);
             } else if (data.status !== 200 && data.status === 405 || data.status === 401) {
                 console.error('Network::getRemotePost() Permission denied for your userrole.');
                 alert('You are not authorized to access this endpoint. Please re-login.');

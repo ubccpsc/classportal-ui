@@ -122,11 +122,11 @@ export class GradesUploadView {
 
       // #FIRST: make the headers
       let headers = '';
-      csvHeaders.map((header) => {
-        if (header.length !== 0) {
-          headers += '<ons-col>' + header + '</ons-col>';
-        }
-      });
+      if (typeof gradeUploadResponse.updatedGrades[0] !== 'undefined' && gradeUploadResponse.updatedGrades[0] !== null) {
+        Object.keys((gradeUploadResponse.updatedGrades[0])).forEach((key) => {
+          headers += '<ons-col>' + key + '</ons-col>';
+        });
+      }
       cannotUpdateList.appendChild(UI.ons.createElement('<ons-row>' + headers + '</ons-row>'));
       cannotUpdateList.appendChild(UI.ons.createElement('<p></p>'));
 
@@ -135,13 +135,12 @@ export class GradesUploadView {
         let columns = '';
         Object.keys(user).forEach((key) => {
           if (key.length !== 0) {
-            console.log('key will be posted', key.toUpperCase());
-            console.log('key content', user[key]);
             columns += '<ons-col>' + user[key] + '</ons-col>';
-          }        
+          }
         });
           cannotUpdateList.appendChild(UI.ons.createElement('<ons-row>' + columns + '</ons-row>'));
       });
+
 
       container.style.display = 'block';
     }
@@ -151,7 +150,7 @@ export class GradesUploadView {
       let updatedList = document.querySelector(UPDATED_CARD) as HTMLElement;
       updatedList.innerHTML = '';
 
-      // make the headers
+      // #FIRST make the headers
       let headers = '';
       if (typeof gradeUploadResponse.updatedGrades[0] !== 'undefined' && gradeUploadResponse.updatedGrades[0] !== null) {
         Object.keys((gradeUploadResponse.updatedGrades[0])).forEach((key) => {
@@ -162,7 +161,7 @@ export class GradesUploadView {
       updatedList.appendChild(UI.ons.createElement('<ons-row>' + headers + '</ons-row>'));
       updatedList.appendChild(UI.ons.createElement('<p></p>'));
 
-      // make the rows of updated users
+      // #SECOND make the rows of updated users
       gradeUploadResponse.updatedGrades.map((user: any) => {
         let columns = '';
         Object.keys(user).forEach((key) => {
