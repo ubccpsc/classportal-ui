@@ -1,18 +1,18 @@
-<ons-page id="adminManageContainers">
+<ons-page id="adminManageContainersPage">
     <ons-toolbar>
         <div class="left">
-            <ons-back-button id="adminManageContainers__back-button"></ons-back-button>
+            <ons-back-button id="adminManageContainersPage__back-button"></ons-back-button>
         </div>
-        <h2 id="adminManageContainers__toolbar-title" class="center">Manage Containers</h2>
+        <h2 id="adminManageContainersPage__toolbar-title" class="center">Manage Containers</h2>
     </ons-toolbar>
 
-        <section id="adminManageContainers-build-container">
+        <section id="adminManageContainersPage-build-container">
 
             <ons-list-header>Build Manager</ons-list-header>
-            <div id="adminManageContainers__build-container-info" class="classportal-info-container" >
+            <div id="adminManageContainersPage__build-container-info" class="classportal-info-container" >
                 <p><span>INFO: </span>Docker containers may be built on the basis of a Deliverable. A switch that overrides the Course container exists on each Deliverable under the "Configure Deliverables" view.</p>
                 <p><span>Dockerfile Requirements: </span></p>
-                <div id="adminManageContainers__build-container-requirements-container">
+                <div id="adminManageContainersPage__build-container-requirements-container">
                 	<ol>
                 		<li>
                 			<span>
@@ -33,8 +33,8 @@
                 <div class="center settingLabel">
                     <span>Docker Building Status: </span>
                 </div>
-                <div class="right settingRight" id="adminManageContainers-building-container-status">
-                    <p style="width: 162.22px"><span id="adminManageContainers-building-container-status-input" style="font-weight: 900;"></span></p>
+                <div class="right settingRight" id="adminManageContainersPage-building-container-status">
+                    <p style="width: 162.22px"><span id="adminManageContainersPage-building-container-status-input" style="font-weight: 900;"></span></p>
                 </div>
             </ons-list-item>
 
@@ -46,8 +46,8 @@
                 <div class="center settingLabel">
                     <span>Container Status: </span>
                 </div>
-                <div class="right settingRight" id="adminManageContainers-build-container-status">
-                    <p style="width: 162.22px"><span id="adminManageContainers-build-container-status-input" style="font-weight: 900;"></span></p>
+                <div class="right settingRight" id="adminManageContainersPage-build-container-status">
+                    <p style="width: 162.22px"><span id="adminManageContainersPage-build-container-status-input" style="font-weight: 900;"></span></p>
                 </div>
             </ons-list-item>
 
@@ -56,12 +56,12 @@
             <ons-button id="adminManageContainer__build-container-button" modifier="large" modifier='cta'>Build Container</ons-button> 
 
             <!--Docker Build Logs-->
-            <ons-list-header>Docker Build Logs</ons-list-header>
-	        <div id="adminManageContainers__docker-build-logs-container" class="classportal-info-container">
+            <ons-list-header>Build Log</ons-list-header>
+	        <div id="adminManageContainersPage__docker-build-logs-container" class="classportal-info-container">
 	        	<!-- Docker Build logs will be inserted here-->
 	        </div>
 
-		    <div id="adminManageContainers__docker-no-build-history-section" class="classportal-info-container">
+		    <div id="adminManageContainersPage__docker-no-build-history-section" class="classportal-info-container">
 	    		<!-- No logs message placed here-->
 		    </div>
 
@@ -69,7 +69,7 @@
 
 	    <section>
         	<ons-list-header>Destroy Manager</ons-list-header>
-            <div id="adminManageContainers__build-container-info" class="classportal-info-container" >
+            <div id="adminManageContainersPage__build-container-info" class="classportal-info-container" >
                 <p><span>WARNING: </span>Destroying a Docker container can have detrimental effects if it is currently being used in a course.
 
                 <p><span>If you are re-building the container</span>, ensure that all Dockerfile dependencies are still valid, by building the container in your test environment, before deleting the active container. Any unknown deprecated dependencies may result in a serious disruption to your course if you cannot successfully re-build your container.</p>
@@ -79,13 +79,13 @@
 			<ons-button id="adminManageContainer__destroy-container-button" modifier="large" modifier='cta' style="background-color: #B8513A">Destroy Container</ons-button>       
 
             <!--Docker Destroy Logs-->
-            <ons-list-header>Docker Destroy Logs</ons-list-header>
-	        <div id="adminManageContainers__docker-destroy-logs-container" class="classportal-info-container">
+            <ons-list-header>Destroy Log</ons-list-header>
+	        <div id="adminManageContainersPage__docker-destroy-logs-container" class="classportal-info-container">
 
 	        </div>
 	    </section>
 
-	    <div id="adminManageContainers__docker-no-destroy-history-section" class="classportal-info-container">
+	    <div id="adminManageContainersPage__docker-no-destroy-history-section" class="classportal-info-container">
 	    	<!-- No logs message placed here-->
 	    </div>
 

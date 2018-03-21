@@ -216,13 +216,19 @@ export class AdminController {
 
     public adminManageStaffPage(opts: any) {
         console.log('AdminController::adminManageStaffPage - start; options: ' + JSON.stringify(opts));
-        this.manageContainersView = new ManageContainersView(this, null);
-        this.manageContainersView.render();
+        this.manageStaffView.render();
     }
 
     public adminCourseConfigPage(opts: any) {
         console.log('AdminController::adminCourseConfigPage - start; options: ' + JSON.stringify(opts));
         let url = this.app.backendURL + this.courseId + '/admin/course';
         Network.handleRemote(url, this.courseView, UI.handleError);
-    }}
+    }
+
+    public adminManageContainersPage(opts: any) {
+        console.log('AdminController::adminManageContainersView - start; options: ' + JSON.stringify(opts));
+        this.manageContainersView = new ManageContainersView(this, null);
+        this.manageContainersView.render();
+    }
+}
 

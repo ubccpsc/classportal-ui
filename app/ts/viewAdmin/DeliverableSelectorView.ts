@@ -24,7 +24,7 @@ export enum ForwardOptions {
     TEAM_HEALTH = 'TEAM_HEALTH',
     ASSIGN_GRADES = 'ASSIGN_GRADES',
     MANAGE_DELIVERABLES = 'MANAGE_DELIVERABLES',
-    MANAGE_CONTAINERS = 'MANAGE_CONTAINERS',
+    MANAGE_DELIV_CONTAINERS = 'MANAGE_DELIV_CONTAINERS',
 }
 
 declare var myApp: App;
@@ -111,7 +111,7 @@ export class DeliverableSelectorView {
                                 that.deliverableView.editDeliverable(deliverable);
                                 break;
                             }
-                            case (ForwardOptions.MANAGE_CONTAINERS): {
+                            case (ForwardOptions.MANAGE_DELIV_CONTAINERS): {
                                 that.manageContainersView = new ManageContainersView(that.controller, deliverable);
                                 that.manageContainersView.render();
                                 break;

@@ -100,7 +100,7 @@ export class DeliverableView {
                     // deliverableList.appendChild(UI.createListItem("Close: " + open.toLocaleDateString() + ' @ ' + open.toLocaleTimeString()));
                 }
             } else {
-                deliverableList.appendChild(UI.createListItem("No deliverable data returned from server."));
+                deliverableList.appendChild(UI.createListItem("No deliverables exist for this course."));
             }
         } else {
             console.log('DeliverableView::render() - element is null');
