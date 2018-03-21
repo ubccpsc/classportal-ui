@@ -157,7 +157,7 @@ export default class CourseView {
       }
 
       // #3. Dockerfile repo should at least be valid Https URI
-      if (course.dockerRepo !== '' && !HTTPS_REGEX.test(course.dockerRepo)) {
+      if (course.dockerRepo !== '' && course.dockerRepo.match(HTTPS_REGEX) === null) {
           UI.notification(REPO_FORMAT_ERROR);
           return false;
       }

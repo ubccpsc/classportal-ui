@@ -14,7 +14,6 @@ import HTMLTags from '../helpers/HTMLTags';
 
 declare var myApp: App;
 
-const EDIT_COURSE = 'EDIT_COURSE';
 const SAVE_ACTION = '#adminCourseConfigPage__save-button';
 const COURSE_ID = '#adminCourseConfigPage__course-fields-courseId';
 const GITHUB_ORG = '#adminCourseConfigPage__course-fields-githubOrg';
@@ -24,8 +23,6 @@ const URL_WEBHOOK = '#adminCourseConfigPage__course-fields-urlWebhook';
 
 export class CourseView {
     private controller: AdminController;
-    private app: App;
-    private courseId: string;
     private course: Course;
 
     constructor(controller: AdminController) {
@@ -36,7 +33,7 @@ export class CourseView {
     public render(courseData: CourseContainer) {
         console.log("CourseView::render(..) - start");
         if (this.course === null) {
-            throw 'CourseView::Course cannot be null in EditView mode.';
+            throw 'CourseView::Course cannot be null.';
         }
         let that = this;
         this.course = courseData.response;
@@ -60,11 +57,12 @@ export class CourseView {
 
             let coursePayload: Course = {
                 // We will only modify two properties for the Github Dockerfile Repo and Key
+                // and URL webhook under the Admin View.
                 courseId: that.course.courseId,
                 githubOrg: that.course.githubOrg,
                 dockerRepo: dockerRepo.value,
                 dockerKey: dockerKey.value,
-                urlWebhook: that.course.urlWebhook
+                urlWebhook: urlWebhook.value
             }
 
             let isValid: boolean = that.isCourseValid(coursePayload);
@@ -78,28 +76,17 @@ export class CourseView {
         UI.hideModal();
     }
 
-    public initEditView() {
-        console.log('CourseView::initEditView( ' + this.courseId + ' ) - start');
-        let that = this;
-        let url = this.app.backendURL + this.courseId + '/admin/course';
-        Network.httpGet(url)
-          .then((courseContainer: CourseContainer) => {
-            console.log('the CourseView Course data: ', courseContainer);
-            that.course = courseContainer.response;
-          });
-    }
-
     /**
     * Determines if the Deliverable values loaded on the EditDeliverable view are valid and are ready to be saved.
     *
     * @return boolean true if deliverable properties are valid.
     */
     private isCourseValid(course: Course): boolean {
-      const HTTPS_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+      const HTTPS_REGEX = new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
       const REPO_FORMAT_ERROR: string = 'The Dockerfile Repo must be Https formatted.';
-
+      
       // Dockerfile repo should at least be valid Https URI
-      if (course.dockerRepo !== '' && !HTTPS_REGEX.test(course.dockerRepo)) {
+      if (course.dockerRepo !== '' && course.dockerRepo.match(HTTPS_REGEX) === null) {
           UI.notification(REPO_FORMAT_ERROR);
           return false;
       }
@@ -115,7 +102,7 @@ export class CourseView {
     */
     private save(course: Course) {
         console.log('EditCourseView::save() - start');
-        let url = this.app.backendURL + '/superadmin/course';
+        let url = myApp.backendURL + myApp.currentCourseId + '/admin/course';
 
         Network.httpPost(url, course)
             .then((data: any) => {
