@@ -31,8 +31,8 @@
 
         <!--Docker Actions-->
         <ons-list-header>Docker Actions</ons-list-header>
-        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'MANAGE_DELIV_CONTAINERS', header: 'Manage Deliverable Containers'})">Manage Deliverable Containers</ons-button></ons-list-item>
-        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/manageContainers.html')">Manage Course Container</ons-button></ons-list-item>
+        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/deliverableSelector.html', {forward: 'MANAGE_DELIV_CONTAINERS', header: 'Manage Deliverable Containers', option: 'DELIVERABLE'})">Manage Deliverable Containers</ons-button></ons-list-item>
+        <ons-list-item><ons-button onclick="myApp.pushPage('html/admin/manageContainers.html', {option: 'COURSE'})">Manage Course Container</ons-button></ons-list-item>
 
     </ons-list>
 

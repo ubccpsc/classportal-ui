@@ -54,6 +54,7 @@ export class ManageContainersView {
         if (this.deliverable !== null) {
             payload = {deliverableName: that.deliverable.name};
         }
+        console.log('isContainerBuild payload: ', payload);
 
         return Network.httpPut(url, payload)
             .then((data: any) => {

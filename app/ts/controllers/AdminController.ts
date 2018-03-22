@@ -227,8 +227,15 @@ export class AdminController {
 
     public adminManageContainersPage(opts: any) {
         console.log('AdminController::adminManageContainersView - start; options: ' + JSON.stringify(opts));
+        if (opts.option === 'COURSE') {
+            console.log('AdminController::adminManageContainersView - Loading Manage Containers View for Course');
         this.manageContainersView = new ManageContainersView(this, null);
-        this.manageContainersView.render();
+        this.manageContainersView.render();        
+        } else {
+            console.log('AdminController::adminManageContainersView - Loaded Manage Containers View for Deliverable');
+            // Loaded from Deliverable Selector.ts
+        }
+
     }
 }
 
