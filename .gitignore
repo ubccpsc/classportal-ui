@@ -7,3 +7,7 @@ js.bak/
 **/.DS_Store
 **/*.js.map
 /app/ts/**/*.js
+
+#Production log files
+ERRFILE
+OUTPUT
