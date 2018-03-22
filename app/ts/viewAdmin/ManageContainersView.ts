@@ -215,8 +215,12 @@ export class ManageContainersView {
         console.log('ManageContainersView::buildContainer(..) - start');
         let that = this;
         let url = myApp.backendURL + myApp.currentCourseId + '/admin/buildContainer';
-        let payload: BuildContainerPayload = {deliverableName: that.deliverable.name};
 
+        let payload: BuildContainerPayload = {};
+
+        if (this.deliverable !== null) {
+            payload = {deliverableName: that.deliverable.name};
+        }
 
         Network.httpPut(url, payload)
             .then((data: any) => {
