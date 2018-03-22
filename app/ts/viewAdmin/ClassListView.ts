@@ -90,7 +90,7 @@ export class ClassListView {
                 '</ons-row>';
 
               classListContainer.appendChild(UI.ons.createElement(row));
-            })
+            });
 
 
           });
@@ -126,7 +126,11 @@ export class ClassListView {
                 UI.hideModal();
               });
           } else {
-            UI.notification('There was an issue updating your Class List! Please check the CSV format.');
+            data.json()
+              .then((errorContainer: any) => {
+                console.log('ClassListView NETWORK ERROR: ', errorContainer);
+                UI.notification('There was an issue updating your Class List: ' + errorContainer.err);
+              });
           }
         });
       console.log('ClassListView::save() - end');
