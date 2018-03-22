@@ -37,7 +37,7 @@ export class ManageStaffView {
         UI.notification(`You must select an Admin List before clicking 'Upload'.`);
         return false;
       } 
-      console.log('AdminListView:: Header Validation: ', CSV_HEADERS);
+      console.log('ManageStaffView:: Header Validation: ', CSV_HEADERS);
 
       if (!this.isHeaderValid(STAFF_LIST_HEADERS.CSID, CSV_HEADERS) || !this.isHeaderValid(STAFF_LIST_HEADERS.SNUM, CSV_HEADERS)
          || !this.isHeaderValid(STAFF_LIST_HEADERS.CWL, CSV_HEADERS) || !this.isHeaderValid(STAFF_LIST_HEADERS.LAST, CSV_HEADERS)
@@ -45,8 +45,8 @@ export class ManageStaffView {
         UI.notification('You must include the required CSV headers.');
         return false;
       }
-      
-      console.log('AdminListView::save() - validation passed');
+
+      console.log('ManageStaffView::save() - validation passed');
       return true;
 
     }
@@ -79,7 +79,7 @@ export class ManageStaffView {
     }
 
     private getStaffList(): Promise<any> {
-      console.log('AdminListView::getStaffList() - start')
+      console.log('ManageStaffView::getStaffList() - start')
       let staffListUrl = this.app.backendURL + this.courseId + '/admin/staff';
 
       let staffListGet = Network.httpGet(staffListUrl)
@@ -89,7 +89,7 @@ export class ManageStaffView {
 
       return Promise.all([staffListGet])
         .then((staffAdminLists) => {
-          console.log('AdminListView::getStaffAdminList data: ', staffAdminLists);
+          console.log('ManageStaffView::getStaffAdminList data: ', staffAdminLists);
           if (typeof staffAdminLists === 'undefined') {
             throw `Could not retrieve admin or staff lists`;
           }
@@ -98,7 +98,7 @@ export class ManageStaffView {
     }
 
     public render() {
-        console.log('AdminListView::render() - start');
+        console.log('ManageStaffView::render() - start');
         UI.showModal('Loading Admin/Staff List...');
         let that = this;
         this.getStaffList()
@@ -117,7 +117,7 @@ export class ManageStaffView {
     }
 
     private loadStaffRows(staffList: Staff[]) {
-      console.log('AdminListView::loadStaffList() - start - data: ', staffList);
+      console.log('ManageStaffView::loadStaffList() - start - data: ', staffList);
       let rowHeaders = document.querySelector(STAFF_ROW_HEADERS) as HTMLElement;
       let staffListContainer = document.querySelector(STAFF_LIST_CONTAINER) as HTMLElement;
 
@@ -142,7 +142,7 @@ export class ManageStaffView {
         }
         staffListContainer.appendChild(UI.ons.createElement('<p>'));
       } catch (err) {
-        console.log('AdminListView::loadAdminList() - ' + err);
+        console.log('ManageStaffView::loadStaffRows() - ' + err);
       }
     }
 
@@ -167,7 +167,7 @@ export class ManageStaffView {
     }
 
     public save(fileList: FileList) {
-      console.log('AdminListView::save() - start');
+      console.log('ManageStaffView::save() - start');
       let that = this;
       let url = this.app.backendURL + this.courseId + '/admin/staff';
       const formData = new FormData();
@@ -177,15 +177,19 @@ export class ManageStaffView {
           if (data.status >= 200 && data.status < 300) {
             data.json()
               .then((response: Admin) => {
-                console.log('AdminListView RESPONSE: ' + JSON.stringify(response));
-                UI.notification('ClassList Successfully Updated!');
+                console.log('ManageStaffView::save() RESPONSE: ' + JSON.stringify(response));
+                UI.notification('ManageStaffView::save() Successfully Updated!');
                 that.render();
                 UI.hideModal();
               });
           } else {
-            UI.notification('There was an issue updating your Admin List. Please check the CSV format.');
+              data.json()
+                .then((err: any) => {
+                  UI.notification('There was an issue updating your Staff List.');
+                  console.log('ManageStaffView::save() ERROR', err);
+                });
           }
         });
-      console.log('AdminListView::save() - end');
+      console.log('ManageStaffView::save() - end');
     }
 }

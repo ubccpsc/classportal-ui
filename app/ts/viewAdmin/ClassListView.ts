@@ -128,8 +128,8 @@ export class ClassListView {
           } else {
             data.json()
               .then((errorContainer: any) => {
-                console.log('ClassListView NETWORK ERROR: ', errorContainer);
-                UI.notification('There was an issue updating your Class List: ' + errorContainer.err);
+                console.log('ClassListView ERROR UPDATING CLASS LIST: ', errorContainer);
+                UI.notification('There was an issue updating your Class List!');
               });
           }
         });
