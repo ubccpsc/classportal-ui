@@ -47,8 +47,8 @@ export class App {
             this.backendURL = this.backendSTAG;
             this.frontendURL = this.frontendSTAG;
         } else {
-            this.backendURL = this.backendPROD;
-            this.frontendURL = this.frontendPROD;
+            this.backendURL = "https://" + window.location.hostname + ":5000/"
+            this.frontendURL = "https://" + window.location.hostname + "/"
         }
 
         this.authHelper = new AuthHelper(this.backendURL);
