@@ -23,7 +23,10 @@ module.exports = {
         rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader' or awesome-typescript-loader'.
             {test: /\.tsx?$/, loader: "awesome-typescript-loader"},
-
+            {
+                test: require.resolve("jquery-duration-picker/duration-picker"),
+                loader: 'imports-loader?jQuery=jquery,$=jquery,this=>window'
+            },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             {
                 enforce: "pre",

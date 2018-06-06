@@ -1,3 +1,4 @@
+///<reference path="../helpers/DurationPicker.d.ts" />
 import {UI} from "../util/UI";
 import {AdminController} from "../controllers/AdminController";
 import {DeliverablePayload} from "../Models";
@@ -7,6 +8,8 @@ import FlatPicker from "../helpers/FlatPicker";
 import DeliverableRecord from "../models/DeliverableRecord";
 import {Deliverable} from '../Models';
 import HTMLTags from '../helpers/HTMLTags';
+import * as $ from "jquery";
+import "jquery-duration-picker/duration-picker";
 
 const flatpickr: any = require('flatpickr');
 const MONGO_ID = '#adminEditDeliverablePage-id';
@@ -221,15 +224,19 @@ export class DeliverableView {
         let rate: HTMLInputElement = document.querySelector(REQUEST_RATE) as HTMLInputElement;
         rate.value = String(deliverable.rate);
 
-        let rateSeconds: HTMLInputElement = document.querySelector(REQUEST_SECONDS) as HTMLInputElement;
-        let rateMinutes: HTMLInputElement = document.querySelector(REQUEST_MINUTES) as HTMLInputElement;
-        let rateHours: HTMLInputElement = document.querySelector(REQUEST_HOURS) as HTMLInputElement;
+        let durationpicker = $(REQUEST_RATE).durationPicker();
+        let duration = deliverable.rate;
+        let hoursInMs = 60 * 60 * 1000;
+        let minutesInMs = 60 * 1000;
+        let durationHours = Math.floor(duration / hoursInMs);
+        let durationMinutes = Math.floor((duration - (durationHours * hoursInMs)) / minutesInMs);
+        let durationSeconds = Math.floor((duration - (durationHours * hoursInMs) - (durationMinutes * minutesInMs)) / 1000);
 
-        let times: string = new Date(deliverable.rate).toISOString().substr(11, 8);
-        let timesArr: string[] = times.split(':');
-        rateHours.value = timesArr[0];
-        rateMinutes.value = timesArr[1];
-        rateSeconds.value = timesArr[2];
+        durationpicker.setvalues({
+          hours: durationHours,
+          minutes: durationMinutes,
+          seconds: durationSeconds
+        });
 
         if (viewType === this.editTypes.EDIT_DELIVERABLE) {
 
@@ -254,6 +261,11 @@ export class DeliverableView {
         let saveAction = document.querySelector(SAVE_ACTION) as HTMLElement;
 
         saveAction.addEventListener('click', () => {
+            // DOM is loaded so jQuery has built this HTML.
+            let rateSeconds: HTMLInputElement = document.querySelector(REQUEST_SECONDS) as HTMLInputElement;
+            let rateMinutes: HTMLInputElement = document.querySelector(REQUEST_MINUTES) as HTMLInputElement;
+            let rateHours: HTMLInputElement = document.querySelector(REQUEST_HOURS) as HTMLInputElement;
+
             let isValid: boolean = that.isDeliverableValid();
             let rateHoursInMs: number = parseInt(rateHours.value) * 60 * 60 * 1000; // convert hours to ms
             let rateMinutesInMs: number = parseInt(rateMinutes.value) * 60 * 1000; // convert minutes to ms
